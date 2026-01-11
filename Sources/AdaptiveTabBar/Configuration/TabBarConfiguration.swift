@@ -33,7 +33,13 @@ public struct TabBarConfiguration {
     /// Side length of square icon for prominent tab items.
     let prominentIconSideLength: CGFloat
 
+    /// The scale factor applied to icons when the bar is in compact height mode (e.g., landscape).
+    let compactIconScale: CGFloat
+
     // MARK: - Layout
+
+    /// Spacing between tab items.
+    let tabSpacing: CGFloat
 
     /// Spacing between icon and title in a tab item.
     let iconTitleSpacing: CGFloat
@@ -41,10 +47,19 @@ public struct TabBarConfiguration {
     /// Vertical padding inside tab item.
     let tabItemVerticalPadding: CGFloat
 
+    /// Vertical padding inside tab item when the bar is in compact mode.
+    let tabItemVerticalPaddingCompact: CGFloat
+
     // MARK: - Animation
 
     /// Animation applied to tab selection changes.
     let tabAnimation: Animation?
+
+    /// The scale factor applied to the icon when it is selected.
+    let selectedIconScale: CGFloat
+
+    /// The scale factor applied to the icon when it is unselected.
+    let unselectedIconScale: CGFloat
 
     // MARK: - Accecibility
 
@@ -55,13 +70,17 @@ public struct TabBarConfiguration {
         tintColor: Color = .primary,
         unselectedColor: Color = .secondary,
         backgroundColor: Color = Color(uiColor: .systemBackground),
-//        backgroundColor: Color = Color(uiColor: .red.withAlphaComponent(0.4)),
         textStyle: Font.TextStyle = .caption2,
         regularIconSideLength: CGFloat = 24,
         prominentIconSideLength: CGFloat = 40,
+        compactIconScale: CGFloat = 0.8,
+        tabSpacing: CGFloat = 0,
         iconTitleSpacing: CGFloat = 4,
-        tabItemVerticalPadding: CGFloat = 2,
+        tabItemVerticalPadding: CGFloat = 4,
+        tabItemVerticalPaddingCompact: CGFloat = 2,
         tabAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
+        selectedIconScale: CGFloat = 1.1,
+        unselectedIconScale: CGFloat = 1,
         barAccessibilityLabel: String = "Tab Bar"
     ) {
         self.tintColor = tintColor
@@ -70,29 +89,55 @@ public struct TabBarConfiguration {
         self.textStyle = textStyle
         self.regularIconSideLength = regularIconSideLength
         self.prominentIconSideLength = prominentIconSideLength
+        self.compactIconScale = compactIconScale
+        self.tabSpacing = tabSpacing
         self.iconTitleSpacing = iconTitleSpacing
         self.tabItemVerticalPadding = tabItemVerticalPadding
+        self.tabItemVerticalPaddingCompact = tabItemVerticalPaddingCompact
         self.tabAnimation = tabAnimation
+        self.selectedIconScale = selectedIconScale
+        self.unselectedIconScale = unselectedIconScale
         self.barAccessibilityLabel = barAccessibilityLabel
     }
 }
 
 extension TabBarConfiguration {
 
-    func iconSize(for style: TabItemStyle) -> CGSize {
-        let side = (style == .prominent) ? prominentIconSideLength : regularIconSideLength
-        return CGSize(width: side, height: side)
+    func barHeight(isCompactHeight: Bool) -> CGFloat {
+        let fontLineHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
+        let baseIconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
+
+        if isCompactHeight {
+            let maxContentHeight = max(baseIconHeight * 0.8, fontLineHeight)
+            return maxContentHeight + (tabItemVerticalPadding * 2)
+        } else {
+            return baseIconHeight + iconTitleSpacing + fontLineHeight + (tabItemVerticalPadding * 2)
+        }
     }
 
-    func barHeight(isCompactHeight: Bool) -> CGFloat {
-            let fontLineHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
-            let baseIconHeight = iconSize(for: .regular).height
-
-            if isCompactHeight {
-                let maxContentHeight = max(baseIconHeight * 0.8, fontLineHeight)
-                return maxContentHeight + (tabItemVerticalPadding * 2)
-            } else {
-                return baseIconHeight + iconTitleSpacing + fontLineHeight + (tabItemVerticalPadding * 2)
-            }
+    func itemColor(isSelected: Bool) -> Color {
+        if isSelected {
+            return tintColor
+        } else {
+            return unselectedColor
         }
+    }
+
+    func iconSize(for style: TabItemStyle, isCompact: Bool) -> CGSize {
+        let multiplier = isCompact ? compactIconScale : 1.0
+
+        switch style {
+        case .regular:
+            return CGSize(
+                width: regularIconSideLength * multiplier,
+                height: regularIconSideLength * multiplier
+            )
+        case .prominent:
+            return CGSize(
+                width: prominentIconSideLength * multiplier,
+                height: prominentIconSideLength * multiplier
+            )
+        }
+    }
+
 }
