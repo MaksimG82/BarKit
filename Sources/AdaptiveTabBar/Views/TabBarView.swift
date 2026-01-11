@@ -41,7 +41,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
     // MARK: - Body
 
     public var body: some View {
-        HStack(alignment: .bottom, spacing: 0) {
+        HStack(alignment: .bottom, spacing: config.tabSpacing) {
             ForEach(items, id: \.self) { item in
                 makeTab(for: item, isSelected: item == selected)
             }
@@ -66,13 +66,16 @@ private extension TabBarView {
             content: tabContent(for: item, isSelected: isSelected)
         )
         .contentShape(Rectangle())
-        .zIndex(item.style == .prominent ? 1 : 0)
         .animation(config.tabAnimation, value: selected)
         .onTapGesture {
             selected = item
             action?(item)
         }
-        .modifier(TabAccessibilityModifier(item: item, isSelected: isSelected))
+        .modifier(
+            TabAccessibilityModifier(
+                item: item, isSelected: isSelected
+            )
+        )
         .debugBorder(.blue)
         .debugArea(.blue)
     }
@@ -86,35 +89,31 @@ private extension TabBarView {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, verticalPadding)
+        .padding(
+            .vertical,
+            isCompactHeight ?
+            config.tabItemVerticalPaddingCompact
+            : config.tabItemVerticalPadding
+        )
     }
 
     @ViewBuilder
     func tabContent(for item: Item, isSelected: Bool) -> some View {
-        let color = tintColor(for: item)
+        let color = config.itemColor(isSelected: isSelected)
 
         TabIconView(icon: item.icon)
-            .frame(size: iconSize(for: item.style))
+            .frame(size: config.iconSize(for: item.style, isCompact: isCompactHeight))
             .foregroundStyle(color)
-            .scaleEffect(isSelected ? 1.1 : 1.0)
+            .scaleEffect(
+                isSelected ?
+                config.selectedIconScale
+                : config.unselectedIconScale
+            )
 
         Text(item.title)
             .font(.system(config.textStyle))
             .foregroundStyle(color)
             .lineLimit(1)
-    }
-
-    func tintColor(for item: Item) -> Color {
-        item == selected ? config.tintColor : config.unselectedColor
-    }
-
-    func iconSize(for style: TabItemStyle) -> CGSize {
-        let base = config.iconSize(for: style)
-        return isCompactHeight ? CGSize(width: base.width * 0.8, height: base.height * 0.8) : base
-    }
-
-    var verticalPadding: CGFloat {
-        isCompactHeight ? config.tabItemVerticalPadding * 0.5 : config.tabItemVerticalPadding
     }
 }
 
