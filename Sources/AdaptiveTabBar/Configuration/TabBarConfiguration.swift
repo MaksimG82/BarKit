@@ -80,7 +80,7 @@ public struct TabBarConfiguration {
         tabAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
         selectedIconScale: CGFloat = 1.1,
         unselectedIconScale: CGFloat = 1,
-        barAccessibilityLabel: String = "Tab Bar",
+        barAccessibilityLabel: String = "Tab Bar"
     ) {
         self.tintColor = tintColor
         self.unselectedColor = unselectedColor
@@ -128,12 +128,12 @@ extension TabBarConfiguration {
         case .regular:
             return CGSize(
                 width: regularIconSideLength * multiplier,
-                height: regularIconSideLength * multiplier,
+                height: regularIconSideLength * multiplier
             )
         case .prominent:
             return CGSize(
                 width: prominentIconSideLength * multiplier,
-                height: prominentIconSideLength * multiplier,
+                height: prominentIconSideLength * multiplier
             )
         }
     }

@@ -29,7 +29,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         action: ((Item) -> Void)? = nil,
-        config: TabBarConfiguration = .init(),
+        config: TabBarConfiguration = .init()
     ) {
         self.items = items
         _selected = selected
@@ -47,7 +47,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         }
         .frame(
             height: config.barHeight(isCompactHeight: isCompactHeight),
-            alignment: .bottom,
+            alignment: .bottom
         )
         .background(config.backgroundColor.ignoresSafeArea(edges: .bottom))
         .accessibilityElement(children: .contain)
@@ -61,7 +61,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 private extension TabBarView {
     func makeTab(for item: Item, isSelected: Bool) -> some View {
         tabItemLayout(
-            content: tabContent(for: item, isSelected: isSelected),
+            content: tabContent(for: item, isSelected: isSelected)
         )
         .contentShape(Rectangle())
         .animation(config.tabAnimation, value: selected)
@@ -71,8 +71,8 @@ private extension TabBarView {
         }
         .modifier(
             TabAccessibilityModifier(
-                item: item, isSelected: isSelected,
-            ),
+                item: item, isSelected: isSelected
+            )
         )
         .applyDebugVisuals(color: .blue)
     }
@@ -90,7 +90,7 @@ private extension TabBarView {
             .vertical,
             isCompactHeight ?
                 config.tabItemVerticalPaddingCompact
-                : config.tabItemVerticalPadding,
+                : config.tabItemVerticalPadding
         )
     }
 
@@ -104,7 +104,7 @@ private extension TabBarView {
             .scaleEffect(
                 isSelected ?
                     config.selectedIconScale
-                    : config.unselectedIconScale,
+                    : config.unselectedIconScale
             )
 
         Text(item.title)
@@ -142,13 +142,13 @@ private struct TabAccessibilityModifier<Item: TabBarItemProtocol>: ViewModifier 
         @Previewable @State var selected: PreviewTabItem = .init(
             title: "Camera",
             icon: .system("camera.viewfinder"),
-            style: .prominent,
+            style: .prominent
         )
 
         let mockItems: [PreviewTabItem] = [
             .init(title: "Settings", icon: .system("gearshape"), style: .regular),
             .init(title: "Camera", icon: .system("camera.viewfinder"), style: .prominent),
-            .init(title: "Photos", icon: .system("photo.on.rectangle"), style: .regular),
+            .init(title: "Photos", icon: .system("photo.on.rectangle"), style: .regular)
         ]
 
         VStack {
