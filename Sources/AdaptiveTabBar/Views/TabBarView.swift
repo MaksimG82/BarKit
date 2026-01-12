@@ -7,10 +7,19 @@
 
 import SwiftUI
 
+/// A customizable, adaptive tab bar view that supports regular and prominent items.
+///
+/// `TabBarView` automatically switches between vertical and horizontal layouts
+/// based on the device orientation (size class) and applies styles defined in `TabBarConfiguration`.
+///
+/// - Note: The view expects an array of items conforming to ``TabBarItemProtocol``.
 public struct TabBarView<Item: TabBarItemProtocol>: View {
     // MARK: - Property Wrappers
 
+    /// Detects current vertical size class to toggle between compact and regular layouts.
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    /// The currently selected tab item.
     @Binding private var selected: Item
 
     // MARK: - Dependencies
@@ -25,6 +34,13 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 
     // MARK: - Init
 
+    /// Initializes a new `TabBarView`.
+    ///
+    /// - Parameters:
+    ///   - items: An array of data models conforming to ``TabBarItemProtocol``.
+    ///   - selected: A binding to the current selection.
+    ///   - action: An optional closure executed when a tab is tapped (even if already selected).
+    ///   - config: A configuration object defining the visual style.
     public init(
         items: [Item],
         selected: Binding<Item>,
@@ -59,6 +75,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 // MARK: - Private methods
 
 private extension TabBarView {
+    /// Creates an individual tab button with a tap gesture and accessibility modifiers.
     func makeTab(for item: Item, isSelected: Bool) -> some View {
         tabItemLayout(
             content: tabContent(for: item, isSelected: isSelected)
@@ -77,6 +94,7 @@ private extension TabBarView {
         .applyDebugVisuals(color: .blue)
     }
 
+    /// Wraps the content in a VStack or HStack depending on the current size class.
     func tabItemLayout(content: some View) -> some View {
         Group {
             if isCompactHeight {
@@ -94,6 +112,7 @@ private extension TabBarView {
         )
     }
 
+    /// Composes the icon and title for a specific tab item.
     @ViewBuilder
     func tabContent(for item: Item, isSelected: Bool) -> some View {
         let color = config.itemColor(isSelected: isSelected)
@@ -114,23 +133,8 @@ private extension TabBarView {
     }
 }
 
-// MARK: - Private Helpers
-
-private struct TabAccessibilityModifier<Item: TabBarItemProtocol>: ViewModifier {
-    let item: Item
-    let isSelected: Bool
-
-    func body(content: Content) -> some View {
-        content
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(item.accessibilityLabel ?? item.title)
-            .accessibilityAddTraits(.isButton)
-            .accessibilityAddTraits(isSelected ? .isSelected : [])
-            .accessibilityRemoveTraits(.isImage)
-    }
-}
-
 #if DEBUG
+    /// Data model used for Xcode Previews only.
     private struct PreviewTabItem: TabBarItemProtocol {
         let title: String
         var icon: TabBarIcon

@@ -8,7 +8,7 @@
 import SwiftUI
 
 #if DEBUG
-    // An environment key for controlling the visual layout debugging mode.
+    /// An environment key for controlling the visual layout debugging mode.
     struct DebugLayoutKey: EnvironmentKey {
         static let defaultValue = false
     }
