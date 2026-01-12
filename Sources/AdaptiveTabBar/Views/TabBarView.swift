@@ -8,7 +8,6 @@
 import SwiftUI
 
 public struct TabBarView<Item: TabBarItemProtocol>: View {
-
     // MARK: - Property Wrappers
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -33,7 +32,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         config: TabBarConfiguration = .init()
     ) {
         self.items = items
-        self._selected = selected
+        _selected = selected
         self.action = action
         self.config = config
     }
@@ -60,7 +59,6 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 // MARK: - Private methods
 
 private extension TabBarView {
-
     func makeTab(for item: Item, isSelected: Bool) -> some View {
         tabItemLayout(
             content: tabContent(for: item, isSelected: isSelected)
@@ -79,7 +77,7 @@ private extension TabBarView {
         .applyDebugVisuals(color: .blue)
     }
 
-    func tabItemLayout<Content: View>(content: Content) -> some View {
+    func tabItemLayout(content: some View) -> some View {
         Group {
             if isCompactHeight {
                 HStack(spacing: config.iconTitleSpacing) { content }
@@ -91,8 +89,8 @@ private extension TabBarView {
         .padding(
             .vertical,
             isCompactHeight ?
-            config.tabItemVerticalPaddingCompact
-            : config.tabItemVerticalPadding
+                config.tabItemVerticalPaddingCompact
+                : config.tabItemVerticalPadding
         )
     }
 
@@ -105,8 +103,8 @@ private extension TabBarView {
             .foregroundStyle(color)
             .scaleEffect(
                 isSelected ?
-                config.selectedIconScale
-                : config.unselectedIconScale
+                    config.selectedIconScale
+                    : config.unselectedIconScale
             )
 
         Text(item.title)
@@ -133,30 +131,30 @@ private struct TabAccessibilityModifier<Item: TabBarItemProtocol>: ViewModifier 
 }
 
 #if DEBUG
-private struct PreviewTabItem: TabBarItemProtocol {
-    let title: String
-    var icon: TabBarIcon
-    var style: TabItemStyle
-}
-
-@available(iOS 17.0, *)
-#Preview("Debug Layout") {
-    @Previewable @State var selected: PreviewTabItem = .init(
-        title: "Camera",
-        icon: .system("camera.viewfinder"),
-        style: .prominent
-    )
-
-    let mockItems: [PreviewTabItem] = [
-        .init(title: "Settings", icon: .system("gearshape"), style: .regular),
-        .init(title: "Camera", icon: .system("camera.viewfinder"), style: .prominent),
-        .init(title: "Photos", icon: .system("photo.on.rectangle"), style: .regular)
-    ]
-
-    VStack {
-        Spacer()
-        TabBarView(items: mockItems, selected: $selected).environment(\.debugLayoutEnabled, true)
+    private struct PreviewTabItem: TabBarItemProtocol {
+        let title: String
+        var icon: TabBarIcon
+        var style: TabItemStyle
     }
-}
+
+    @available(iOS 17.0, *)
+    #Preview("Debug Layout") {
+        @Previewable @State var selected: PreviewTabItem = .init(
+            title: "Camera",
+            icon: .system("camera.viewfinder"),
+            style: .prominent
+        )
+
+        let mockItems: [PreviewTabItem] = [
+            .init(title: "Settings", icon: .system("gearshape"), style: .regular),
+            .init(title: "Camera", icon: .system("camera.viewfinder"), style: .prominent),
+            .init(title: "Photos", icon: .system("photo.on.rectangle"), style: .regular)
+        ]
+
+        VStack {
+            Spacer()
+            TabBarView(items: mockItems, selected: $selected).environment(\.debugLayoutEnabled, true)
+        }
+    }
 
 #endif

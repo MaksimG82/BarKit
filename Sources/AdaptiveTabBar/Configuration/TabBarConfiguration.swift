@@ -8,7 +8,6 @@
 import SwiftUI
 
 public struct TabBarConfiguration {
-
     // MARK: - Colors
 
     /// Selected tab content color.
@@ -102,7 +101,6 @@ public struct TabBarConfiguration {
 }
 
 extension TabBarConfiguration {
-
     func barHeight(isCompactHeight: Bool) -> CGFloat {
         let fontLineHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
         let baseIconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
@@ -117,9 +115,9 @@ extension TabBarConfiguration {
 
     func itemColor(isSelected: Bool) -> Color {
         if isSelected {
-            return tintColor
+            tintColor
         } else {
-            return unselectedColor
+            unselectedColor
         }
     }
 
@@ -139,5 +137,4 @@ extension TabBarConfiguration {
             )
         }
     }
-
 }

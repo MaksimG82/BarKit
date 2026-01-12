@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct TabIconView: View {
-    
     let icon: TabBarIcon
 
     var body: some View {
         switch icon {
-        case .system(let name):
+        case let .system(name):
             Image(systemName: name)
                 .renderingMode(.template)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-        case .custom(let name):
+        case let .custom(name):
             Image(name)
                 .renderingMode(.template)
                 .resizable()
