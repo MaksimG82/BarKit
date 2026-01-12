@@ -1,0 +1,27 @@
+name: Build and run test on push or pull request
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build (iOS)
+      run: |
+            xcodebuild \
+            -scheme AdaptiveTabBar \
+            -destination 'generic/platform=iOS' \
+            build
+
+#- name: Run tests (iOS)
+#  run: |
+#    xcodebuild test \
+#      -scheme AdaptiveTabBar \
+#      -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
