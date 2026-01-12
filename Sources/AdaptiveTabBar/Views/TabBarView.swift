@@ -53,7 +53,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         .background(config.backgroundColor.ignoresSafeArea(edges: .bottom))
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
-        .debugBorder(.green)
+        .applyDebugVisuals(color: .green)
     }
 }
 
@@ -76,8 +76,7 @@ private extension TabBarView {
                 item: item, isSelected: isSelected
             )
         )
-        .debugBorder(.blue)
-        .debugArea(.blue)
+        .applyDebugVisuals(color: .blue)
     }
 
     func tabItemLayout<Content: View>(content: Content) -> some View {
@@ -141,7 +140,7 @@ private struct PreviewTabItem: TabBarItemProtocol {
 }
 
 @available(iOS 17.0, *)
-#Preview {
+#Preview("Debug Layout") {
     @Previewable @State var selected: PreviewTabItem = .init(
         title: "Camera",
         icon: .system("camera.viewfinder"),
@@ -156,7 +155,7 @@ private struct PreviewTabItem: TabBarItemProtocol {
 
     VStack {
         Spacer()
-        TabBarView(items: mockItems, selected: $selected)
+        TabBarView(items: mockItems, selected: $selected).environment(\.debugLayoutEnabled, true)
     }
 }
 
