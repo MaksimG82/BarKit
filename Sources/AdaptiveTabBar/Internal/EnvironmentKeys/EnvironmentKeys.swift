@@ -8,14 +8,20 @@
 import SwiftUI
 
 #if DEBUG
-struct DebugLayoutKey: EnvironmentKey {
-    static let defaultValue = false
+public struct DebugLayoutKey: EnvironmentKey {
+    public static let defaultValue = false
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     var debugLayoutEnabled: Bool {
         get { self[DebugLayoutKey.self] }
         set { self[DebugLayoutKey.self] = newValue }
+    }
+}
+
+extension View {
+    func debugLayout(_ enabled: Bool = true) -> some View {
+        self.environment(\.debugLayoutEnabled, enabled)
     }
 }
 #endif

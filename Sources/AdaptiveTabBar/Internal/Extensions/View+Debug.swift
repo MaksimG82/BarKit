@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-extension View {
+public extension View {
     @ViewBuilder
-    public func applyDebugVisuals(color: Color) -> some View {
+    func applyDebugVisuals(color: Color) -> some View {
 #if DEBUG
         self.modifier(DebugVisualsModifier(color: color))
 #else
