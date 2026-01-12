@@ -8,20 +8,15 @@
 import SwiftUI
 
 #if DEBUG
+    // An environment key for controlling the visual layout debugging mode.
     struct DebugLayoutKey: EnvironmentKey {
-        public static let defaultValue = false
+        static let defaultValue = false
     }
 
     extension EnvironmentValues {
         var debugLayoutEnabled: Bool {
             get { self[DebugLayoutKey.self] }
             set { self[DebugLayoutKey.self] = newValue }
-        }
-    }
-
-    extension View {
-        public func debugLayout(_ enabled: Bool = true) -> some View {
-            environment(\.debugLayoutEnabled, enabled)
         }
     }
 #endif
