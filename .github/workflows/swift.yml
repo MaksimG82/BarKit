@@ -1,8 +1,6 @@
 name: Build and run test on push or pull request
 
 on:
-  push:
-    branches: [ "develop" ]
   pull_request:
     branches: [ "main", "develop" ]
 
