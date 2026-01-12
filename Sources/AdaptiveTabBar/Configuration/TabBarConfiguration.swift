@@ -8,7 +8,6 @@
 import SwiftUI
 
 public struct TabBarConfiguration {
-
     // MARK: - Colors
 
     /// Selected tab content color.
@@ -81,7 +80,7 @@ public struct TabBarConfiguration {
         tabAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
         selectedIconScale: CGFloat = 1.1,
         unselectedIconScale: CGFloat = 1,
-        barAccessibilityLabel: String = "Tab Bar"
+        barAccessibilityLabel: String = "Tab Bar",
     ) {
         self.tintColor = tintColor
         self.unselectedColor = unselectedColor
@@ -102,7 +101,6 @@ public struct TabBarConfiguration {
 }
 
 extension TabBarConfiguration {
-
     func barHeight(isCompactHeight: Bool) -> CGFloat {
         let fontLineHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
         let baseIconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
@@ -117,9 +115,9 @@ extension TabBarConfiguration {
 
     func itemColor(isSelected: Bool) -> Color {
         if isSelected {
-            return tintColor
+            tintColor
         } else {
-            return unselectedColor
+            unselectedColor
         }
     }
 
@@ -130,14 +128,13 @@ extension TabBarConfiguration {
         case .regular:
             return CGSize(
                 width: regularIconSideLength * multiplier,
-                height: regularIconSideLength * multiplier
+                height: regularIconSideLength * multiplier,
             )
         case .prominent:
             return CGSize(
                 width: prominentIconSideLength * multiplier,
-                height: prominentIconSideLength * multiplier
+                height: prominentIconSideLength * multiplier,
             )
         }
     }
-
 }
