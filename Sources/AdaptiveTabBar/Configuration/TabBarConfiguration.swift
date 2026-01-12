@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// A configuration object that defines the visual style, layout, and behavior of the `TabBarView`.
+///
+/// Use this struct to customize colors, sizes, font textstyle, animations, and accessibility features.
 public struct TabBarConfiguration {
     // MARK: - Colors
 
@@ -65,6 +68,24 @@ public struct TabBarConfiguration {
     /// Accessibility label for the entire tab bar.
     let barAccessibilityLabel: String
 
+    /// Creates a new configuration with customizable parameters.
+    ///
+    /// - Parameters:
+    ///   - tintColor: Selected tab content color.
+    ///   - unselectedColor: Unselected tab content color.
+    ///   - backgroundColor: Tab bar Background color.
+    ///   - textStyle: Tab items titles text style.
+    ///   - regularIconSideLength: Side length of square icon for regular tab items.
+    ///   - prominentIconSideLength: Side length of square icon for prominent tab items.
+    ///   - compactIconScale: The scale factor applied to icons when the bar is in compact height mode (e.g., landscape).
+    ///   - tabSpacing: Spacing between tab items.
+    ///   - iconTitleSpacing: Spacing between icon and title in a tab item.
+    ///   - tabItemVerticalPadding: Vertical padding inside tab item.
+    ///   - tabItemVerticalPaddingCompact: Vertical padding inside tab item when the bar is in compact mode.
+    ///   - tabAnimation: Animation applied to tab selection changes.
+    ///   - selectedIconScale: The scale factor applied to the icon when it is selected.
+    ///   - unselectedIconScale: The scale factor applied to the icon when it is unselected.
+    ///   - barAccessibilityLabel: Accessibility label for the entire tab bar.
     public init(
         tintColor: Color = .primary,
         unselectedColor: Color = .secondary,
@@ -101,6 +122,7 @@ public struct TabBarConfiguration {
 }
 
 extension TabBarConfiguration {
+    /// Calculates total bar height based on current layout and font metrics.
     func barHeight(isCompactHeight: Bool) -> CGFloat {
         let fontLineHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
         let baseIconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
@@ -112,7 +134,8 @@ extension TabBarConfiguration {
             return baseIconHeight + iconTitleSpacing + fontLineHeight + (tabItemVerticalPadding * 2)
         }
     }
-
+    
+    /// Returns the color associated with the selection state.
     func itemColor(isSelected: Bool) -> Color {
         if isSelected {
             tintColor
@@ -120,7 +143,8 @@ extension TabBarConfiguration {
             unselectedColor
         }
     }
-
+    
+    /// Resolves the final icon size considering style and screen orientation.
     func iconSize(for style: TabItemStyle, isCompact: Bool) -> CGSize {
         let multiplier = isCompact ? compactIconScale : 1.0
 
