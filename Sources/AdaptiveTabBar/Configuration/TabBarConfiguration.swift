@@ -134,7 +134,7 @@ extension TabBarConfiguration {
             return baseIconHeight + iconTitleSpacing + fontLineHeight + (tabItemVerticalPadding * 2)
         }
     }
-    
+
     /// Returns the color associated with the selection state.
     func itemColor(isSelected: Bool) -> Color {
         if isSelected {
@@ -143,7 +143,7 @@ extension TabBarConfiguration {
             unselectedColor
         }
     }
-    
+
     /// Resolves the final icon size considering style and screen orientation.
     func iconSize(for style: TabItemStyle, isCompact: Bool) -> CGSize {
         let multiplier = isCompact ? compactIconScale : 1.0
