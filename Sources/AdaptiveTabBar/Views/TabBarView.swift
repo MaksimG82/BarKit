@@ -30,7 +30,9 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 
     // MARK: - Computed Properties
 
-    private var isCompactHeight: Bool { verticalSizeClass == .compact }
+    private var isCompactHeight: Bool {
+        verticalSizeClass == .compact
+    }
 
     // MARK: - Init
 
