@@ -14,59 +14,59 @@ public struct TabBarConfiguration {
     // MARK: - Colors
 
     /// Selected tab content color.
-    let tintColor: Color
+    public var tintColor: Color
 
     /// Unselected tab content color.
-    let unselectedColor: Color
+    public var unselectedColor: Color
 
     /// Tab bar Background color.
-    let backgroundColor: Color
+    public var backgroundColor: Color
 
     // MARK: - Typography
 
     /// Tab items titles text style.
-    let textStyle: Font.TextStyle
+    public var textStyle: Font.TextStyle
 
     // MARK: - Icon Sizes
 
     /// Side length of square icon for regular tab items.
-    let regularIconSideLength: CGFloat
+    public var regularIconSideLength: CGFloat
 
     /// Side length of square icon for prominent tab items.
-    let prominentIconSideLength: CGFloat
+    public var prominentIconSideLength: CGFloat
 
     /// The scale factor applied to icons when the bar is in compact height mode (e.g., landscape).
-    let compactIconScale: CGFloat
+    public var compactIconScale: CGFloat
 
     // MARK: - Layout
 
     /// Spacing between tab items.
-    let tabSpacing: CGFloat
+    public var tabSpacing: CGFloat
 
     /// Spacing between icon and title in a tab item.
-    let iconTitleSpacing: CGFloat
+    public var iconTitleSpacing: CGFloat
 
     /// Vertical padding inside tab item.
-    let tabItemVerticalPadding: CGFloat
+    public var tabItemVerticalPadding: CGFloat
 
     /// Vertical padding inside tab item when the bar is in compact mode.
-    let tabItemVerticalPaddingCompact: CGFloat
+    public var tabItemVerticalPaddingCompact: CGFloat
 
     // MARK: - Animation
 
     /// Animation applied to tab selection changes.
-    let tabAnimation: Animation?
+    public var tabAnimation: Animation?
 
     /// The scale factor applied to the icon when it is selected.
-    let selectedIconScale: CGFloat
+    public var selectedIconScale: CGFloat
 
     /// The scale factor applied to the icon when it is unselected.
-    let unselectedIconScale: CGFloat
+    public var unselectedIconScale: CGFloat
 
     // MARK: - Accecibility
 
     /// Accessibility label for the entire tab bar.
-    let barAccessibilityLabel: String
+    public var barAccessibilityLabel: String
 
     /// Creates a new configuration with customizable parameters.
     ///
@@ -98,7 +98,7 @@ public struct TabBarConfiguration {
         iconTitleSpacing: CGFloat = 4,
         tabItemVerticalPadding: CGFloat = 4,
         tabItemVerticalPaddingCompact: CGFloat = 2,
-        tabAnimation: Animation = .spring(response: 0.3, dampingFraction: 0.7),
+        tabAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7),
         selectedIconScale: CGFloat = 1.1,
         unselectedIconScale: CGFloat = 1,
         barAccessibilityLabel: String = "Tab Bar"
