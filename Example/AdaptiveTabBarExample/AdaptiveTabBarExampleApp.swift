@@ -11,7 +11,7 @@ import SwiftUI
 struct AdaptiveTabBarExampleApp: App {
     var body: some Scene {
         WindowGroup {
-            ExampleView()
+            ExampleContentView()
         }
     }
 }

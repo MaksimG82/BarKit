@@ -20,5 +20,5 @@ struct ExampleState {
     var selectedTab: ExampleTabItem = .home
 
     /// Flag for visual layout debugging.
-    var isDebugEnabled: Bool = false
+    var isDebugEnabled: Bool = true
 }

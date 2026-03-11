@@ -36,3 +36,13 @@ enum ExampleTabItem: String, CaseIterable, TabBarItemProtocol {
         self == .add ? .prominent : .regular
     }
 }
+
+extension ExampleTabItem {
+    static var threeItems: [ExampleTabItem] {
+        [.home, .add, .camera]
+    }
+
+    static var fourItems: [ExampleTabItem] {
+        [.home, .camera, .favorites, .profile]
+    }
+}
