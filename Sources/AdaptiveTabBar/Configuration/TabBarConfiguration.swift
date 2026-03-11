@@ -38,6 +38,9 @@ public struct TabBarConfiguration {
     /// The scale factor applied to icons when the bar is in compact height mode (e.g., landscape).
     public var compactIconScale: CGFloat
 
+    /// The scale factor applied to the icon when it is selected.
+    public var selectedIconScale: CGFloat
+
     // MARK: - Layout
 
     /// Spacing between tab items.
@@ -56,12 +59,6 @@ public struct TabBarConfiguration {
 
     /// Animation applied to tab selection changes.
     public var tabAnimation: Animation?
-
-    /// The scale factor applied to the icon when it is selected.
-    public var selectedIconScale: CGFloat
-
-    /// The scale factor applied to the icon when it is unselected.
-    public var unselectedIconScale: CGFloat
 
     // MARK: - Accecibility
 
@@ -84,7 +81,6 @@ public struct TabBarConfiguration {
     ///   - tabItemVerticalPaddingCompact: Vertical padding inside tab item when the bar is in compact mode.
     ///   - tabAnimation: Animation applied to tab selection changes.
     ///   - selectedIconScale: The scale factor applied to the icon when it is selected.
-    ///   - unselectedIconScale: The scale factor applied to the icon when it is unselected.
     ///   - barAccessibilityLabel: Accessibility label for the entire tab bar.
     public init(
         tintColor: Color = .primary,
@@ -94,13 +90,12 @@ public struct TabBarConfiguration {
         regularIconSideLength: CGFloat = 24,
         prominentIconSideLength: CGFloat = 40,
         compactIconScale: CGFloat = 0.8,
+        selectedIconScale: CGFloat = 1.1,
         tabSpacing: CGFloat = 0,
         iconTitleSpacing: CGFloat = 4,
         tabItemVerticalPadding: CGFloat = 4,
         tabItemVerticalPaddingCompact: CGFloat = 2,
         tabAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7),
-        selectedIconScale: CGFloat = 1.1,
-        unselectedIconScale: CGFloat = 1,
         barAccessibilityLabel: String = "Tab Bar"
     ) {
         self.tintColor = tintColor
@@ -110,13 +105,12 @@ public struct TabBarConfiguration {
         self.regularIconSideLength = regularIconSideLength
         self.prominentIconSideLength = prominentIconSideLength
         self.compactIconScale = compactIconScale
+        self.selectedIconScale = selectedIconScale
         self.tabSpacing = tabSpacing
         self.iconTitleSpacing = iconTitleSpacing
         self.tabItemVerticalPadding = tabItemVerticalPadding
         self.tabItemVerticalPaddingCompact = tabItemVerticalPaddingCompact
         self.tabAnimation = tabAnimation
-        self.selectedIconScale = selectedIconScale
-        self.unselectedIconScale = unselectedIconScale
         self.barAccessibilityLabel = barAccessibilityLabel
     }
 }
@@ -124,15 +118,13 @@ public struct TabBarConfiguration {
 extension TabBarConfiguration {
     /// Calculates total bar height based on current layout and font metrics.
     func barHeight(isCompactHeight: Bool) -> CGFloat {
-        let fontLineHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
-        let baseIconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
+        let fontHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
+        let iconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
+        let padding = isCompactHeight ? tabItemVerticalPaddingCompact : tabItemVerticalPadding
 
-        if isCompactHeight {
-            let maxContentHeight = max(baseIconHeight * 0.8, fontLineHeight)
-            return maxContentHeight + (tabItemVerticalPadding * 2)
-        } else {
-            return baseIconHeight + iconTitleSpacing + fontLineHeight + (tabItemVerticalPadding * 2)
-        }
+        return isCompactHeight
+            ? max(iconHeight, fontHeight) + (padding * 2)
+            : iconHeight + iconTitleSpacing + fontHeight + (padding * 2)
     }
 
     /// Returns the color associated with the selection state.

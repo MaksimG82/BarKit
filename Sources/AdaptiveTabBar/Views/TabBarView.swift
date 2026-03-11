@@ -124,8 +124,7 @@ private extension TabBarView {
             .foregroundStyle(color)
             .scaleEffect(
                 isSelected ?
-                    config.selectedIconScale
-                    : config.unselectedIconScale
+                    config.selectedIconScale : 1.0
             )
 
         Text(item.title)
