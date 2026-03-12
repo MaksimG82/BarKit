@@ -71,7 +71,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
             height: hasProminentItems ? config.barHeight(isCompactHeight: isCompactHeight) : nil,
             alignment: .bottom
         )
-        .background(config.backgroundColor.ignoresSafeArea(edges: .bottom))
+        .background(config.backgroundColor.ignoresSafeArea())
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
         .applyDebugVisuals(color: .green)
