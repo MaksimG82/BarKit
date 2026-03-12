@@ -29,6 +29,9 @@ struct ExampleContentView: View {
                     NavigationLink("Tabs Layout") {
                         LayoutSettingsView(viewModel: viewModel)
                     }
+                    NavigationLink("Animation") {
+                        AnimationSettingsView(viewModel: viewModel)
+                    }
                 }
                 .navigationTitle("Configuration")
                 .toolbar {

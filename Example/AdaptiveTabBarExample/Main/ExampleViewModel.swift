@@ -85,6 +85,9 @@ final class ExampleViewModel {
 
         case let .updateTabItemBottomPaddingCompact(padding):
             state.config.tabItemBottomPaddingCompact = padding
+            
+        case let .updateAnimation(animation):
+            state.config.tabAnimation = animation
 
         case .resetState:
             state = .init()
