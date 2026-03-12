@@ -41,4 +41,6 @@ enum ExampleIntent {
     case updateTabItemVerticalPadding(CGFloat)
 
     case updateTabItemVerticalPaddingCompact(CGFloat)
+
+    case resetState
 }

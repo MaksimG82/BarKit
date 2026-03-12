@@ -31,6 +31,13 @@ struct ExampleContentView: View {
                     }
                 }
                 .navigationTitle("Configuration")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Reset all changes") {
+                            viewModel.send(.resetState)
+                        }
+                    }
+                }
             }
 
             TabBarView(

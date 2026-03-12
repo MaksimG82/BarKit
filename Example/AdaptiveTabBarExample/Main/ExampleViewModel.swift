@@ -74,6 +74,8 @@ final class ExampleViewModel {
 
         case let .updateTabItemVerticalPaddingCompact(padding):
             state.config.tabItemVerticalPaddingCompact = padding
+        case .resetState:
+            state = .init()
         }
     }
 }
