@@ -9,7 +9,7 @@ import SwiftUI
 
 /// A configuration object that defines the visual style, layout, and behavior of the `TabBarView`.
 ///
-/// Use this struct to customize colors, sizes, font textstyle, animations, and accessibility features.
+/// Use this struct to customize colors, sizes, font textstyle, layout, animations, and accessibility features.
 public struct TabBarConfiguration {
     // MARK: - Colors
 
@@ -46,14 +46,20 @@ public struct TabBarConfiguration {
     /// Spacing between tab items.
     public var tabSpacing: CGFloat
 
-    /// Spacing between icon and title in a tab item.
+    /// Spacing between icon and title in a tab item. (Vertical in compact sizeclass)
     public var iconTitleSpacing: CGFloat
 
-    /// Vertical padding inside tab item.
-    public var tabItemVerticalPadding: CGFloat
+    /// The top padding inside a tab item. Also increases the hit-test area.
+    public var tabItemTopPadding: CGFloat
 
-    /// Vertical padding inside tab item when the bar is in compact mode.
-    public var tabItemVerticalPaddingCompact: CGFloat
+    /// The bottom padding inside a tab item. Also increases the hit-test area.
+    public var tabItemBottomPadding: CGFloat
+
+    /// The top padding inside a tab item (compact mode). Also increases the hit-test area.
+    public var tabItemTopPaddingCompact: CGFloat
+
+    /// The bottom padding inside a tab item (compact mode). Also increases the hit-test area.
+    public var tabItemBottomPaddingCompact: CGFloat
 
     // MARK: - Animation
 
@@ -77,8 +83,10 @@ public struct TabBarConfiguration {
     ///   - compactIconScale: The scale factor applied to icons when the bar is in compact height mode (e.g., landscape).
     ///   - tabSpacing: Spacing between tab items.
     ///   - iconTitleSpacing: Spacing between icon and title in a tab item.
-    ///   - tabItemVerticalPadding: Vertical padding inside tab item.
-    ///   - tabItemVerticalPaddingCompact: Vertical padding inside tab item when the bar is in compact mode.
+    ///   - tabItemTopPadding: Top padding inside tab item. Also increases the hit-test area.
+    ///   - tabItemBottomPadding: Bottom padding inside tab item. Also increases the hit-test area.
+    ///   - tabItemTopPaddingCompact: Top padding in compact mode. Also increases the hit-test area.
+    ///   - tabItemBottomPaddingCompact: Bottom padding in compact mode. Also increases the hit-test area.
     ///   - tabAnimation: Animation applied to tab selection changes.
     ///   - selectedIconScale: The scale factor applied to the icon when it is selected.
     ///   - barAccessibilityLabel: Accessibility label for the entire tab bar.
@@ -93,8 +101,10 @@ public struct TabBarConfiguration {
         selectedIconScale: CGFloat = 1.1,
         tabSpacing: CGFloat = 0,
         iconTitleSpacing: CGFloat = 4,
-        tabItemVerticalPadding: CGFloat = 4,
-        tabItemVerticalPaddingCompact: CGFloat = 2,
+        tabItemTopPadding: CGFloat = 4,
+        tabItemBottomPadding: CGFloat = 4,
+        tabItemTopPaddingCompact: CGFloat = 2,
+        tabItemBottomPaddingCompact: CGFloat = 2,
         tabAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7),
         barAccessibilityLabel: String = "Tab Bar"
     ) {
@@ -108,8 +118,10 @@ public struct TabBarConfiguration {
         self.selectedIconScale = selectedIconScale
         self.tabSpacing = tabSpacing
         self.iconTitleSpacing = iconTitleSpacing
-        self.tabItemVerticalPadding = tabItemVerticalPadding
-        self.tabItemVerticalPaddingCompact = tabItemVerticalPaddingCompact
+        self.tabItemTopPadding = tabItemTopPadding
+        self.tabItemBottomPadding = tabItemBottomPadding
+        self.tabItemTopPaddingCompact = tabItemTopPaddingCompact
+        self.tabItemBottomPaddingCompact = tabItemBottomPaddingCompact
         self.tabAnimation = tabAnimation
         self.barAccessibilityLabel = barAccessibilityLabel
     }
@@ -120,11 +132,11 @@ extension TabBarConfiguration {
     func barHeight(isCompactHeight: Bool) -> CGFloat {
         let fontHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
         let iconHeight = iconSize(for: .regular, isCompact: isCompactHeight).height
-        let padding = isCompactHeight ? tabItemVerticalPaddingCompact : tabItemVerticalPadding
+        let padding = isCompactHeight ? tabItemTopPaddingCompact + tabItemBottomPaddingCompact : tabItemTopPadding + tabItemBottomPadding
 
         return isCompactHeight
-            ? max(iconHeight, fontHeight) + (padding * 2)
-            : iconHeight + iconTitleSpacing + fontHeight + (padding * 2)
+            ? max(iconHeight, fontHeight) + padding
+            : iconHeight + iconTitleSpacing + fontHeight + padding
     }
 
     /// Returns the color associated with the selection state.

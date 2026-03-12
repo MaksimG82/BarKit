@@ -69,11 +69,18 @@ final class ExampleViewModel {
         case let .updateIconTitleSpacing(spacing):
             state.config.iconTitleSpacing = spacing
 
-        case let .updateTabItemVerticalPadding(padding):
-            state.config.tabItemVerticalPadding = padding
+        case let .updateTabItemTopPadding(padding):
+            state.config.tabItemTopPadding = padding
 
-        case let .updateTabItemVerticalPaddingCompact(padding):
-            state.config.tabItemVerticalPaddingCompact = padding
+        case let .updateTabItemBottomPadding(padding):
+            state.config.tabItemBottomPadding = padding
+
+        case let .updateTabItemTopPaddingCompact(padding):
+            state.config.tabItemTopPaddingCompact = padding
+
+        case let .updateTabItemBottomPaddingCompact(padding):
+            state.config.tabItemBottomPaddingCompact = padding
+
         case .resetState:
             state = .init()
         }

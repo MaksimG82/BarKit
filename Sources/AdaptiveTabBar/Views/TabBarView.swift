@@ -106,12 +106,8 @@ private extension TabBarView {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(
-            .vertical,
-            isCompactHeight ?
-                config.tabItemVerticalPaddingCompact
-                : config.tabItemVerticalPadding
-        )
+        .padding(.top, isCompactHeight ? config.tabItemTopPaddingCompact : config.tabItemTopPadding)
+        .padding(.bottom, isCompactHeight ? config.tabItemBottomPaddingCompact : config.tabItemBottomPadding)
     }
 
     /// Composes the icon and title for a specific tab item.

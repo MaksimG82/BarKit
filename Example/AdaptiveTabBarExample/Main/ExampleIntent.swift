@@ -38,9 +38,14 @@ enum ExampleIntent {
 
     case updateIconTitleSpacing(CGFloat)
 
-    case updateTabItemVerticalPadding(CGFloat)
+    case updateTabItemTopPadding(CGFloat)
 
-    case updateTabItemVerticalPaddingCompact(CGFloat)
+    case updateTabItemBottomPadding(CGFloat)
+
+    case updateTabItemTopPaddingCompact(CGFloat)
+
+    case updateTabItemBottomPaddingCompact(CGFloat)
+
 
     case resetState
 }
