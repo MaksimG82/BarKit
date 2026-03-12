@@ -9,21 +9,21 @@ import AdaptiveTabBar
 import Foundation
 
 /// A sample tab item implementation for the Example app.
-enum ExampleTabItem: String, CaseIterable, TabBarItemProtocol {
-    case home
-    case camera
-    case add
-    case favorites
-    case profile
+struct ExampleTabItem: TabBarItemProtocol, Identifiable {
+    enum TabType: String, CaseIterable {
+        case home, camera, add, favorites, profile
+    }
 
-    // MARK: - TabBarItemProtocol
+    let id = UUID()
+    let type: TabType
+    var style: TabItemStyle
 
     var title: String {
-        rawValue.capitalized
+        type.rawValue.capitalized
     }
 
     var icon: TabBarIcon {
-        switch self {
+        switch type {
         case .home: .system("house.fill")
         case .camera: .custom("cameraIcon")
         case .add: .system("plus.circle.fill")
@@ -32,17 +32,22 @@ enum ExampleTabItem: String, CaseIterable, TabBarItemProtocol {
         }
     }
 
-    var style: TabItemStyle {
-        self == .add ? .prominent : .regular
-    }
-}
-
-extension ExampleTabItem {
     static var threeItems: [ExampleTabItem] {
-        [.home, .add, .camera]
+        [.init(type: .home, style: .regular),
+         .init(type: .add, style: .prominent),
+         .init(type: .camera, style: .regular)]
     }
 
     static var fourItems: [ExampleTabItem] {
-        [.home, .camera, .favorites, .profile]
+        [.init(type: .home, style: .regular),
+         .init(type: .camera, style: .regular),
+         .init(type: .favorites, style: .regular),
+         .init(type: .profile, style: .regular)]
+    }
+
+    static var fiveItems: [ExampleTabItem] {
+        TabType.allCases.map {
+            ExampleTabItem(type: $0, style: $0 == .add ? .prominent : .regular)
+        }
     }
 }

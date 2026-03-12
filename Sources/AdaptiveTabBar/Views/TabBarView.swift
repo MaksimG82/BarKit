@@ -34,6 +34,10 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         verticalSizeClass == .compact
     }
 
+    private var hasProminentItems: Bool {
+        items.contains(where: { $0.style == .prominent })
+    }
+
     // MARK: - Init
 
     /// Initializes a new `TabBarView`.
@@ -64,7 +68,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
             }
         }
         .frame(
-            height: config.barHeight(isCompactHeight: isCompactHeight),
+            height: hasProminentItems ? config.barHeight(isCompactHeight: isCompactHeight) : nil,
             alignment: .bottom
         )
         .background(config.backgroundColor.ignoresSafeArea(edges: .bottom))

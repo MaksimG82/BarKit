@@ -46,6 +46,7 @@ enum ExampleIntent {
 
     case updateTabItemBottomPaddingCompact(CGFloat)
 
+    case toggleProminentStyle(UUID)
 
     case resetState
 }

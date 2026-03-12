@@ -57,11 +57,16 @@ final class ExampleViewModel {
             state.config.selectedIconScale = scale
 
         case let .updateItems(items):
+            guard let firstItem = items.first else { return }
+
+            let targetItem = items.first(where: { $0.type == state.selectedTab.type })
             state.items = items
-            guard let firstItem = items.first else {
-                fatalError("")
+            state.selectedTab = targetItem ?? firstItem
+
+        case let .toggleProminentStyle(id):
+            if let index = state.items.firstIndex(where: { $0.id == id }) {
+                state.items[index].style = state.items[index].style == .prominent ? .regular : .prominent
             }
-            state.selectedTab = firstItem
 
         case let .updateTabSpacing(spacing):
             state.config.tabSpacing = spacing

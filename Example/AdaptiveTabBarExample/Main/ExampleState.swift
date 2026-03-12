@@ -14,11 +14,15 @@ struct ExampleState {
     var config: TabBarConfiguration = .init()
 
     /// The list of tab items to display.
-    var items: [ExampleTabItem] = ExampleTabItem.allCases
-
-    /// The currently selected tab.
-    var selectedTab: ExampleTabItem = .home
+    var items: [ExampleTabItem] = ExampleTabItem.fiveItems
 
     /// Flag for visual layout debugging.
     var isDebugEnabled: Bool = true
+
+    /// The currently selected tab.
+    var selectedTab: ExampleTabItem
+
+    init() {
+        selectedTab = items.first ?? .init(type: .home, style: .regular)
+    }
 }
