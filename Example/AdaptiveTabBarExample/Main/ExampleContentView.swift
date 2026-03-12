@@ -8,12 +8,10 @@
 import AdaptiveTabBar
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct ExampleContentView: View {
     @State private var viewModel = ExampleViewModel()
 
     var body: some View {
-        // Добавляем VStack с нулевым отступом
         VStack(spacing: 0) {
             NavigationStack {
                 List {
@@ -31,6 +29,12 @@ struct ExampleContentView: View {
                     }
                     NavigationLink("Animation") {
                         AnimationSettingsView(viewModel: viewModel)
+                    }
+                    Section("Tools") {
+                        Toggle("Debug Layout", isOn: Binding(
+                            get: { viewModel.state.isDebugLayoutEnabled },
+                            set: { _ in viewModel.send(.toggleDebugLayout) }
+                        ))
                     }
                 }
                 .navigationTitle("Configuration")
@@ -51,6 +55,7 @@ struct ExampleContentView: View {
                 ),
                 config: viewModel.state.config
             )
+            .debugLayout(viewModel.state.isDebugLayoutEnabled)
         }
     }
 }

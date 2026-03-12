@@ -10,7 +10,6 @@ import Observation
 import SwiftUI
 
 /// Manages the state and logic for the Example application.
-@available(iOS 17.0, *)
 @Observable
 final class ExampleViewModel {
     // MARK: - State
@@ -27,9 +26,6 @@ final class ExampleViewModel {
         switch intent {
         case let .selectTab(item):
             state.selectedTab = item
-
-        case let .toggleDebug(enabled):
-            state.isDebugEnabled = enabled
 
         case let .updateColor(colorType, color):
             switch colorType {
@@ -88,6 +84,9 @@ final class ExampleViewModel {
 
         case let .updateAnimation(animation):
             state.config.tabAnimation = animation
+
+        case .toggleDebugLayout:
+            state.isDebugLayoutEnabled.toggle()
 
         case .resetState:
             state = .init()

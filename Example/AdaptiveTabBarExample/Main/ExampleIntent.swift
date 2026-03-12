@@ -16,10 +16,6 @@ enum ExampleIntent {
     /// - Parameter item: The new tab item to select.
     case selectTab(ExampleTabItem)
 
-    /// Switches the layout debugging mode.
-    /// - Parameter enabled: `true` to show layout borders, `false` to hide them.
-    case toggleDebug(Bool)
-
     case updateColor(ColorType, Color)
 
     case updateTextStyle(Font.TextStyle)
@@ -49,6 +45,9 @@ enum ExampleIntent {
     case toggleProminentStyle(UUID)
 
     case updateAnimation(Animation?)
+
+    /// Switches the layout debugging mode.
+    case toggleDebugLayout
 
     case resetState
 }

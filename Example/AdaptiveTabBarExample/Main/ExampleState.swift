@@ -17,7 +17,7 @@ struct ExampleState {
     var items: [ExampleTabItem] = ExampleTabItem.fiveItems
 
     /// Flag for visual layout debugging.
-    var isDebugEnabled: Bool = true
+    var isDebugLayoutEnabled: Bool = false
 
     /// The currently selected tab.
     var selectedTab: ExampleTabItem
