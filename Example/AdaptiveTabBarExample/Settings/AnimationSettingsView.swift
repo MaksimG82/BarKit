@@ -9,13 +9,13 @@ import SwiftUI
 
 struct AnimationSettingsView: View {
     var viewModel: ExampleViewModel
-    
+
     enum AnimationType: String, CaseIterable {
         case none = "None"
         case spring = "Spring"
         case easeInOut = "Ease In Out"
     }
-    
+
     @State private var type: AnimationType = .spring
     @State private var duration: Double = 0.3
     @State private var bounce: Double = 0.3
@@ -28,23 +28,23 @@ struct AnimationSettingsView: View {
                 }
                 .pickerStyle(.segmented)
             }
-            
+
             if type != .none {
                 Section("Settings") {
                     VStack(alignment: .leading) {
                         Text("Duration: \(String(format: "%.2f", duration))s")
-                        Slider(value: $duration, in: 0.1...1.0)
+                        Slider(value: $duration, in: 0.1 ... 1.0)
                     }
-                    
+
                     if type == .spring {
                         VStack(alignment: .leading) {
                             Text("Bounciness: \(Int(bounce * 100))%")
-                            Slider(value: $bounce, in: 0...0.8)
+                            Slider(value: $bounce, in: 0 ... 0.8)
                         }
                     }
                 }
             }
-            
+
             Section {
                 Text("SwiftUI animations offer vast possibilities. This demo showcases only a fraction of those capabilities.")
                     .font(.caption)
@@ -58,13 +58,11 @@ struct AnimationSettingsView: View {
     }
 
     private func update() {
-        let animation: Animation? = {
-            switch type {
-            case .none: return nil
-            case .spring: return .spring(duration: duration, bounce: bounce)
-            case .easeInOut: return .easeInOut(duration: duration)
-            }
-        }()
+        let animation: Animation? = switch type {
+        case .none: nil
+        case .spring: .spring(duration: duration, bounce: bounce)
+        case .easeInOut: .easeInOut(duration: duration)
+        }
         viewModel.send(.updateAnimation(animation))
     }
 }
