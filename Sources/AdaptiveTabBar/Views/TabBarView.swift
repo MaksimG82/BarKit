@@ -30,7 +30,13 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 
     // MARK: - Computed Properties
 
-    private var isCompactHeight: Bool { verticalSizeClass == .compact }
+    private var isCompactHeight: Bool {
+        verticalSizeClass == .compact
+    }
+
+    private var hasProminentItems: Bool {
+        items.contains(where: { $0.style == .prominent })
+    }
 
     // MARK: - Init
 
@@ -62,10 +68,17 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
             }
         }
         .frame(
-            height: config.barHeight(isCompactHeight: isCompactHeight),
+            height: hasProminentItems ? config.barHeight(isCompactHeight: isCompactHeight) : nil,
             alignment: .bottom
         )
-        .background(config.backgroundColor.ignoresSafeArea(edges: .bottom))
+        .background {
+            if config.backgroundMaterial != nil {
+                Rectangle()
+                    .fill(config.backgroundMaterial!)
+                    .ignoresSafeArea()
+            }
+            config.backgroundColor.ignoresSafeArea()
+        }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
         .applyDebugVisuals(color: .green)
@@ -104,12 +117,8 @@ private extension TabBarView {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(
-            .vertical,
-            isCompactHeight ?
-                config.tabItemVerticalPaddingCompact
-                : config.tabItemVerticalPadding
-        )
+        .padding(.top, isCompactHeight ? config.tabItemTopPaddingCompact : config.tabItemTopPadding)
+        .padding(.bottom, isCompactHeight ? config.tabItemBottomPaddingCompact : config.tabItemBottomPadding)
     }
 
     /// Composes the icon and title for a specific tab item.
@@ -122,8 +131,7 @@ private extension TabBarView {
             .foregroundStyle(color)
             .scaleEffect(
                 isSelected ?
-                    config.selectedIconScale
-                    : config.unselectedIconScale
+                    config.selectedIconScale : 1.0
             )
 
         Text(item.title)

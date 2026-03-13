@@ -2,4 +2,8 @@ gitignore
 .DS_Store
 .build/
 .swiftpm/
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
 
