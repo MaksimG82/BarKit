@@ -36,6 +36,9 @@ final class ExampleViewModel {
                 state.config.unselectedColor = color
             }
 
+        case let .updateMaterial(material):
+            state.config.backgroundMaterial = material
+
         case let .updateTextStyle(textStyle):
             state.config.textStyle = textStyle
 

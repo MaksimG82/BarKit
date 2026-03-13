@@ -22,6 +22,10 @@ public struct TabBarConfiguration {
     /// Tab bar Background color.
     public var backgroundColor: Color
 
+    /// Optional material for the background, providing a blur effect.
+    /// If set, it will be rendered behind the background color.
+    public var backgroundMaterial: Material?
+
     // MARK: - Typography
 
     /// Tab items titles text style.
@@ -77,6 +81,7 @@ public struct TabBarConfiguration {
     ///   - tintColor: Selected tab content color.
     ///   - unselectedColor: Unselected tab content color.
     ///   - backgroundColor: Tab bar Background color.
+    ///   - backgroundMaterial: Optional material for the background, providing a blur effect
     ///   - textStyle: Tab items titles text style.
     ///   - regularIconSideLength: Side length of square icon for regular tab items.
     ///   - prominentIconSideLength: Side length of square icon for prominent tab items.
@@ -93,7 +98,8 @@ public struct TabBarConfiguration {
     public init(
         tintColor: Color = .primary,
         unselectedColor: Color = .secondary,
-        backgroundColor: Color = Color(uiColor: .systemBackground),
+        backgroundColor: Color = .clear,
+        backgroundMaterial: Material? = .ultraThinMaterial,
         textStyle: Font.TextStyle = .caption2,
         regularIconSideLength: CGFloat = 24,
         prominentIconSideLength: CGFloat = 40,
@@ -111,6 +117,7 @@ public struct TabBarConfiguration {
         self.tintColor = tintColor
         self.unselectedColor = unselectedColor
         self.backgroundColor = backgroundColor
+        self.backgroundMaterial = backgroundMaterial
         self.textStyle = textStyle
         self.regularIconSideLength = regularIconSideLength
         self.prominentIconSideLength = prominentIconSideLength

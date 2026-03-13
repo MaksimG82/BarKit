@@ -29,6 +29,9 @@ enum ExampleIntent {
     /// Updates a specific color component of the tab bar.
     case updateColor(ColorType, Color)
 
+    /// Updates the background blur effect using system materials.
+    case updateMaterial(Material?)
+
     /// Changes the font style used for tab titles.
     case updateTextStyle(Font.TextStyle)
 

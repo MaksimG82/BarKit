@@ -11,6 +11,8 @@ import SwiftUI
 struct ColorsSettingsView: View {
     var viewModel: ExampleViewModel
 
+    @State private var selectedMaterial: MaterialSelection = .ultraThin
+
     var body: some View {
         List {
             Section(
@@ -41,6 +43,21 @@ struct ColorsSettingsView: View {
                     )
                 )
             }
+
+            Section(
+                header: Text("Blur Effect (Material)"),
+                footer: Text("If you use an opaque background color, it is recommended to set this to 'None' to save rendering resources.")
+            ) {
+                Picker("Material", selection: $selectedMaterial) {
+                    ForEach(MaterialSelection.allCases, id: \.self) {
+                        Text($0.rawValue)
+                    }
+                }
+                .onChange(of: selectedMaterial) { _, newValue in
+                    viewModel.send(.updateMaterial(newValue.material))
+                }
+                .pickerStyle(.menu)
+            }
         }
         .toolbar {
             Button("Reset colors") {
@@ -48,6 +65,8 @@ struct ColorsSettingsView: View {
                 viewModel.send(.updateColor(.tint, defaultState.tintColor))
                 viewModel.send(.updateColor(.unselected, defaultState.unselectedColor))
                 viewModel.send(.updateColor(.background, defaultState.backgroundColor))
+                viewModel.send(.updateMaterial(defaultState.backgroundMaterial))
+                selectedMaterial = .ultraThin
             }
         }
         .navigationTitle("Colors")
@@ -66,6 +85,24 @@ struct ColorsSettingsView: View {
                 config: viewModel.state.config
             )
             .overlay(Divider(), alignment: .top)
+        }
+    }
+}
+
+private enum MaterialSelection: String, CaseIterable {
+    case none = "None"
+    case ultraThin = "Ultra Thin"
+    case thin = "Thin"
+    case regular = "Regular"
+    case thick = "Thick"
+
+    var material: Material? {
+        switch self {
+        case .none: nil
+        case .ultraThin: .ultraThinMaterial
+        case .thin: .thinMaterial
+        case .regular: .regularMaterial
+        case .thick: .thickMaterial
         }
     }
 }
