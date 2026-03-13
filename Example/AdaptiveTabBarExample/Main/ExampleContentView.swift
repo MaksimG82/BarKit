@@ -12,7 +12,7 @@ struct ExampleContentView: View {
     @State private var viewModel = ExampleViewModel()
 
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
             NavigationStack {
                 List {
                     Section {
@@ -20,12 +20,16 @@ struct ExampleContentView: View {
                             Text("AdaptiveTabBar")
                                 .font(.title3.bold())
 
-                            Text("Explore how the tab bar adapts to different configurations. Change colors, sizes, layout settings to find the perfect fit for your app.")
+                            Text("Explore how the tab bar adapts to different configurations.\nChange colors, sizes, layout settings to find the perfect fit for your app.")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
+
+                            Text("Note: Tab selection only updates the UI state and does not perform actual navigation.")
+                                .font(.subheadline)
                         }
                         .padding(.bottom, 4)
                     }
+
                     Section("Appearance") {
                         NavigationLink("Colors") {
                             ColorsSettingsView(viewModel: viewModel)
@@ -42,10 +46,13 @@ struct ExampleContentView: View {
                         NavigationLink("Tabs Layout") {
                             LayoutSettingsView(viewModel: viewModel)
                         }
-                        Toggle("Debug Layout", isOn: Binding(
-                            get: { viewModel.state.isDebugLayoutEnabled },
-                            set: { _ in viewModel.send(.toggleDebugLayout) }
-                        ))
+                        Toggle(
+                            "Debug Layout",
+                            isOn: Binding(
+                                get: { viewModel.state.isDebugLayoutEnabled },
+                                set: { _ in viewModel.send(.toggleDebugLayout) }
+                            )
+                        )
                     }
 
                     Section("Animation") {
@@ -63,8 +70,6 @@ struct ExampleContentView: View {
                 }
             }
 
-            Divider()
-
             TabBarView(
                 items: viewModel.state.items,
                 selected: Binding(
@@ -73,12 +78,12 @@ struct ExampleContentView: View {
                 ),
                 config: viewModel.state.config
             )
+            .overlay(Divider(), alignment: .top)
             .debugLayout(viewModel.state.isDebugLayoutEnabled)
         }
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     ExampleContentView()
 }
