@@ -15,7 +15,6 @@ final class ExampleViewModel {
     // MARK: - State
 
     /// The single source of truth for the view.
-    /// Published as private(set) to ensure updates only happen via intents.
     private(set) var state = ExampleState()
 
     // MARK: - Intent Handling
