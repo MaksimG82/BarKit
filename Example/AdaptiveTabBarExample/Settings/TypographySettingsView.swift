@@ -9,7 +9,9 @@ import AdaptiveTabBar
 import SwiftUI
 
 struct TypographySettingsView: View {
-    @Bindable var viewModel: ExampleViewModel
+    @Environment(\.tabBarHeight) var tabBarHeight
+
+    var viewModel: ExampleViewModel
 
     var body: some View {
         List {
@@ -26,6 +28,23 @@ struct TypographySettingsView: View {
                 .pickerStyle(.inline)
             }
         }
+        .safeAreaInset(edge: .bottom) { Color.clear.frame(height: tabBarHeight) }
         .navigationTitle("Typography")
+    }
+}
+
+#Preview {
+    @Previewable @State var viewModel = ExampleViewModel()
+    NavigationStack {
+        ZStack(alignment: .bottom) {
+            TypographySettingsView(viewModel: viewModel)
+
+            TabBarView(
+                items: viewModel.state.items,
+                selected: .constant(viewModel.state.items[0]),
+                config: viewModel.state.config
+            )
+            .overlay(Divider(), alignment: .top)
+        }
     }
 }

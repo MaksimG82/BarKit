@@ -134,7 +134,7 @@ public struct TabBarConfiguration {
     }
 }
 
-extension TabBarConfiguration {
+public extension TabBarConfiguration {
     /// Calculates total bar height based on current layout and font metrics.
     func barHeight(isCompactHeight: Bool) -> CGFloat {
         let fontHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
@@ -145,7 +145,9 @@ extension TabBarConfiguration {
             ? max(iconHeight, fontHeight) + padding
             : iconHeight + iconTitleSpacing + fontHeight + padding
     }
+}
 
+extension TabBarConfiguration {
     /// Returns the color associated with the selection state.
     func itemColor(isSelected: Bool) -> Color {
         if isSelected {
