@@ -15,29 +15,45 @@ struct ExampleContentView: View {
         VStack(spacing: 0) {
             NavigationStack {
                 List {
-                    NavigationLink("Colors") {
-                        ColorsSettingsView(viewModel: viewModel)
+                    Section {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("AdaptiveTabBar")
+                                .font(.title3.bold())
+
+                            Text("Explore how the tab bar adapts to different configurations. Change colors, sizes, layout settings to find the perfect fit for your app.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.bottom, 4)
                     }
-                    NavigationLink("Typography") {
-                        TypographySettingsView(viewModel: viewModel)
+                    Section("Appearance") {
+                        NavigationLink("Colors") {
+                            ColorsSettingsView(viewModel: viewModel)
+                        }
+                        NavigationLink("Typography") {
+                            TypographySettingsView(viewModel: viewModel)
+                        }
+                        NavigationLink("Icon Sizes") {
+                            IconSizeSettingsView(viewModel: viewModel)
+                        }
                     }
-                    NavigationLink("Icon Sizes") {
-                        IconSizeSettingsView(viewModel: viewModel)
-                    }
-                    NavigationLink("Tabs Layout") {
-                        LayoutSettingsView(viewModel: viewModel)
-                    }
-                    NavigationLink("Animation") {
-                        AnimationSettingsView(viewModel: viewModel)
-                    }
-                    Section("Tools") {
+
+                    Section("Layout") {
+                        NavigationLink("Tabs Layout") {
+                            LayoutSettingsView(viewModel: viewModel)
+                        }
                         Toggle("Debug Layout", isOn: Binding(
                             get: { viewModel.state.isDebugLayoutEnabled },
                             set: { _ in viewModel.send(.toggleDebugLayout) }
                         ))
                     }
+
+                    Section("Animation") {
+                        NavigationLink("Animation") {
+                            AnimationSettingsView(viewModel: viewModel)
+                        }
+                    }
                 }
-                .navigationTitle("Configuration")
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Reset all changes") {
@@ -46,6 +62,8 @@ struct ExampleContentView: View {
                     }
                 }
             }
+
+            Divider()
 
             TabBarView(
                 items: viewModel.state.items,
