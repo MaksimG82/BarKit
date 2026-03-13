@@ -17,7 +17,7 @@ struct AnimationSettingsView: View {
     }
 
     @State private var type: AnimationType = .spring
-    @State private var duration: Double = 0.3
+    @State private var duration: TimeInterval = 0.3
     @State private var bounce: Double = 0.3
 
     var body: some View {
@@ -33,28 +33,40 @@ struct AnimationSettingsView: View {
                 Section("Settings") {
                     VStack(alignment: .leading) {
                         Text("Duration: \(String(format: "%.2f", duration))s")
-                        Slider(value: $duration, in: 0.1 ... 1.0)
+                        Slider(
+                            value: $duration,
+                            in: 0.1 ... 1.0,
+                            onEditingChanged: {
+                                if !$0 { update() }
+                            }
+                        )
+                        .contentShape(Rectangle())
                     }
 
                     if type == .spring {
                         VStack(alignment: .leading) {
                             Text("Bounciness: \(Int(bounce * 100))%")
-                            Slider(value: $bounce, in: 0 ... 0.8)
+                            Slider(
+                                value: $bounce,
+                                in: 0 ... 0.9,
+                                onEditingChanged: {
+                                    if !$0 { update() }
+                                }
+                            )
+                            .contentShape(Rectangle())
                         }
                     }
                 }
             }
 
             Section {
-                Text("SwiftUI animations offer vast possibilities. This demo showcases only a fraction of those capabilities.")
+                Text("SwiftUI animations offer vast possibilities.\nThis demo showcases only a fraction of those capabilities.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
         .navigationTitle("Animation")
         .onChange(of: type) { update() }
-        .onChange(of: duration) { update() }
-        .onChange(of: bounce) { update() }
     }
 
     private func update() {
