@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Defines all possible user intentions (actions) that can modify the state.
 enum ExampleIntent {
     /// Defines target components for color updates.
     enum ColorType {
