@@ -36,5 +36,7 @@ public protocol TabBarItemProtocol: Hashable {
 }
 
 public extension TabBarItemProtocol {
-    var accessibilityLabel: String? { nil }
+    var accessibilityLabel: String? {
+        nil
+    }
 }
