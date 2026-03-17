@@ -14,7 +14,11 @@ struct ExampleState {
     // MARK: - Configuration
 
     /// The visual configuration of the TabBar.
-    var config: TabBarConfiguration = .init()
+    var config: TabBarConfiguration = {
+        var config: TabBarConfiguration = .init()
+        config.style = .floating(.init())
+        return config
+    }()
 
     /// Flag for visual layout debugging.
     var isDebugLayoutEnabled: Bool = false

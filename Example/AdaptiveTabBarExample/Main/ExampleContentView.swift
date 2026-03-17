@@ -21,7 +21,11 @@ struct ExampleContentView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             let currentBarHeight = viewModel.state.config
-                .barHeight(isCompactHeight: sizeClass == .compact)
+                .calculatedBarHeight(
+                    isVerticalCompact: sizeClass == .compact,
+                    hasProminent: viewModel.state.items
+                        .contains { $0.style == .prominent }
+                )
 
             NavigationStack {
                 List {

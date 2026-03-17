@@ -28,11 +28,17 @@ struct ExampleTabItem: TabBarItemProtocol, Identifiable {
     var icon: TabBarIcon {
         switch type {
         case .home: .system("house.fill")
-        case .camera: .custom("cameraIcon") // Ensure this exists in Assets.xcassets
+        case .camera: .custom("cameraIcon")
         case .add: .system("plus.circle.fill")
         case .favorites: .system("heart.fill")
         case .profile: .system("person.fill")
         }
+    }
+
+    // MARK: - TabBarItemProtoclConformance
+
+    func withStyle(_ newStyle: TabItemStyle) -> ExampleTabItem {
+        .init(type: type, style: newStyle)
     }
 }
 

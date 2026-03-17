@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A helper view that renders a tab icon from either a system symbol or a custom asset.
 struct TabIconView: View {
     let icon: TabBarIcon
 

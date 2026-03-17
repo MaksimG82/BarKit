@@ -8,5 +8,6 @@
 import SwiftUI
 
 extension EnvironmentValues {
-    @Entry var tabBarHeight: CGFloat = 0
+    #warning("why zero is default?")
+    @Entry var tabBarHeight: CGFloat? = 0
 }
