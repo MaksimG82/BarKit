@@ -26,3 +26,5 @@ public struct FloatingConfiguration {
 
     public init() {}
 }
+
+extension FloatingConfiguration: Hashable {}

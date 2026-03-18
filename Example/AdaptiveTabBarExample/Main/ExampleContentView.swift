@@ -9,41 +9,31 @@ import AdaptiveTabBar
 import SwiftUI
 
 struct ExampleContentView: View {
+    // MARK: - Property Wrappers
     @Environment(\.tabBarHeight) var tabBarHeight
     @Environment(\.verticalSizeClass) var sizeClass
-
-    // MARK: - State
-
     @State private var viewModel = ExampleViewModel()
 
     // MARK: - Body
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            let currentBarHeight = viewModel.state.config
-                .calculatedBarHeight(
-                    isVerticalCompact: sizeClass == .compact,
-                    hasProminent: viewModel.state.items
-                        .contains { $0.style == .prominent }
-                )
-
+    
             NavigationStack {
                 List {
                     headerSection
+                    styleSection
                     appearanceSection
                     layoutSection
                     animationSection
                 }
-                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: currentBarHeight) }
+                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: currentBarHeight()) }
                 .toolbar {
                     Button("Reset all changes") { viewModel.send(.resetState) }
                 }
                 .navigationTitle("AdaptiveTabBar")
             }
-            .environment(
-                \.tabBarHeight,
-                currentBarHeight
-            )
+            .environment(\.tabBarHeight, currentBarHeight())
 
             tabBar
         }
@@ -65,6 +55,34 @@ private extension ExampleContentView {
             .padding(.vertical, 4)
         }
     }
+    
+    var styleSection: some View {
+            Section("Layout Style") {
+                Picker("Selection Style", selection: Binding(
+                    get: {
+                        switch viewModel.state.config.style {
+                        case .pinned: return "pinned"
+                        case .floating: return "floating"
+                        }
+                    },
+                    set: { newValue in
+                        let newStyle: TabBarStyle = (newValue == "pinned") ? .pinned : .floating(.init())
+                        viewModel.send(.updateLayoutStyle(newStyle))
+                    }
+                )) {
+                    Text("Pinned").tag("pinned")
+                    Text("Floating").tag("floating")
+                }
+                .pickerStyle(.segmented)
+                .padding(.vertical, 4)
+
+                if case .floating = viewModel.state.config.style {
+                    NavigationLink("Floating Settings") {
+                        Text("FloatingSettingsView")
+                    }
+                }
+            }
+        }
 
     var appearanceSection: some View {
         Section("Appearance") {
@@ -102,6 +120,16 @@ private extension ExampleContentView {
         )
         .overlay(Divider(), alignment: .top)
         .debugLayout(viewModel.state.isDebugLayoutEnabled)
+    }
+    
+    // MARK: - Helping methods
+    
+    func currentBarHeight() -> CGFloat {
+        viewModel.state.config.calculatedBarHeight(
+            isVerticalCompact: sizeClass == .compact,
+            hasProminent: viewModel.state.items
+                .contains { $0.style == .prominent }
+        ) ?? tabBar
     }
 }
 

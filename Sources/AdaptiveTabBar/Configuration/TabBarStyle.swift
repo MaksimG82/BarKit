@@ -15,3 +15,5 @@ public enum TabBarStyle {
     /// Inspired by the "spatial" design language introduced in visionOS and adopted as the modern standard in iOS 18 and beyond.
     case floating(FloatingConfiguration)
 }
+
+extension TabBarStyle: Hashable {}

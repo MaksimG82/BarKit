@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AdaptiveTabBar
 
 /// Defines all possible user intentions (actions) that can modify the state.
 enum ExampleIntent {
@@ -48,6 +49,9 @@ enum ExampleIntent {
     case updateSelectedIconScale(CGFloat)
 
     // MARK: - Content & Layout
+    
+    /// Sets layout style
+    case updateLayoutStyle(TabBarStyle)
 
     /// Replaces the entire set of tab items.
     case updateItems([ExampleTabItem])
