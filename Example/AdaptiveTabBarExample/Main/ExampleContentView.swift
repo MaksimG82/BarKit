@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ExampleContentView: View {
     // MARK: - Property Wrappers
+
     @Environment(\.tabBarHeight) var tabBarHeight
     @Environment(\.verticalSizeClass) var sizeClass
     @State private var viewModel = ExampleViewModel()
@@ -18,7 +19,6 @@ struct ExampleContentView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-    
             NavigationStack {
                 List {
                     headerSection
@@ -55,34 +55,34 @@ private extension ExampleContentView {
             .padding(.vertical, 4)
         }
     }
-    
-    var styleSection: some View {
-            Section("Layout Style") {
-                Picker("Selection Style", selection: Binding(
-                    get: {
-                        switch viewModel.state.config.style {
-                        case .pinned: return "pinned"
-                        case .floating: return "floating"
-                        }
-                    },
-                    set: { newValue in
-                        let newStyle: TabBarStyle = (newValue == "pinned") ? .pinned : .floating(.init())
-                        viewModel.send(.updateLayoutStyle(newStyle))
-                    }
-                )) {
-                    Text("Pinned").tag("pinned")
-                    Text("Floating").tag("floating")
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, 4)
 
-                if case .floating = viewModel.state.config.style {
-                    NavigationLink("Floating Settings") {
-                        Text("FloatingSettingsView")
+    var styleSection: some View {
+        Section("Layout Style") {
+            Picker("Selection Style", selection: Binding(
+                get: {
+                    switch viewModel.state.config.style {
+                    case .pinned: "pinned"
+                    case .floating: "floating"
                     }
+                },
+                set: { newValue in
+                    let newStyle: TabBarStyle = (newValue == "pinned") ? .pinned : .floating(.init())
+                    viewModel.send(.updateLayoutStyle(newStyle))
+                }
+            )) {
+                Text("Pinned").tag("pinned")
+                Text("Floating").tag("floating")
+            }
+            .pickerStyle(.segmented)
+            .padding(.vertical, 4)
+
+            if case .floating = viewModel.state.config.style {
+                NavigationLink("Floating Settings") {
+                    Text("FloatingSettingsView")
                 }
             }
         }
+    }
 
     var appearanceSection: some View {
         Section("Appearance") {
@@ -121,9 +121,9 @@ private extension ExampleContentView {
         .overlay(Divider(), alignment: .top)
         .debugLayout(viewModel.state.isDebugLayoutEnabled)
     }
-    
+
     // MARK: - Helping methods
-    
+
     func currentBarHeight() -> CGFloat {
         viewModel.state.config.calculatedBarHeight(
             isVerticalCompact: sizeClass == .compact,

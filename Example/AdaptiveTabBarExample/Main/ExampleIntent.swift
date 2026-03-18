@@ -5,8 +5,8 @@
 //  Created by Maksim Gaisin on 16.01.26.
 //
 
-import SwiftUI
 import AdaptiveTabBar
+import SwiftUI
 
 /// Defines all possible user intentions (actions) that can modify the state.
 enum ExampleIntent {
@@ -49,7 +49,7 @@ enum ExampleIntent {
     case updateSelectedIconScale(CGFloat)
 
     // MARK: - Content & Layout
-    
+
     /// Sets layout style
     case updateLayoutStyle(TabBarStyle)
 

@@ -168,13 +168,13 @@ public extension TabBarConfiguration {
         let padding = isVerticalCompact
             ? tabItemTopPaddingCompact + tabItemBottomPaddingCompact
             : tabItemTopPadding + tabItemBottomPadding
-        
+
         let height: CGFloat = isVerticalCompact
             ? max(iconHeight, fontHeight) + padding
             : iconHeight + iconTitleSpacing + fontHeight + padding
-        
+
         print("DEBUG: calculatedBarHeight:\(height)")
-        
+
         return height
     }
 }
