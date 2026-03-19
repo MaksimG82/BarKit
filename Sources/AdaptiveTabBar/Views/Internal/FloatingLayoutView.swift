@@ -66,8 +66,9 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
         self.action = action
 
         if shouldAdaptProminentItems, items.contains(where: { $0.style == .prominent }) {
-            print("⚠️ TabBarView: Prominent items detected and adapted to .regular for FloatingLayout.")
-
+            #if DEBUG
+                print("⚠️ TabBarView: Prominent items detected and adapted to .regular for FloatingLayout.")
+            #endif
             self.items = items.map { item in
                 item.style == .prominent ? item.withStyle(.regular) : item
             }

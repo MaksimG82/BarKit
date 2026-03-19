@@ -10,7 +10,7 @@ import SwiftUI
 
 struct LayoutSettingsView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-//    @Environment(\.tabBarHeight) var tabBarHeight
+    @Environment(\.tabBarHeight) var tabBarHeight
 
     var viewModel: ExampleViewModel
 
@@ -21,7 +21,7 @@ struct LayoutSettingsView: View {
             spacingSection
             paddingSections
         }
-//        .safeAreaInset(edge: .bottom) { Color.clear.frame(height: tabBarHeight) }
+        .safeAreaInset(edge: .bottom) { Color.clear.frame(height: tabBarHeight) }
         .navigationTitle("Layout")
     }
 }
@@ -112,7 +112,7 @@ private extension LayoutSettingsView {
     func prominentBinding(for item: ExampleTabItem) -> Binding<Bool> {
         Binding(
             get: { item.style == .prominent },
-            set: { _ in viewModel.send(.toggleProminentStyle(item.id)) }
+            set: { _ in viewModel.send(.toggleProminentStyle(item.type)) }
         )
     }
 
