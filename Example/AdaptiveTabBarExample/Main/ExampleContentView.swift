@@ -34,8 +34,14 @@ struct ExampleContentView: View {
                 .navigationTitle("AdaptiveTabBar")
             }
             .environment(\.tabBarHeight, currentBarHeight())
-
-            tabBar
+            
+            VStack(spacing: 0) {
+                if case .pinned = viewModel.state.config.style {
+                    Divider()
+                }
+                
+                tabBar
+            }
         }
     }
 }
@@ -118,7 +124,6 @@ private extension ExampleContentView {
             ),
             config: viewModel.state.config
         )
-        .overlay(Divider(), alignment: .top)
         .debugLayout(viewModel.state.isDebugLayoutEnabled)
     }
 
