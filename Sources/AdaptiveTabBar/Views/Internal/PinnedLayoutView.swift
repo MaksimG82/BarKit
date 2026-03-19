@@ -86,10 +86,7 @@ struct PinnedLayoutView<Item: TabBarItemProtocol>: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
         .frame(
-            height: config.calculatedBarHeight(
-                isVerticalCompact: isVerticalCompact,
-                hasProminent: hasProminentItems
-            ),
+            height: hasProminentItems ? config.calculatedBarHeight(isVerticalCompact: isVerticalCompact) : nil,
             alignment: .bottom
         )
         .background {

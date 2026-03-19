@@ -126,10 +126,7 @@ private extension ExampleContentView {
 
     func currentBarHeight() -> CGFloat {
         viewModel.state.config.calculatedBarHeight(
-            isVerticalCompact: sizeClass == .compact,
-            hasProminent: viewModel.state.items
-                .contains { $0.style == .prominent }
-        ) ?? tabBar
+            isVerticalCompact: sizeClass == .compact)
     }
 }
 

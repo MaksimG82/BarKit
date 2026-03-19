@@ -154,28 +154,17 @@ public extension TabBarConfiguration {
         return nil
     }
 
-    /// Calculates a fixed height for the bar when specific layout constraints are required.
-    ///
-    /// - Note: Returns a value only for `.pinned` style if it contains `.prominent` items,
-    /// ensuring they are not clipped. For standard regular-only bars or `.floating` style,
-    /// it returns `nil` to allow natural SwiftUI height calculation.
-    func calculatedBarHeight(isVerticalCompact: Bool, hasProminent: Bool) -> CGFloat? {
-        guard case .pinned = style, hasProminent else {
-            return nil
-        }
+    /// Calculates a fixed height for the bar based on the current configuration and layout.
+    func calculatedBarHeight(isVerticalCompact: Bool) -> CGFloat {
         let fontHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight
         let iconHeight = iconSize(for: .regular, isVerticalCompact: isVerticalCompact).height
         let padding = isVerticalCompact
             ? tabItemTopPaddingCompact + tabItemBottomPaddingCompact
             : tabItemTopPadding + tabItemBottomPadding
 
-        let height: CGFloat = isVerticalCompact
+        return isVerticalCompact
             ? max(iconHeight, fontHeight) + padding
             : iconHeight + iconTitleSpacing + fontHeight + padding
-
-        print("DEBUG: calculatedBarHeight:\(height)")
-
-        return height
     }
 }
 
