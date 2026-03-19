@@ -33,6 +33,7 @@ struct ColorsSettingsView: View {
 // MARK: - View Components
 
 private extension ColorsSettingsView {
+    #warning("Recommend to use opacity not greater than .1 in .floating case")
     var colorsSection: some View {
         Section(
             header: Text("Tab Bar Colors"),

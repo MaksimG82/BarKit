@@ -6,4 +6,5 @@ gitignore
 *.moved-aside
 *.xcuserstate
 *.xcscmblueprint
+*.xcuserdata
 

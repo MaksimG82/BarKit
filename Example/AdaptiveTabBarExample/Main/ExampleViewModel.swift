@@ -26,6 +26,14 @@ final class ExampleViewModel {
         case let .selectTab(item):
             state.selectedTab = item
 
+        case let .updateLayoutStyle(style):
+            switch style {
+            case .pinned:
+                state.config.style = .pinned
+            case .floating:
+                state.config.style = .floating(.init())
+            }
+
         case let .updateColor(colorType, color):
             switch colorType {
             case .background:

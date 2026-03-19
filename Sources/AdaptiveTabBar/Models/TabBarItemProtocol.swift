@@ -5,14 +5,22 @@
 //  Created by Maksim Gaisin on 10.01.26.
 //
 
-/// Defines the requirements for a tab bar item
+/// Defines the properties and behavior for a single tab bar item.
 ///
-/// Conform to this protocol to create custom tab items:
+/// Conform to this protocol to define the content and appearance of your tabs.
+///
+/// ### Example
 /// ```swift
-/// struct MyTab: TabBarItemProtocol {
+/// struct AppTab: TabBarItemProtocol {
 ///     let icon: TabBarIcon
 ///     let title: String
-///     let style: TabItemStyle = .regular
+///     var style: TabItemStyle = .regular
+///
+///     func withStyle(_ newStyle: TabItemStyle) -> AppTab {
+///         var copy = self
+///         copy.style = newStyle
+///         return copy
+///     }
 /// }
 /// ```
 public protocol TabBarItemProtocol: Hashable {
@@ -33,9 +41,17 @@ public protocol TabBarItemProtocol: Hashable {
 
     /// Custom accessibility label (defaults to title if nil).
     var accessibilityLabel: String? { get }
+
+    // MARK: - Transformation
+
+    /// Returns a copy of the item with a different style.
+    /// This is primarily used by layouts (e.g., `FloatingLayout`) to ensure
+    /// visual consistency by adapting `.prominent` items to `.regular`.
+    func withStyle(_ newStyle: TabItemStyle) -> Self
 }
 
 public extension TabBarItemProtocol {
+    /// Default implementation that returns `nil`, falling back to the `title`.
     var accessibilityLabel: String? {
         nil
     }

@@ -22,21 +22,16 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
     /// The currently selected tab item.
     @Binding private var selected: Item
 
-    // MARK: - Dependencies
+    // MARK: - Properties
 
+    /// An array of data models conforming to ``TabBarItemProtocol``.
     private let items: [Item]
+
+    /// A binding to the current selection.
     private let config: TabBarConfiguration
+
+    /// An optional closure executed when a tab is tapped (even if already selected).
     private let action: ((Item) -> Void)?
-
-    // MARK: - Computed Properties
-
-    private var isCompactHeight: Bool {
-        verticalSizeClass == .compact
-    }
-
-    private var hasProminentItems: Bool {
-        items.contains(where: { $0.style == .prominent })
-    }
 
     // MARK: - Init
 
@@ -62,82 +57,12 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
     // MARK: - Body
 
     public var body: some View {
-        HStack(alignment: .bottom, spacing: config.tabSpacing) {
-            ForEach(items, id: \.self) { item in
-                makeTab(for: item, isSelected: item == selected)
-            }
+        switch config.style {
+        case .pinned:
+            PinnedLayoutView(selected: $selected, items: items, config: config, action: action)
+        case let .floating(floatingConfig):
+            FloatingLayoutView(selected: $selected, items: items, config: config, action: action)
         }
-        .frame(
-            height: hasProminentItems ? config.barHeight(isCompactHeight: isCompactHeight) : nil,
-            alignment: .bottom
-        )
-        .background {
-            if config.backgroundMaterial != nil {
-                Rectangle()
-                    .fill(config.backgroundMaterial!)
-                    .ignoresSafeArea()
-            }
-            config.backgroundColor.ignoresSafeArea()
-        }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel(config.barAccessibilityLabel)
-        .applyDebugVisuals(color: .green)
-    }
-}
-
-// MARK: - Private methods
-
-private extension TabBarView {
-    /// Creates an individual tab button with a tap gesture and accessibility modifiers.
-    func makeTab(for item: Item, isSelected: Bool) -> some View {
-        tabItemLayout(
-            content: tabContent(for: item, isSelected: isSelected)
-        )
-        .contentShape(Rectangle())
-        .animation(config.tabAnimation, value: selected)
-        .onTapGesture {
-            selected = item
-            action?(item)
-        }
-        .modifier(
-            TabAccessibilityModifier(
-                item: item, isSelected: isSelected
-            )
-        )
-        .applyDebugVisuals(color: .blue)
-    }
-
-    /// Wraps the content in a VStack or HStack depending on the current size class.
-    func tabItemLayout(content: some View) -> some View {
-        Group {
-            if isCompactHeight {
-                HStack(spacing: config.iconTitleSpacing) { content }
-            } else {
-                VStack(spacing: config.iconTitleSpacing) { content }
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.top, isCompactHeight ? config.tabItemTopPaddingCompact : config.tabItemTopPadding)
-        .padding(.bottom, isCompactHeight ? config.tabItemBottomPaddingCompact : config.tabItemBottomPadding)
-    }
-
-    /// Composes the icon and title for a specific tab item.
-    @ViewBuilder
-    func tabContent(for item: Item, isSelected: Bool) -> some View {
-        let color = config.itemColor(isSelected: isSelected)
-
-        TabIconView(icon: item.icon)
-            .frame(size: config.iconSize(for: item.style, isCompact: isCompactHeight))
-            .foregroundStyle(color)
-            .scaleEffect(
-                isSelected ?
-                    config.selectedIconScale : 1.0
-            )
-
-        Text(item.title)
-            .font(.system(config.textStyle))
-            .foregroundStyle(color)
-            .lineLimit(1)
     }
 }
 
@@ -147,10 +72,14 @@ private extension TabBarView {
         let title: String
         var icon: TabBarIcon
         var style: TabItemStyle
+
+        func withStyle(_ newStyle: TabItemStyle) -> PreviewTabItem {
+            .init(title: title, icon: icon, style: newStyle)
+        }
     }
 
     @available(iOS 17.0, *)
-    #Preview("Debug Layout") {
+    #Preview("Pinned style") {
         @Previewable @State var selected: PreviewTabItem = .init(
             title: "Camera",
             icon: .system("camera.viewfinder"),
@@ -165,7 +94,33 @@ private extension TabBarView {
 
         VStack {
             Spacer()
-            TabBarView(items: mockItems, selected: $selected).environment(\.debugLayoutEnabled, true)
+            TabBarView(items: mockItems, selected: $selected)
+                .environment(\.debugLayoutEnabled, true)
+        }
+    }
+
+    @available(iOS 17.0, *)
+    #Preview("Floating style") {
+        @Previewable @State var selected: PreviewTabItem = .init(
+            title: "Camera",
+            icon: .system("camera.viewfinder"),
+            style: .prominent
+        )
+
+        let mockItems: [PreviewTabItem] = [
+            .init(title: "Settings", icon: .system("gearshape.fill"), style: .regular),
+            .init(title: "Camera", icon: .system("camera.fill"), style: .prominent),
+            .init(title: "Photos", icon: .system("photo.on.rectangle.fill"), style: .regular)
+        ]
+
+        VStack {
+            Spacer()
+            TabBarView(
+                items: mockItems,
+                selected: $selected,
+                config: .init(style: .floating(.init()))
+            )
+            .environment(\.debugLayoutEnabled, true)
         }
     }
 
