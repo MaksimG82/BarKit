@@ -34,12 +34,12 @@ struct ExampleContentView: View {
                 .navigationTitle("AdaptiveTabBar")
             }
             .environment(\.tabBarHeight, currentBarHeight())
-            
+
             VStack(spacing: 0) {
                 if case .pinned = viewModel.state.config.style {
                     Divider()
                 }
-                
+
                 tabBar
             }
         }

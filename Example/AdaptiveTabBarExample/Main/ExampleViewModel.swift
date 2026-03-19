@@ -69,9 +69,10 @@ final class ExampleViewModel {
             state.items = items
             state.selectedTab = targetItem ?? firstItem
 
-        case let .toggleProminentStyle(id):
-            if let index = state.items.firstIndex(where: { $0.id == id }) {
-                state.items[index].style = state.items[index].style == .prominent ? .regular : .prominent
+        case let .toggleProminentStyle(tabType):
+            if let index = state.items.firstIndex(where: { $0.type == tabType }) {
+                let currentStyle = state.items[index].style
+                state.items[index].style = (currentStyle == .prominent) ? .regular : .prominent
             }
 
         case let .updateTabSpacing(spacing):

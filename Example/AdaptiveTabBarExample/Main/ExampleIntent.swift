@@ -75,7 +75,7 @@ enum ExampleIntent {
     case updateTabItemBottomPaddingCompact(CGFloat)
 
     /// Toggles the visual style (regular vs prominent) for a specific tab by its ID.
-    case toggleProminentStyle(UUID)
+    case toggleProminentStyle(ExampleTabItem.TabType)
 
     // MARK: - Behavior & Debug
 

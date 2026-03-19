@@ -80,10 +80,10 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 
     var body: some View {
         HStack(alignment: .bottom, spacing: config.tabSpacing) {
-            ForEach(items, id: \.self) { item in
+            ForEach(items) { item in
                 TabItemView(
                     item: item,
-                    isSelected: item == selected,
+                    isSelected: item.id == selected.id,
                     isVerticalCompact: isVerticalCompact,
                     config: config
                 ) {
