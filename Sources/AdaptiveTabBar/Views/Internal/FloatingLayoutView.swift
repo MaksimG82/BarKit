@@ -20,6 +20,8 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     /// The currently selected tab item.
     @Binding private var selected: Item
 
+    @Namespace private var tabBarNamespace
+
     // MARK: - Properties
 
     /// An array of data models conforming to ``TabBarItemProtocol``.
@@ -91,24 +93,40 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
                     selected = item
                     action?(item)
                 }
+                .matchedGeometryEffect(id: item.id, in: tabBarNamespace) // Animate by ID
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
         .background {
             ZStack {
+                backgroundCapsule
+                selectionIndicator
+            }
+        }
+        .padding(.leading, floatingConfig.leadingInset)
+        .padding(.trailing, floatingConfig.trailingInset)
+        .padding(.bottom, floatingConfig.bottomInset)
+    }
+
+    // MARK: - Subviews
+
+    private var backgroundCapsule: some View {
+        RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
+            .fill(config.backgroundColor)
+            .shadow(radius: floatingConfig.shadowRadius)
+            .background {
                 if let material = config.backgroundMaterial {
                     RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
                         .fill(material)
                 }
-                RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
-                    .fill(config.backgroundColor)
             }
-            .shadow(radius: floatingConfig.shadowRadius)
-        }
-        .applyDebugVisuals(color: .green)
-        .padding(.leading, floatingConfig.leadingInset)
-        .padding(.trailing, floatingConfig.trailingInset)
-        .padding(.bottom, floatingConfig.bottomInset)
+    }
+
+    private var selectionIndicator: some View {
+        RoundedRectangle(cornerRadius: floatingConfig.cornerRadius - 4)
+            .fill(Color.secondary.opacity(0.2))
+            .padding(2)
+            .matchedGeometryEffect(id: selected.id, in: tabBarNamespace, isSource: false)
     }
 }
