@@ -35,7 +35,13 @@ struct ExampleContentView: View {
             }
             .environment(\.tabBarHeight, currentBarHeight())
 
-            tabBar
+            VStack(spacing: 0) {
+                if case .pinned = viewModel.state.config.style {
+                    Divider()
+                }
+
+                tabBar
+            }
         }
     }
 }
@@ -78,7 +84,7 @@ private extension ExampleContentView {
 
             if case .floating = viewModel.state.config.style {
                 NavigationLink("Floating Settings") {
-                    Text("FloatingSettingsView")
+                    FloatingSettingsView(viewModel: viewModel)
                 }
             }
         }
@@ -118,7 +124,6 @@ private extension ExampleContentView {
             ),
             config: viewModel.state.config
         )
-        .overlay(Divider(), alignment: .top)
         .debugLayout(viewModel.state.isDebugLayoutEnabled)
     }
 

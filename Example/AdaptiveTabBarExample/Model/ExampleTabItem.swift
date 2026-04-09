@@ -9,7 +9,7 @@ import AdaptiveTabBar
 import Foundation
 
 /// A sample implementation of `TabBarItemProtocol` for demonstration purposes.
-struct ExampleTabItem: TabBarItemProtocol, Identifiable {
+struct ExampleTabItem: TabBarItemProtocol {
     /// Internal types for the example app tabs.
     enum TabType: String, CaseIterable {
         case home, camera, add, favorites, profile
@@ -17,9 +17,12 @@ struct ExampleTabItem: TabBarItemProtocol, Identifiable {
 
     // MARK: - Properties
 
-    let id = UUID()
-    let type: TabType
+    var type: TabType
     var style: TabItemStyle
+
+    var id: AnyHashable {
+        type
+    }
 
     var title: String {
         type.rawValue.capitalized
@@ -33,12 +36,6 @@ struct ExampleTabItem: TabBarItemProtocol, Identifiable {
         case .favorites: .system("heart.fill")
         case .profile: .system("person.fill")
         }
-    }
-
-    // MARK: - TabBarItemProtoclConformance
-
-    func withStyle(_ newStyle: TabItemStyle) -> ExampleTabItem {
-        .init(type: type, style: newStyle)
     }
 }
 

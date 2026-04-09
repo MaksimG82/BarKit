@@ -23,8 +23,12 @@
 ///     }
 /// }
 /// ```
-public protocol TabBarItemProtocol: Hashable {
-    // MARK: Content
+public protocol TabBarItemProtocol: Hashable, Identifiable {
+    // MARK: - Id
+
+    var id: AnyHashable { get }
+
+    // MARK: - Content
 
     /// Icon representation to display in the tab.
     var icon: TabBarIcon { get }
@@ -32,12 +36,12 @@ public protocol TabBarItemProtocol: Hashable {
     /// Text label shown below the icon.
     var title: String { get }
 
-    // MARK: Appearance
+    // MARK: - Appearance
 
     /// Visual style of the tab item.
-    var style: TabItemStyle { get }
+    var style: TabItemStyle { get set }
 
-    // MARK: Accessibility
+    // MARK: - Accessibility
 
     /// Custom accessibility label (defaults to title if nil).
     var accessibilityLabel: String? { get }
@@ -54,5 +58,11 @@ public extension TabBarItemProtocol {
     /// Default implementation that returns `nil`, falling back to the `title`.
     var accessibilityLabel: String? {
         nil
+    }
+
+    func withStyle(_ newStyle: TabItemStyle) -> Self {
+        var copy = self
+        copy.style = newStyle
+        return copy
     }
 }

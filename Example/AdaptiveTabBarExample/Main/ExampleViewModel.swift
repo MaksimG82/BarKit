@@ -69,9 +69,10 @@ final class ExampleViewModel {
             state.items = items
             state.selectedTab = targetItem ?? firstItem
 
-        case let .toggleProminentStyle(id):
-            if let index = state.items.firstIndex(where: { $0.id == id }) {
-                state.items[index].style = state.items[index].style == .prominent ? .regular : .prominent
+        case let .toggleProminentStyle(tabType):
+            if let index = state.items.firstIndex(where: { $0.type == tabType }) {
+                let currentStyle = state.items[index].style
+                state.items[index].style = (currentStyle == .prominent) ? .regular : .prominent
             }
 
         case let .updateTabSpacing(spacing):
@@ -94,6 +95,20 @@ final class ExampleViewModel {
 
         case let .updateAnimation(animation):
             state.config.tabAnimation = animation
+
+        case let .updateFloatingLayout(floatingLayoutSettings):
+            switch floatingLayoutSettings {
+            case let .bottomInset(inset):
+                state.config.floatingConfig?.bottomInset = inset
+            case let .leadingInset(inset):
+                state.config.floatingConfig?.leadingInset = inset
+            case let .trailingInset(inset):
+                state.config.floatingConfig?.trailingInset = inset
+            case let .cornerRadius(radius):
+                state.config.floatingConfig?.cornerRadius = radius
+            case let .shadowRadius(radius):
+                state.config.floatingConfig?.shadowRadius = radius
+            }
 
         case .toggleDebugLayout:
             state.isDebugLayoutEnabled.toggle()

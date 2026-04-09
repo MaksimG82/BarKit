@@ -20,6 +20,8 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     /// The currently selected tab item.
     @Binding private var selected: Item
 
+    @Namespace private var tabBarNamespace
+
     // MARK: - Properties
 
     /// An array of data models conforming to ``TabBarItemProtocol``.
@@ -66,8 +68,9 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
         self.action = action
 
         if shouldAdaptProminentItems, items.contains(where: { $0.style == .prominent }) {
-            print("⚠️ TabBarView: Prominent items detected and adapted to .regular for FloatingLayout.")
-
+            #if DEBUG
+                print("⚠️ TabBarView: Prominent items detected and adapted to .regular for FloatingLayout.")
+            #endif
             self.items = items.map { item in
                 item.style == .prominent ? item.withStyle(.regular) : item
             }
@@ -80,34 +83,50 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 
     var body: some View {
         HStack(alignment: .bottom, spacing: config.tabSpacing) {
-            ForEach(items, id: \.self) { item in
+            ForEach(items) { item in
                 TabItemView(
                     item: item,
-                    isSelected: item == selected,
+                    isSelected: item.id == selected.id,
                     isVerticalCompact: isVerticalCompact,
                     config: config
                 ) {
                     selected = item
                     action?(item)
                 }
+                .matchedGeometryEffect(id: item.id, in: tabBarNamespace) // Animate by ID
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
         .background {
             ZStack {
+                backgroundCapsule
+                selectionIndicator
+            }
+        }
+        .padding(.leading, floatingConfig.leadingInset)
+        .padding(.trailing, floatingConfig.trailingInset)
+        .padding(.bottom, floatingConfig.bottomInset)
+    }
+
+    // MARK: - Subviews
+
+    private var backgroundCapsule: some View {
+        RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
+            .fill(config.backgroundColor)
+            .background {
                 if let material = config.backgroundMaterial {
                     RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
                         .fill(material)
                 }
-                RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
-                    .fill(config.backgroundColor)
             }
             .shadow(radius: floatingConfig.shadowRadius)
-        }
-        .applyDebugVisuals(color: .green)
-        .padding(.leading, floatingConfig.leadingInset)
-        .padding(.trailing, floatingConfig.trailingInset)
-        .padding(.bottom, floatingConfig.bottomInset)
+    }
+
+    private var selectionIndicator: some View {
+        RoundedRectangle(cornerRadius: floatingConfig.cornerRadius - 4)
+            .fill(Color.secondary.opacity(0.2))
+            .padding(2)
+            .matchedGeometryEffect(id: selected.id, in: tabBarNamespace, isSource: false)
     }
 }

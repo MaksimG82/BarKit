@@ -72,6 +72,9 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         let title: String
         var icon: TabBarIcon
         var style: TabItemStyle
+        var id: AnyHashable {
+            title.hashValue
+        }
 
         func withStyle(_ newStyle: TabItemStyle) -> PreviewTabItem {
             .init(title: title, icon: icon, style: newStyle)
@@ -120,7 +123,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
                 selected: $selected,
                 config: .init(style: .floating(.init()))
             )
-            .environment(\.debugLayoutEnabled, true)
+            .environment(\.debugLayoutEnabled, false)
         }
     }
 

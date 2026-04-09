@@ -14,10 +14,30 @@ enum ExampleIntent {
     enum ColorType {
         /// The primary color for the selected tab.
         case tint
+
         /// The color for inactive/unselected tabs.
         case unselected
+
         /// The bar's background fill color.
         case background
+    }
+
+    /// Defines specific layout adjustments for the floating tab bar style.
+    enum FloatingLayoutParam {
+        /// Horizontal inset from the leading screen edge.
+        case leadingInset(CGFloat)
+
+        /// Horizontal inset from the trailing screen edge.
+        case trailingInset(CGFloat)
+
+        /// Vertical distance from the bottom safe area boundary.
+        case bottomInset(CGFloat)
+
+        /// The corner radius of the floating background capsule.
+        case cornerRadius(CGFloat)
+
+        /// The blur radius used to render the outer elevation shadow.
+        case shadowRadius(CGFloat)
     }
 
     // MARK: - Navigation
@@ -75,7 +95,12 @@ enum ExampleIntent {
     case updateTabItemBottomPaddingCompact(CGFloat)
 
     /// Toggles the visual style (regular vs prominent) for a specific tab by its ID.
-    case toggleProminentStyle(UUID)
+    case toggleProminentStyle(ExampleTabItem.TabType)
+
+    // MARK: - Floating layout setup
+
+    /// Updates floatinfg layout settings
+    case updateFloatingLayout(FloatingLayoutParam)
 
     // MARK: - Behavior & Debug
 
