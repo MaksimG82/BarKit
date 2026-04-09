@@ -114,13 +114,13 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     private var backgroundCapsule: some View {
         RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
             .fill(config.backgroundColor)
-            .shadow(radius: floatingConfig.shadowRadius)
             .background {
                 if let material = config.backgroundMaterial {
                     RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
                         .fill(material)
                 }
             }
+            .shadow(radius: floatingConfig.shadowRadius)
     }
 
     private var selectionIndicator: some View {

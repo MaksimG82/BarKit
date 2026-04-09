@@ -84,7 +84,7 @@ private extension ExampleContentView {
 
             if case .floating = viewModel.state.config.style {
                 NavigationLink("Floating Settings") {
-                    Text("FloatingSettingsView")
+                    FloatingSettingsView(viewModel: viewModel)
                 }
             }
         }

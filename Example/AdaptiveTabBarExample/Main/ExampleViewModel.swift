@@ -96,6 +96,20 @@ final class ExampleViewModel {
         case let .updateAnimation(animation):
             state.config.tabAnimation = animation
 
+        case let .updateFloatingLayout(floatingLayoutSettings):
+            switch floatingLayoutSettings {
+            case let .bottomInset(inset):
+                state.config.floatingConfig?.bottomInset = inset
+            case let .leadingInset(inset):
+                state.config.floatingConfig?.leadingInset = inset
+            case let .trailingInset(inset):
+                state.config.floatingConfig?.trailingInset = inset
+            case let .cornerRadius(radius):
+                state.config.floatingConfig?.cornerRadius = radius
+            case let .shadowRadius(radius):
+                state.config.floatingConfig?.shadowRadius = radius
+            }
+
         case .toggleDebugLayout:
             state.isDebugLayoutEnabled.toggle()
 

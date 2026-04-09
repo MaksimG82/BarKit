@@ -150,8 +150,15 @@ public struct TabBarConfiguration {
 public extension TabBarConfiguration {
     /// Provides access to floating-specific layout settings if the current style is `.floating`.
     var floatingConfig: FloatingConfiguration? {
-        if case let .floating(config) = style { return config }
-        return nil
+        get {
+            if case let .floating(config) = style { return config }
+            return nil
+        }
+        set {
+            if let newValue {
+                style = .floating(newValue)
+            }
+        }
     }
 
     /// Calculates a fixed height for the bar based on the current configuration and layout.
