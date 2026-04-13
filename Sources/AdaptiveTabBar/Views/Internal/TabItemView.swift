@@ -79,7 +79,7 @@ struct TabItemView<Item: TabBarItemProtocol>: View {
         selectedIconScale = config.selectedIconScale
         iconTitleSpacing = config.iconTitleSpacing
         textStyle = config.textStyle
-        animation = config.tabAnimation
+        animation = config.tabItemAnimation
         topPadding = isVerticalCompact ? config.tabItemTopPaddingCompact : config.tabItemTopPadding
         bottomPadding = isVerticalCompact ? config.tabItemBottomPaddingCompact : config.tabItemBottomPadding
     }

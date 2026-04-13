@@ -73,8 +73,8 @@ public struct TabBarConfiguration {
 
     // MARK: - Animation
 
-    /// Animation applied to tab selection changes.
-    public var tabAnimation: Animation?
+    /// The animation applied to internal elements (icon and title) during selection changes.
+    public var tabItemAnimation: Animation?
 
     // MARK: - Accecibility
 
@@ -102,7 +102,7 @@ public struct TabBarConfiguration {
     ///   - tabItemBottomPadding: Bottom padding inside tab item. Also increases the hit-test area.
     ///   - tabItemTopPaddingCompact: Top padding in compact mode. Also increases the hit-test area.
     ///   - tabItemBottomPaddingCompact: Bottom padding in compact mode. Also increases the hit-test area.
-    ///   - tabAnimation: Animation applied to tab selection changes.
+    ///   - tabItemAnimation: The animation applied to internal elements (icon and title) during selection changes.
     ///   - barAccessibilityLabel: Accessibility label for the entire tab bar.
     public init(
         style: TabBarStyle = .pinned,
@@ -121,7 +121,7 @@ public struct TabBarConfiguration {
         tabItemBottomPadding: CGFloat = 4,
         tabItemTopPaddingCompact: CGFloat = 2,
         tabItemBottomPaddingCompact: CGFloat = 2,
-        tabAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7),
+        tabItemAnimation: Animation? = .easeIn(duration: 0.3),
         barAccessibilityLabel: String = "Tab Bar"
     ) {
         self.style = style
@@ -140,7 +140,7 @@ public struct TabBarConfiguration {
         self.tabItemBottomPadding = tabItemBottomPadding
         self.tabItemTopPaddingCompact = tabItemTopPaddingCompact
         self.tabItemBottomPaddingCompact = tabItemBottomPaddingCompact
-        self.tabAnimation = tabAnimation
+        self.tabItemAnimation = tabItemAnimation
         self.barAccessibilityLabel = barAccessibilityLabel
     }
 }

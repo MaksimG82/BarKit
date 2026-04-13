@@ -16,7 +16,8 @@ public struct FloatingConfiguration {
     public var trailingInset: CGFloat = 16
 
     /// Distance from the bottom safe area edge.
-    public var bottomInset: CGFloat = 12
+    /// - Warning: Values below 12 may cause the bar to overlap with the Home Indicator on edge-to-edge displays.
+    public var bottomInset: CGFloat = 20
 
     /// Corner radius of the floating capsule.
     public var cornerRadius: CGFloat = 28
@@ -24,7 +25,44 @@ public struct FloatingConfiguration {
     /// Shadow blur radius to create depth.
     public var shadowRadius: CGFloat = 8
 
-    public init() {}
+    /// Configuration for the indicator's scaling (stretching/squeezing) effect.
+    /// - Note: If nil, the indicator maintains its size during the transition.
+    public var tabSelectionScaleEffect: SelectionScaleEffect?
+
+    /// Animation for moving the indicator between tabs.
+    /// - Note:  If nil, the indicator snaps to the new position instantly.
+    public var indicatorTransitionAnimation: Animation? = .linear
+
+    // MARK: - Init
+
+    /// Creates a new configuration with customizable parameters.
+    ///
+    /// - Parameters:
+    ///   - leadingInset: Inset from the leading edge of the screen.
+    ///   - trailingInset: Inset from the trailing edge of the screen.
+    ///   - bottomInset: Distance from the screen's bottom physical edge.
+    ///     **Warning**: Values below 12 may cause overlap with the Home Indicator.
+    ///   - cornerRadius: Corner radius of the floating capsule.
+    ///   - shadowRadius: Shadow blur radius to create depth.
+    ///   - selectionScaleEffect: Configuration for the indicator's scaling (stretching/squeezing) effect..
+    ///   - indicatorTransitionAnimation: Animation for moving the indicator between tabs.
+    public init(
+        leadingInset: CGFloat = 16,
+        trailingInset: CGFloat = 16,
+        bottomInset: CGFloat = 20,
+        cornerRadius: CGFloat = 28,
+        shadowRadius: CGFloat = 8,
+        tabSelectionScaleEffect: SelectionScaleEffect? = nil,
+        indicatorTransitionAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7)
+    ) {
+        self.leadingInset = leadingInset
+        self.trailingInset = trailingInset
+        self.bottomInset = bottomInset
+        self.cornerRadius = cornerRadius
+        self.shadowRadius = shadowRadius
+        self.tabSelectionScaleEffect = tabSelectionScaleEffect
+        self.indicatorTransitionAnimation = indicatorTransitionAnimation
+    }
 }
 
 extension FloatingConfiguration: Hashable {}
