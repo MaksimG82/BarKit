@@ -102,10 +102,18 @@ enum ExampleIntent {
     /// Updates floatinfg layout settings
     case updateFloatingLayout(FloatingLayoutParam)
 
-    // MARK: - Behavior & Debug
+    // MARK: - Animation
 
-    /// Updates the transition animation used when switching tabs.
-    case updateAnimation(Animation?)
+    /// Updates the item animation used when switching tabs.
+    case updateTabItem(Animation?)
+
+    /// Updates the animation responsible for moving the selection indicator between tabs.
+    case updateIndcatorTransition(Animation?)
+
+    /// Updates the scale and animation properties of the selection indicator during the jump.
+    case updateIndicator(SelectionScaleEffect?)
+
+    // MARK: - Behavior & Debug
 
     /// Switches the visual layout debugging mode (borders and safe areas).
     case toggleDebugLayout

@@ -50,8 +50,8 @@ private extension LayoutSettingsView {
 
     var spacingSection: some View {
         Section("Spacing") {
-            slider(title: "Tab Spacing", value: tabSpacingBinding, range: 0 ... 40)
-            slider(title: "Icon-Title Spacing", value: iconTitleSpacingBinding, range: 0 ... 20)
+            SettingSlider(title: "Tab Spacing", value: tabSpacingBinding, range: 0 ... 40)
+            SettingSlider(title: "Icon-Title Spacing", value: iconTitleSpacingBinding, range: 0 ... 20)
         }
     }
 
@@ -59,8 +59,8 @@ private extension LayoutSettingsView {
     var paddingSections: some View {
         if verticalSizeClass == .compact {
             Section {
-                slider(title: "Top (Compact)", value: topPaddingCompactBinding, range: 0 ... 20)
-                slider(title: "Bottom (Compact)", value: bottomPaddingCompactBinding, range: 0 ... 20)
+                SettingSlider(title: "Top (Compact)", value: topPaddingCompactBinding, range: 0 ... 20)
+                SettingSlider(title: "Bottom (Compact)", value: bottomPaddingCompactBinding, range: 0 ... 20)
             } header: {
                 Text("Vertical Padding (Landscape)")
             } footer: {
@@ -68,26 +68,13 @@ private extension LayoutSettingsView {
             }
         } else {
             Section {
-                slider(title: "Top", value: topPaddingBinding, range: 0 ... 30)
-                slider(title: "Bottom", value: bottomPaddingBinding, range: 0 ... 30)
+                SettingSlider(title: "Top", value: topPaddingBinding, range: 0 ... 30)
+                SettingSlider(title: "Bottom", value: bottomPaddingBinding, range: 0 ... 30)
             } header: {
                 Text("Vertical Padding (Portrait)")
             } footer: {
                 Text("These settings apply only to regular height environments.")
             }
-        }
-    }
-
-    func slider(
-        title: String,
-        value: Binding<CGFloat>,
-        range: ClosedRange<CGFloat>
-    ) -> some View {
-        VStack(alignment: .leading) {
-            Text("\(title): \(Int(value.wrappedValue))")
-                .font(.subheadline)
-            Slider(value: value, in: range, step: 1)
-                .contentShape(Rectangle())
         }
     }
 }

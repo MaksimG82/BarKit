@@ -67,7 +67,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
 }
 
 #if DEBUG
-    /// Data model used for Xcode Previews only.
+    /// Data model used for Xcode Previews.
     private struct PreviewTabItem: TabBarItemProtocol {
         let title: String
         var icon: TabBarIcon

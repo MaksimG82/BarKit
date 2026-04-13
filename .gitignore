@@ -2,6 +2,7 @@ gitignore
 .DS_Store
 .build/
 .swiftpm/
+.githooks/
 *.xccheckout
 *.moved-aside
 *.xcuserstate

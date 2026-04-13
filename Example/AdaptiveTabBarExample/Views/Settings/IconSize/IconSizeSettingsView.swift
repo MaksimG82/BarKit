@@ -31,14 +31,14 @@ struct IconSizeSettingsView: View {
 private extension IconSizeSettingsView {
     var dimensionsSection: some View {
         Section("Icon Sizes") {
-            slider(
-                title: "Regular Side: \(Int(viewModel.state.config.regularIconSideLength))",
+            SettingSlider(
+                title: "Regular Side",
                 value: regularSizeBinding,
                 range: 10 ... 50
             )
 
-            slider(
-                title: "Prominent Side: \(Int(viewModel.state.config.prominentIconSideLength))",
+            SettingSlider(
+                title: "Prominent Side",
                 value: prominentSizeBinding,
                 range: 20 ... 80
             )
@@ -47,37 +47,25 @@ private extension IconSizeSettingsView {
 
     var landscapeScalingSection: some View {
         Section(header: Text("Landscape Scaling"), footer: Text("Scale factor applied in landscape mode.")) {
-            slider(
-                title: "Compact Scale: \(String(format: "%.2f", viewModel.state.config.compactIconScale))",
+            SettingSlider(
+                title: "Compact Scale",
                 value: compactScaleBinding,
                 range: 0.5 ... 1.0,
-                step: 0.05
+                step: 0.05,
+                format: .fractionalTwo
             )
         }
     }
 
     var selectionScalingSection: some View {
         Section("Selection Scaling") {
-            slider(
-                title: "Selected Scale: \(String(format: "%.2f", viewModel.state.config.selectedIconScale))",
+            SettingSlider(
+                title: "Selected Scale",
                 value: selectedScaleBinding,
                 range: 1.0 ... 1.5,
-                step: 0.01
+                step: 0.01,
+                format: .fractionalTwo,
             )
-        }
-    }
-
-    func slider(
-        title: String,
-        value: Binding<Double>,
-        range: ClosedRange<Double>,
-        step: Double = 1
-    ) -> some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.subheadline)
-            Slider(value: value, in: range, step: step)
-                .contentShape(Rectangle())
         }
     }
 }
@@ -85,28 +73,28 @@ private extension IconSizeSettingsView {
 // MARK: - Bindings
 
 private extension IconSizeSettingsView {
-    var regularSizeBinding: Binding<Double> {
+    var regularSizeBinding: Binding<CGFloat> {
         Binding(
             get: { viewModel.state.config.regularIconSideLength },
             set: { viewModel.send(.updateRegularIconSize($0)) }
         )
     }
 
-    var prominentSizeBinding: Binding<Double> {
+    var prominentSizeBinding: Binding<CGFloat> {
         Binding(
             get: { viewModel.state.config.prominentIconSideLength },
             set: { viewModel.send(.updateProminentIconSize($0)) }
         )
     }
 
-    var compactScaleBinding: Binding<Double> {
+    var compactScaleBinding: Binding<CGFloat> {
         Binding(
             get: { viewModel.state.config.compactIconScale },
             set: { viewModel.send(.updateCompactIconScale($0)) }
         )
     }
 
-    var selectedScaleBinding: Binding<Double> {
+    var selectedScaleBinding: Binding<CGFloat> {
         Binding(
             get: { viewModel.state.config.selectedIconScale },
             set: { viewModel.send(.updateSelectedIconScale($0)) }
