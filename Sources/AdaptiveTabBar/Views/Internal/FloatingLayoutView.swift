@@ -99,7 +99,7 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
                     ) {
                         handleSelection(item)
                     }
-                    .matchedGeometryEffect(id: item.id, in: tabBarNamespace) // Animate by ID
+                    .matchedGeometryEffect(id: item.id, in: tabBarNamespace)
                 }
             }
             .accessibilityElement(children: .contain)
@@ -139,8 +139,8 @@ private extension FloatingLayoutView {
             .padding(2)
             .matchedGeometryEffect(id: selected.id, in: tabBarNamespace, isSource: false)
             .scaleEffect(
-                x: isSelectionIndicatorScaling ? 1.2 : 1.0,
-                y: isSelectionIndicatorScaling ? 1.2 : 1.0,
+                x: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.xScale ?? 1.0 : 1.0,
+                y: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.yScale ?? 1.0 : 1.0,
                 anchor: .center
             )
     }

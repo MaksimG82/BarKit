@@ -42,7 +42,7 @@ struct AnimationSettingsView: View {
                 headerText: "Selection indicator scaling animation",
                 footerText: "Animation of the scaling effect for the selection indicator during tab transitions."
             )
-            .onChange(of: indicatorScalingAnimationParameters) { updateIndicatorTransitionAnimation() }
+            .onChange(of: indicatorScalingAnimationParameters) { updateScaleAnimation() }
             
             
         }
