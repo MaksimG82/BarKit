@@ -27,9 +27,9 @@ struct FloatingSettingsView: View {
 private extension FloatingSettingsView {
     var positionSection: some View {
         Section {
-            slider(title: "Leading Inset", value: leadingBinding, range: 0 ... 40)
-            slider(title: "Trailing Inset", value: trailingBinding, range: 0 ... 40)
-            slider(title: "Bottom Inset", value: bottomBinding, range: 0 ... 60)
+            SettingSlider(title: "Leading Inset", value: leadingBinding, range: 0 ... 100)
+            SettingSlider(title: "Trailing Inset", value: trailingBinding, range: 0 ... 100)
+            SettingSlider(title: "Bottom Inset", value: bottomBinding, range: 12 ... 60)
         } header: {
             Text("Positioning")
         } footer: {
@@ -39,16 +39,8 @@ private extension FloatingSettingsView {
 
     var appearanceSection: some View {
         Section("Appearance") {
-            slider(title: "Corner Radius", value: cornerRadiusBinding, range: 0 ... 40)
-            slider(title: "Shadow Radius", value: shadowRadiusBinding, range: 0 ... 20)
-        }
-    }
-
-    func slider(title: String, value: Binding<CGFloat>, range: ClosedRange<CGFloat>) -> some View {
-        VStack(alignment: .leading) {
-            Text("\(title): \(Int(value.wrappedValue))")
-                .font(.subheadline)
-            Slider(value: value, in: range, step: 1)
+            SettingSlider(title: "Corner Radius", value: cornerRadiusBinding, range: 0 ... 40)
+            SettingSlider(title: "Shadow Radius", value: shadowRadiusBinding, range: 0 ... 20)
         }
     }
 }
@@ -78,5 +70,21 @@ private extension FloatingSettingsView {
 
     var shadowRadiusBinding: Binding<CGFloat> {
         Binding(get: { config.shadowRadius }, set: { viewModel.send(.updateFloatingLayout(.shadowRadius($0))) })
+    }
+}
+
+#Preview {
+    @Previewable @State var viewModel = ExampleViewModel()
+    NavigationStack {
+        ZStack(alignment: .bottom) {
+            FloatingSettingsView(viewModel: viewModel)
+
+            TabBarView(
+                items: viewModel.state.items,
+                selected: .constant(viewModel.state.items[0]),
+                config: viewModel.state.config
+            )
+            .overlay(Divider(), alignment: .top)
+        }
     }
 }
