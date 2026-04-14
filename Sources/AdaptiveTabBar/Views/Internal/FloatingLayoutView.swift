@@ -36,6 +36,9 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 
     /// An optional closure executed when a tab is tapped (even if already selected).
     private let action: ((Item) -> Void)?
+    
+    /// /// Unique identifier of view instance.
+    private let layoutId = UUID()
 
     // MARK: - Computed Properties
 
@@ -102,6 +105,8 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
                     .matchedGeometryEffect(id: item.id, in: tabBarNamespace)
                 }
             }
+            .adaptiveCoordinateSpace(name: coordinateSpaceName)
+            .environment(\.tabBarSpaceName, coordinateSpaceName)
             .accessibilityElement(children: .contain)
             .accessibilityLabel(config.barAccessibilityLabel)
             .background {
@@ -180,3 +185,11 @@ private extension FloatingLayoutView {
         }
     }
 }
+
+extension FloatingLayoutView {
+    /// The dynamic name for the coordinate space.
+    private var coordinateSpaceName: String {
+        "FloatingLayoutView.\(layoutId.uuidString)"
+    }
+}
+

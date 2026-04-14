@@ -9,6 +9,12 @@ import SwiftUI
 
 /// A standalone view representing a single tab item.
 struct TabItemView<Item: TabBarItemProtocol>: View {
+    
+    // MARK: - Environment
+        
+    /// The unique coordinate space name passed from the parent layout.
+    @Environment(\.tabBarSpaceName) private var coordinateSpaceName
+
     // MARK: - State & Logic
 
     /// The data model for the tab.
@@ -101,6 +107,12 @@ struct TabItemView<Item: TabBarItemProtocol>: View {
         .onTapGesture(perform: action)
         .modifier(TabAccessibilityModifier(item: item, isSelected: isSelected))
         .applyDebugVisuals(color: .blue)
+        .capturePreference(
+            key: TabItemCenterXKey.self,
+            in: .named(coordinateSpaceName)
+        ) { proxy in
+            [item.id: proxy.frame(in: .named(coordinateSpaceName)).midX]
+        }
     }
 
     private var content: some View {
