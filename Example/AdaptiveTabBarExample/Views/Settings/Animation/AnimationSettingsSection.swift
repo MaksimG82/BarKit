@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+typealias AnimationType = AnimationParameters.AnimationType
+
 struct AnimationSettingsSectionView: View {
     @Binding var parameters: AnimationParameters
     
