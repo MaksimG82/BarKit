@@ -22,6 +22,15 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 
     /// Flag indicating whether the indicator is currently in its scaling animation state.
     @State private var isSelectionIndicatorScaling = false
+    
+    /// A dictionary mapping each tab item's unique identifier to its horizontal center coordinate.
+    @State private var itemXCenters: [AnyHashable: CGFloat] = [:]
+    
+    /// The current horizontal position of the user's finger during a drag gesture.
+    @State private var gestureXLocation: CGFloat? = nil
+
+    /// A Boolean value that indicates whether the drag gesture is currently active.
+    @State private var isDragging: Bool = false
 
     /// Namespace used for synchronized matched geometry transitions of the selection indicator.
     @Namespace private var tabBarNamespace
@@ -107,14 +116,19 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
             .environment(\.tabBarSpaceName, coordinateSpaceName)
+            .onPreferenceChange(TabItemCenterXKey.self) { centers in
+                itemXCenters = centers
+            }
             .accessibilityElement(children: .contain)
             .accessibilityLabel(config.barAccessibilityLabel)
             .background {
                 ZStack {
                     backgroundCapsule
                     selectionIndicator
+                        .offset(x: indicatorOffset)
                 }
             }
+            .simultaneousGesture(dragGesture)
             .padding(.leading, floatingConfig.leadingInset)
             .padding(.trailing, floatingConfig.trailingInset)
             .padding(.bottom, floatingConfig.bottomInset)
@@ -126,6 +140,7 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 // MARK: - Subviews
 
 private extension FloatingLayoutView {
+    /// A background view consisting of a solid color and an optional blur material, styled with a shadow.
     var backgroundCapsule: some View {
         RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
             .fill(config.backgroundColor)
@@ -138,6 +153,7 @@ private extension FloatingLayoutView {
             .shadow(radius: floatingConfig.shadowRadius)
     }
 
+    /// A visual highlight that identifies the currently selected tab, synchronized via matched geometry.
     var selectionIndicator: some View {
         RoundedRectangle(cornerRadius: floatingConfig.cornerRadius - 4)
             .fill(Color.secondary.opacity(0.2))
@@ -149,9 +165,23 @@ private extension FloatingLayoutView {
                 anchor: .center
             )
     }
+    
+    /// A gesture that tracks finger movement to update the selection indicator position.
+    private var dragGesture: some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                isDragging = true
+                gestureXLocation = value.location.x
+            }
+            .onEnded { _ in
+                isDragging = false
+                gestureXLocation = nil
+            }
+    }
 
     // MARK: - Actions
-
+    
+    /// Updates the selected tab and triggers the associated haptic feedback and animations.
     func handleSelection(_ item: Item) {
         let transitionAnimation = config.floatingConfig?.indicatorTransitionAnimation
         let scaleEffect = config.floatingConfig?.tabSelectionScaleEffect
@@ -183,6 +213,15 @@ private extension FloatingLayoutView {
         default:
             performSelectionBlock()
         }
+    }
+    
+    /// Calculates the horizontal offset needed to align the indicator with the user's touch or the selected tab.
+    private var indicatorOffset: CGFloat {
+        if isDragging, let touchX = gestureXLocation, let currentCenterX = itemXCenters[selected.id] {
+            print("CurrentOffset: \(touchX - currentCenterX)")
+            return touchX - currentCenterX
+        }
+        return 0
     }
 }
 
