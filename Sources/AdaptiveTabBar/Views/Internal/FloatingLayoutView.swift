@@ -32,9 +32,6 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     /// A Boolean value that indicates whether the drag gesture is currently active.
     @State private var isDragging: Bool = false
 
-    /// Namespace used for synchronized matched geometry transitions of the selection indicator.
-    @Namespace private var tabBarNamespace
-
     // MARK: - Properties
 
     /// An array of data models conforming to ``TabBarItemProtocol``.
@@ -111,7 +108,6 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
                     ) {
                         handleSelection(item)
                     }
-                    .matchedGeometryEffect(id: item.id, in: tabBarNamespace)
                 }
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
@@ -122,7 +118,7 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
             .accessibilityElement(children: .contain)
             .accessibilityLabel(config.barAccessibilityLabel)
             .background {
-                ZStack {
+                ZStack(alignment: .leading) {
                     backgroundCapsule
                     selectionIndicator
                 }
@@ -152,18 +148,24 @@ private extension FloatingLayoutView {
             .shadow(radius: floatingConfig.shadowRadius)
     }
 
-    /// A visual highlight that identifies the currently selected tab, synchronized via matched geometry.
+    /// A visual highlight that identifies the currently selected tab.
     var selectionIndicator: some View {
-        RoundedRectangle(cornerRadius: floatingConfig.cornerRadius - 4)
-            .fill(Color.secondary.opacity(0.2))
-            .padding(2)
-            .matchedGeometryEffect(id: selected.id, in: tabBarNamespace, isSource: false)
-            .scaleEffect(
-                x: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.xScale ?? 1.0 : 1.0,
-                y: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.yScale ?? 1.0 : 1.0,
-                anchor: .center
-            )
+        Group {
+            if let frame = itemFrames[selected.id] {
+                RoundedRectangle(cornerRadius: floatingConfig.cornerRadius - 4)
+                    .fill(Color.secondary.opacity(0.2))
+                    .frame(width: frame.width, height: frame.height)
+                    .padding(2)
+                    .scaleEffect(
+                        x: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.xScale ?? 1.0 : 1.0,
+                        y: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.yScale ?? 1.0 : 1.0,
+                        anchor: .center
+                    )
+                    .offset(x: frame.minX)
+            }
+        }
     }
+
     
     /// A gesture that tracks finger movement to update the selection indicator position.
     private var dragGesture: some Gesture {
@@ -218,7 +220,7 @@ private extension FloatingLayoutView {
 extension FloatingLayoutView {
     /// The dynamic name for the coordinate space.
     private var coordinateSpaceName: String {
-        "FloatingLayoutView.\(layoutId.uuidString)"
+        "FloatingLayoutView"
     }
 }
 
