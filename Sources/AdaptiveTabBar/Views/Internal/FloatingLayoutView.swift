@@ -23,8 +23,8 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     /// Flag indicating whether the indicator is currently in its scaling animation state.
     @State private var isSelectionIndicatorScaling = false
     
-    /// A dictionary mapping each tab item's unique identifier to its horizontal center coordinate.
-    @State private var itemXCenters: [AnyHashable: CGFloat] = [:]
+    /// A dictionary mapping each tab item's unique identifier to its frame in the local coordinate space.
+    @State private var itemFrames: [AnyHashable: CGRect] = [:]
     
     /// The current horizontal position of the user's finger during a drag gesture.
     @State private var gestureXLocation: CGFloat? = nil
@@ -116,8 +116,8 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
             .environment(\.tabBarSpaceName, coordinateSpaceName)
-            .onPreferenceChange(TabItemCenterXKey.self) { centers in
-                itemXCenters = centers
+            .onPreferenceChange(TabItemFrameKey.self) { frames in
+                itemFrames = frames
             }
             .accessibilityElement(children: .contain)
             .accessibilityLabel(config.barAccessibilityLabel)
@@ -125,7 +125,6 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
                 ZStack {
                     backgroundCapsule
                     selectionIndicator
-                        .offset(x: indicatorOffset)
                 }
             }
             .simultaneousGesture(dragGesture)
@@ -213,15 +212,6 @@ private extension FloatingLayoutView {
         default:
             performSelectionBlock()
         }
-    }
-    
-    /// Calculates the horizontal offset needed to align the indicator with the user's touch or the selected tab.
-    private var indicatorOffset: CGFloat {
-        if isDragging, let touchX = gestureXLocation, let currentCenterX = itemXCenters[selected.id] {
-            print("CurrentOffset: \(touchX - currentCenterX)")
-            return touchX - currentCenterX
-        }
-        return 0
     }
 }
 

@@ -108,10 +108,10 @@ struct TabItemView<Item: TabBarItemProtocol>: View {
         .modifier(TabAccessibilityModifier(item: item, isSelected: isSelected))
         .applyDebugVisuals(color: .blue)
         .capturePreference(
-            key: TabItemCenterXKey.self,
+            key: TabItemFrameKey.self,
             in: .named(coordinateSpaceName)
         ) { proxy in
-            [item.id: proxy.frame(in: .named(coordinateSpaceName)).midX]
+            [item.id: proxy.frame(in: .named(coordinateSpaceName))]
         }
     }
 
