@@ -3,9 +3,4 @@ gitignore
 .build/
 .swiftpm/
 .githooks/
-*.xccheckout
-*.moved-aside
-*.xcuserstate
-*.xcscmblueprint
-*.xcuserdata
-
+xcuserdata
