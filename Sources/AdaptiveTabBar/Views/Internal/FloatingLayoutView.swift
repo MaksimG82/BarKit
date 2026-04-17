@@ -123,7 +123,6 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
                     selectionIndicator
                 }
             }
-            .simultaneousGesture(dragGesture)
             .padding(.leading, floatingConfig.leadingInset)
             .padding(.trailing, floatingConfig.trailingInset)
             .padding(.bottom, floatingConfig.bottomInset)
@@ -152,16 +151,19 @@ private extension FloatingLayoutView {
     var selectionIndicator: some View {
         Group {
             if let frame = itemFrames[selected.id] {
-                RoundedRectangle(cornerRadius: floatingConfig.cornerRadius - 4)
+                RoundedRectangle(cornerRadius: floatingConfig.indicatorCornerRadius)
                     .fill(Color.secondary.opacity(0.2))
-                    .frame(width: frame.width, height: frame.height)
-                    .padding(2)
+                    .frame(
+                        width: frame.width - floatingConfig.indicatorPadding * 2,
+                        height: frame.height - floatingConfig.indicatorPadding * 2
+                    )
                     .scaleEffect(
                         x: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.xScale ?? 1.0 : 1.0,
                         y: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.yScale ?? 1.0 : 1.0,
                         anchor: .center
                     )
-                    .offset(x: frame.minX)
+                    .offset(x: frame.minX + floatingConfig.indicatorPadding)
+//                    .gesture(dragGesture)
             }
         }
     }
@@ -171,10 +173,11 @@ private extension FloatingLayoutView {
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
+                print("drag changed: \(value.location)")
                 isDragging = true
                 gestureXLocation = value.location.x
             }
-            .onEnded { _ in
+            .onEnded { value in
                 isDragging = false
                 gestureXLocation = nil
             }

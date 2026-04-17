@@ -24,6 +24,12 @@ public struct FloatingConfiguration {
 
     /// Shadow blur radius to create depth.
     public var shadowRadius: CGFloat = 8
+    
+    /// Inset applied to the selection indicator inside the capsule.
+    public var indicatorPadding: CGFloat = 2
+
+    /// Corner radius of the selection indicator.
+    public var indicatorCornerRadius: CGFloat = 24
 
     /// Configuration for the indicator's scaling (stretching/squeezing) effect.
     /// - Note: If nil, the indicator maintains its size during the transition.
@@ -44,14 +50,18 @@ public struct FloatingConfiguration {
     ///     **Warning**: Values below 12 may cause overlap with the Home Indicator.
     ///   - cornerRadius: Corner radius of the floating capsule.
     ///   - shadowRadius: Shadow blur radius to create depth.
-    ///   - selectionScaleEffect: Configuration for the indicator's scaling (stretching/squeezing) effect..
+    ///   - tabSelectionScaleEffect: Configuration for the indicator's scaling (stretching/squeezing) effect.
     ///   - indicatorTransitionAnimation: Animation for moving the indicator between tabs.
+    ///   - indicatorPadding: Inset applied to the selection indicator inside the capsule.
+    ///   - indicatorCornerRadius: Corner radius of the selection indicator.
     public init(
         leadingInset: CGFloat = 16,
         trailingInset: CGFloat = 16,
         bottomInset: CGFloat = 20,
         cornerRadius: CGFloat = 28,
         shadowRadius: CGFloat = 8,
+        indicatorPadding: CGFloat = 2,
+        indicatorCornerRadius: CGFloat = 24,
         tabSelectionScaleEffect: SelectionScaleEffect? = nil,
         indicatorTransitionAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7)
     ) {
@@ -60,6 +70,8 @@ public struct FloatingConfiguration {
         self.bottomInset = bottomInset
         self.cornerRadius = cornerRadius
         self.shadowRadius = shadowRadius
+        self.indicatorPadding = indicatorPadding
+        self.indicatorCornerRadius = indicatorCornerRadius
         self.tabSelectionScaleEffect = tabSelectionScaleEffect
         self.indicatorTransitionAnimation = indicatorTransitionAnimation
     }
