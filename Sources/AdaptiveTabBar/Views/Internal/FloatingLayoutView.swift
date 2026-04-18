@@ -12,6 +12,7 @@ import SwiftUI
 /// It renders items within a detached, blurred capsule that adapts its content
 /// to maintain a balanced, lightweight appearance.
 struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
+    
     // MARK: - Property Wrappers
 
     /// Detects current vertical size class to toggle between compact and regular layouts.
@@ -57,6 +58,13 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     private var isVerticalCompact: Bool {
         verticalSizeClass == .compact
     }
+    
+    /// The frame of the currently selected tab item in the local coordinate space.
+    /// Guaranteed to be non-nil in practice, as `itemFrames` is populated before
+    /// any gesture interaction is possible. Falls back to `.zero` as a safety net.
+    private var selectedItemFrame: CGRect {
+        itemFrames[selected.id] ?? .zero
+    }
 
     // MARK: - Init
 
@@ -98,31 +106,32 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
         VStack {
             Spacer()
 
-            HStack(alignment: .bottom, spacing: config.tabSpacing) {
-                ForEach(items) { item in
-                    TabItemView(
-                        item: item,
-                        isSelected: item.id == selected.id,
-                        isVerticalCompact: isVerticalCompact,
-                        config: config
-                    ) {
-                        handleSelection(item)
+            ZStack(alignment: .leading) {
+
+                HStack(alignment: .bottom, spacing: config.tabSpacing) {
+                    ForEach(items) { item in
+                        TabItemView(
+                            item: item,
+                            isSelected: item.id == selected.id,
+                            isVerticalCompact: isVerticalCompact,
+                            config: config
+                        ) {
+                            handleSelection(item)
+                        }
                     }
                 }
-            }
-            .adaptiveCoordinateSpace(name: coordinateSpaceName)
-            .environment(\.tabBarSpaceName, coordinateSpaceName)
-            .onPreferenceChange(TabItemFrameKey.self) { frames in
-                itemFrames = frames
+                .adaptiveCoordinateSpace(name: coordinateSpaceName)
+                .environment(\.tabBarSpaceName, coordinateSpaceName)
+                .onPreferenceChange(TabItemFrameKey.self) { frames in
+                    itemFrames = frames
+                }
+                .background { backgroundCapsule }
+                .defersSystemGestures(on: .all)
+
+                selectionIndicator
             }
             .accessibilityElement(children: .contain)
             .accessibilityLabel(config.barAccessibilityLabel)
-            .background {
-                ZStack(alignment: .leading) {
-                    backgroundCapsule
-                    selectionIndicator
-                }
-            }
             .padding(.leading, floatingConfig.leadingInset)
             .padding(.trailing, floatingConfig.trailingInset)
             .padding(.bottom, floatingConfig.bottomInset)
@@ -149,35 +158,34 @@ private extension FloatingLayoutView {
 
     /// A visual highlight that identifies the currently selected tab.
     var selectionIndicator: some View {
-        Group {
-            if let frame = itemFrames[selected.id] {
-                RoundedRectangle(cornerRadius: floatingConfig.indicatorCornerRadius)
-                    .fill(Color.secondary.opacity(0.2))
-                    .frame(
-                        width: frame.width - floatingConfig.indicatorPadding * 2,
-                        height: frame.height - floatingConfig.indicatorPadding * 2
-                    )
-                    .scaleEffect(
-                        x: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.xScale ?? 1.0 : 1.0,
-                        y: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.yScale ?? 1.0 : 1.0,
-                        anchor: .center
-                    )
-                    .offset(x: frame.minX + floatingConfig.indicatorPadding)
-//                    .gesture(dragGesture)
-            }
-        }
+        RoundedRectangle(cornerRadius: floatingConfig.indicatorCornerRadius)
+            .fill(Color.secondary.opacity(0.2))
+            .frame(
+                width: max(0, selectedItemFrame.width - floatingConfig.indicatorPadding * 2),
+                height: max(0, selectedItemFrame.height - floatingConfig.indicatorPadding * 2)
+            )
+            .scaleEffect(
+                x: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.xScale ?? 1.0 : 1.0,
+                y: isSelectionIndicatorScaling ? config.floatingConfig?.tabSelectionScaleEffect?.yScale ?? 1.0 : 1.0,
+                anchor: .center
+            )
+            .offset(x: indicatorFrame().minX)
+            .gesture(dragGesture)
     }
+    
 
     
     /// A gesture that tracks finger movement to update the selection indicator position.
     private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 0)
+        DragGesture(minimumDistance:  0, coordinateSpace: .named(coordinateSpaceName))
             .onChanged { value in
-                print("drag changed: \(value.location)")
+                isSelectionIndicatorScaling = true
                 isDragging = true
                 gestureXLocation = value.location.x
             }
             .onEnded { value in
+                isSelectionIndicatorScaling = true
+                handleSelection(nearestItem(to: indicatorFrame()))
                 isDragging = false
                 gestureXLocation = nil
             }
@@ -217,6 +225,38 @@ private extension FloatingLayoutView {
         default:
             performSelectionBlock()
         }
+    }
+    
+    // MARK: - Helpers
+    
+    /// Computes the frame of the selection indicator.
+    /// - Returns: The frame for the indicator, clamped to the tab bar bounds.
+    private func indicatorFrame() -> CGRect {
+        let padding = floatingConfig.indicatorPadding
+        let width = selectedItemFrame.width - padding * 2
+        let height = selectedItemFrame.height - padding * 2
+        let minX: CGFloat
+
+        if isDragging, let gestureXLocation {
+            let raw = gestureXLocation - selectedItemFrame.width / 2 + padding
+            let minAllowed = padding
+            let maxAllowed = (selectedItemFrame.width + config.tabSpacing) * CGFloat(itemFrames.count - 1) + padding
+            minX = max(minAllowed, min(maxAllowed, raw))
+        } else {
+            minX = selectedItemFrame.minX + padding
+        }
+
+        return CGRect(x: minX, y: selectedItemFrame.minY + padding, width: width, height: height)
+    }
+    
+    /// Returns the item whose center is closest to the indicator's center.
+    /// Falls back to the current selection if `items` is empty, which is not expected in practice.
+    /// - Parameter indicatorFrame: The current frame of the selection indicator.
+    private func nearestItem(to indicatorFrame: CGRect) -> Item {
+        items.min(by: {
+            abs((itemFrames[$0.id]?.midX ?? 0) - indicatorFrame.midX) <
+            abs((itemFrames[$1.id]?.midX ?? 0) - indicatorFrame.midX)
+        }) ?? selected
     }
 }
 
