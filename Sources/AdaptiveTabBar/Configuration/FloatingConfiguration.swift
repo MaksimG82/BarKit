@@ -30,6 +30,10 @@ public struct FloatingConfiguration {
 
     /// Corner radius of the selection indicator.
     public var indicatorCornerRadius: CGFloat = 24
+    
+    /// The color applied to icon and title within the selection indicator bounds.
+    /// Defaults to white for contrast against the indicator background.
+    public var activeItemColor: Color = .orange
 
     /// Configuration for the indicator's scaling (stretching/squeezing) effect.
     /// - Note: If nil, the indicator maintains its size during the transition.
@@ -50,10 +54,11 @@ public struct FloatingConfiguration {
     ///     **Warning**: Values below 12 may cause overlap with the Home Indicator.
     ///   - cornerRadius: Corner radius of the floating capsule.
     ///   - shadowRadius: Shadow blur radius to create depth.
-    ///   - tabSelectionScaleEffect: Configuration for the indicator's scaling (stretching/squeezing) effect.
-    ///   - indicatorTransitionAnimation: Animation for moving the indicator between tabs.
     ///   - indicatorPadding: Inset applied to the selection indicator inside the capsule.
     ///   - indicatorCornerRadius: Corner radius of the selection indicator.
+    ///   - activeItemColor: The color applied to icon and title within the selection indicator bounds.
+    ///   - tabSelectionScaleEffect: Configuration for the indicator's scaling (stretching/squeezing) effect.
+    ///   - indicatorTransitionAnimation: Animation for moving the indicator between tabs.
     public init(
         leadingInset: CGFloat = 16,
         trailingInset: CGFloat = 16,
@@ -62,6 +67,7 @@ public struct FloatingConfiguration {
         shadowRadius: CGFloat = 8,
         indicatorPadding: CGFloat = 2,
         indicatorCornerRadius: CGFloat = 24,
+        activeItemColor: Color = .orange,
         tabSelectionScaleEffect: SelectionScaleEffect? = nil,
         indicatorTransitionAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7)
     ) {
