@@ -107,27 +107,8 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
             Spacer()
 
             ZStack(alignment: .leading) {
-
-                HStack(alignment: .bottom, spacing: config.tabSpacing) {
-                    ForEach(items) { item in
-                        TabItemView(
-                            item: item,
-                            isSelected: item.id == selected.id,
-                            isVerticalCompact: isVerticalCompact,
-                            config: config
-                        ) {
-                            handleSelection(item)
-                        }
-                    }
-                }
-                .adaptiveCoordinateSpace(name: coordinateSpaceName)
-                .environment(\.tabBarSpaceName, coordinateSpaceName)
-                .onPreferenceChange(TabItemFrameKey.self) { frames in
-                    itemFrames = frames
-                }
-                .background { backgroundCapsule }
-                .defersSystemGestures(on: .all)
-
+                tabItemsStack
+                overlayItemsStack
                 selectionIndicator
             }
             .accessibilityElement(children: .contain)
@@ -143,6 +124,31 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 // MARK: - Subviews
 
 private extension FloatingLayoutView {
+    
+    /// A horizontal stack of interactive tab items.
+    private var tabItemsStack: some View {
+        HStack(alignment: .bottom, spacing: config.tabSpacing) {
+            ForEach(items) { item in
+                TabItemView(
+                    item: item,
+                    isSelected: item.id == selected.id,
+                    isVerticalCompact: isVerticalCompact,
+                    config: config
+                ) {
+                    handleSelection(item)
+                }
+            }
+        }
+        .adaptiveCoordinateSpace(name: coordinateSpaceName)
+        .environment(\.tabBarSpaceName, coordinateSpaceName)
+        .onPreferenceChange(TabItemFrameKey.self) { frames in
+            itemFrames = frames
+        }
+        .background { backgroundCapsule }
+        .defersSystemGestures(on: .all)
+    }
+    
+    
     /// A background view consisting of a solid color and an optional blur material, styled with a shadow.
     var backgroundCapsule: some View {
         RoundedRectangle(cornerRadius: floatingConfig.cornerRadius)
@@ -173,6 +179,30 @@ private extension FloatingLayoutView {
             .gesture(dragGesture)
     }
     
+    /// A horizontal stack of non-interactive overlay items, clipped to the indicator shape.
+    /// Renders tab icons and titles in the active color only within the selection indicator bounds.
+    private var overlayItemsStack: some View {
+        HStack(alignment: .bottom, spacing: config.tabSpacing) {
+            ForEach(items) { item in
+                TabItemOverlayView(
+                    item: item,
+                    isSelected: item.id == selected.id,
+                    isVerticalCompact: isVerticalCompact,
+                    itemColor: config.floatingConfig?.activeItemColor ?? .orange,
+                    config: config
+                )
+            }
+        }
+        .adaptiveCoordinateSpace(name: coordinateSpaceName)
+        .mask(alignment: .leading) {
+            RoundedRectangle(cornerRadius: floatingConfig.indicatorCornerRadius)
+                .frame(
+                    width: max(0, indicatorFrame().width),
+                    height: max(0, indicatorFrame().height)
+                )
+                .offset(x: indicatorFrame().minX)
+        }
+    }
 
     
     /// A gesture that tracks finger movement to update the selection indicator position.
