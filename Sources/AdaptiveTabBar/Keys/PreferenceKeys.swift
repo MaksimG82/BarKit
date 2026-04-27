@@ -12,10 +12,10 @@ typealias TabItemFrames = [AnyHashable: CGRect]
 
 
 /// A preference key for collecting and merging tab item frames.
-struct TabItemFrameKey: @MainActor PreferenceKey {
+struct TabItemFrameKey: PreferenceKey {
     
     /// Initial value containing item IDs and their frame.
-    @MainActor static var defaultValue: TabItemFrames = [:]
+    nonisolated(unsafe) static let defaultValue: TabItemFrames = [:]
     
     /// Merges coordinates from child views into a single dictionary.
     static func reduce(value: inout TabItemFrames, nextValue: () -> TabItemFrames) {
