@@ -1,11 +1,11 @@
 //
 //  AnimationSettingsView.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 12.03.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 struct AnimationSettingsView: View {

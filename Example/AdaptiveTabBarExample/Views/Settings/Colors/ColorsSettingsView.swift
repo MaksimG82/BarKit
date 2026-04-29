@@ -1,11 +1,11 @@
 //
 //  ColorsSettingsView.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 14.02.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 struct ColorsSettingsView: View {

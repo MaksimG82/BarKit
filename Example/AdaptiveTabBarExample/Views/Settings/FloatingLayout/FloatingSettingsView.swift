@@ -1,11 +1,11 @@
 //
 //  FloatingSettingsView.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 19.03.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 struct FloatingSettingsView: View {

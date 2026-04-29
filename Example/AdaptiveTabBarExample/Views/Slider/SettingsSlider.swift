@@ -1,6 +1,6 @@
 //
 //  SettingsSlider.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 13.04.26.
 //

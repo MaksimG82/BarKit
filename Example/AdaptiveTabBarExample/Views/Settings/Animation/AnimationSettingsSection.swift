@@ -1,6 +1,6 @@
 //
 //  AnimationSettingsSection.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 12.04.26.
 //

@@ -1,11 +1,11 @@
 //
 //  ExampleContentView.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 12.01.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 struct ExampleContentView: View {
@@ -31,7 +31,7 @@ struct ExampleContentView: View {
                 .toolbar {
                     Button("Reset all changes") { viewModel.send(.resetState) }
                 }
-                .navigationTitle("AdaptiveTabBar")
+                .navigationTitle("BarKit")
             }
             .environment(\.tabBarHeight, currentBarHeight())
 

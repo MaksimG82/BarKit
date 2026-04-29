@@ -1,11 +1,11 @@
 //
 //  ExampleState.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 16.01.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 /// Represents the entire state of the Example app screen.

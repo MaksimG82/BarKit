@@ -1,6 +1,6 @@
 //
 //  TabBar+Environment.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 13.03.26.
 //

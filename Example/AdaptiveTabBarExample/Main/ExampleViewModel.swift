@@ -1,11 +1,11 @@
 //
 //  ExampleViewModel.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 16.01.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import Observation
 import SwiftUI
 

@@ -1,11 +1,11 @@
 //
 //  AnimationParameters.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 14.04.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 import SwiftUI

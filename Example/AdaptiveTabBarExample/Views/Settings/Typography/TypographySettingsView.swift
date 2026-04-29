@@ -1,11 +1,11 @@
 //
 //  TypographySettingsView.swift
-//  AdaptiveTabBarExample
+//  BarKitExample
 //
 //  Created by Maksim Gaisin on 11.03.26.
 //
 
-import AdaptiveTabBar
+import BarKit
 import SwiftUI
 
 struct TypographySettingsView: View {

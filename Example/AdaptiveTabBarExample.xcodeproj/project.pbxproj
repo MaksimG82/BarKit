@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		D768ABD32F159E4600030F28 /* AdaptiveTabBar in Frameworks */ = {isa = PBXBuildFile; productRef = D768ABD22F159E4600030F28 /* AdaptiveTabBar */; };
-		D76F35E42F19AE9500EAC4D5 /* AdaptiveTabBar in Frameworks */ = {isa = PBXBuildFile; productRef = D76F35E32F19AE9500EAC4D5 /* AdaptiveTabBar */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		D746DFB22F159711001443C0 /* AdaptiveTabBarExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdaptiveTabBarExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -28,8 +23,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D76F35E42F19AE9500EAC4D5 /* AdaptiveTabBar in Frameworks */,
-				D768ABD32F159E4600030F28 /* AdaptiveTabBar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +65,6 @@
 			);
 			name = AdaptiveTabBarExample;
 			packageProductDependencies = (
-				D768ABD22F159E4600030F28 /* AdaptiveTabBar */,
-				D76F35E32F19AE9500EAC4D5 /* AdaptiveTabBar */,
 			);
 			productName = AdaptiveTabBarExample;
 			productReference = D746DFB22F159711001443C0 /* AdaptiveTabBarExample.app */;
@@ -104,8 +95,7 @@
 			mainGroup = D746DFA92F159711001443C0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D76F35E22F19AE9500EAC4D5 /* XCLocalSwiftPackageReference "../../AdaptiveTabBar" */,
-			);
+            );
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D746DFB32F159711001443C0 /* Products */;
 			projectDirPath = "";
@@ -364,23 +354,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		D76F35E22F19AE9500EAC4D5 /* XCLocalSwiftPackageReference "../../AdaptiveTabBar" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../AdaptiveTabBar;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		D768ABD22F159E4600030F28 /* AdaptiveTabBar */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AdaptiveTabBar;
-		};
-		D76F35E32F19AE9500EAC4D5 /* AdaptiveTabBar */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AdaptiveTabBar;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D746DFAA2F159711001443C0 /* Project object */;
 }
