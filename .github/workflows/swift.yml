@@ -14,6 +14,6 @@ jobs:
     - name: Build (iOS)
       run: |
             xcodebuild \
-            -scheme AdaptiveTabBar \
+            -scheme BarKit \
             -destination 'generic/platform=iOS' \
             build

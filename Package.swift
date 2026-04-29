@@ -2,20 +2,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "AdaptiveTabBar",
+    name: "BarKit",
     platforms: [
         .iOS(.v16)
     ],
     products: [
         .library(
-            name: "AdaptiveTabBar",
-            targets: ["AdaptiveTabBar"]
+            name: "BarKit",
+            targets: ["BarKit"]
         )
     ],
     targets: [
         .target(
-            name: "AdaptiveTabBar",
-            path: "Sources/AdaptiveTabBar",
+            name: "BarKit",
+            path: "Sources/BarKit",
             resources: [
                 .process("Metal")
             ]
