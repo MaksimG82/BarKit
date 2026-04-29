@@ -65,6 +65,11 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
     private var selectedItemFrame: CGRect {
         itemFrames[selected.id] ?? .zero
     }
+    
+    /// The dynamic name for the coordinate space.
+    private var coordinateSpaceName: String {
+        "FloatingLayoutView"
+    }
 
     // MARK: - Init
 
@@ -104,13 +109,31 @@ struct FloatingLayoutView<Item: TabBarItemProtocol>: View {
 
     var body: some View {
         VStack {
-            Spacer()
-
+            
             ZStack(alignment: .leading) {
                 tabItemsStack
+                    .indicatorLensEffect(
+                    frame: indicatorFrame(),
+                    cornerRadius: floatingConfig.indicatorCornerRadius,
+                    refractionZoneWidth: 12.0,
+                    aberrationZoneWidth: 8.0,
+                    aberrationStrength: 4.0,
+                    refractionStrength: 2.0
+                )
+                
                 overlayItemsStack
+                    .indicatorLensEffect(
+                        frame: indicatorFrame(),
+                        cornerRadius: floatingConfig.indicatorCornerRadius,
+                        refractionZoneWidth: 12.0,
+                        aberrationZoneWidth: 8.0,
+                        aberrationStrength: 4.0,
+                        refractionStrength: 2.0
+                    )
+                
                 selectionIndicator
             }
+            .background { backgroundCapsule }
             .accessibilityElement(children: .contain)
             .accessibilityLabel(config.barAccessibilityLabel)
             .padding(.leading, floatingConfig.leadingInset)
@@ -144,7 +167,6 @@ private extension FloatingLayoutView {
         .onPreferenceChange(TabItemFrameKey.self) { frames in
             itemFrames = frames
         }
-        .background { backgroundCapsule }
         .defersSystemGestures(on: .all)
     }
     
@@ -161,7 +183,7 @@ private extension FloatingLayoutView {
             }
             .shadow(radius: floatingConfig.shadowRadius)
     }
-
+    
     /// A visual highlight that identifies the currently selected tab.
     var selectionIndicator: some View {
         RoundedRectangle(cornerRadius: floatingConfig.indicatorCornerRadius)
@@ -188,7 +210,7 @@ private extension FloatingLayoutView {
                     item: item,
                     isSelected: item.id == selected.id,
                     isVerticalCompact: isVerticalCompact,
-                    itemColor: config.floatingConfig?.activeItemColor ?? .orange,
+                    itemColor: config.floatingConfig?.activeItemColor ?? .blue,
                     config: config
                 )
             }
@@ -203,8 +225,11 @@ private extension FloatingLayoutView {
                 .offset(x: indicatorFrame().minX)
         }
     }
+}
 
-    
+// MARK: - Gesture
+
+private extension FloatingLayoutView {
     /// A gesture that tracks finger movement to update the selection indicator position.
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance:  0, coordinateSpace: .named(coordinateSpaceName))
@@ -220,44 +245,49 @@ private extension FloatingLayoutView {
                 gestureXLocation = nil
             }
     }
+}
 
     // MARK: - Actions
+
+private extension FloatingLayoutView {
     
     /// Updates the selected tab and triggers the associated haptic feedback and animations.
     func handleSelection(_ item: Item) {
         let transitionAnimation = config.floatingConfig?.indicatorTransitionAnimation
         let scaleEffect = config.floatingConfig?.tabSelectionScaleEffect
-
+        
         let performSelectionBlock = {
             selected = item
             action?(item)
         }
-
+        
         switch (transitionAnimation, scaleEffect) {
         case let (transitionAnimation?, scaleEffect?):
             isSelectionIndicatorScaling = true
             withAnimation(transitionAnimation) { performSelectionBlock() }
-
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + scaleEffect.duration) {
                 withAnimation(scaleEffect.animation) { isSelectionIndicatorScaling = false }
             }
-
+            
         case (let transitionAnimation?, nil):
             withAnimation(transitionAnimation) { performSelectionBlock() }
-
+            
         case (nil, let scaleEffect?):
             isSelectionIndicatorScaling = true
             performSelectionBlock()
             DispatchQueue.main.asyncAfter(deadline: .now() + scaleEffect.duration) {
                 withAnimation(scaleEffect.animation) { isSelectionIndicatorScaling = false }
             }
-
+            
         default:
             performSelectionBlock()
         }
     }
-    
+}
     // MARK: - Helpers
+
+private extension FloatingLayoutView {
     
     /// Computes the frame of the selection indicator.
     /// - Returns: The frame for the indicator, clamped to the tab bar bounds.
@@ -266,7 +296,7 @@ private extension FloatingLayoutView {
         let width = selectedItemFrame.width - padding * 2
         let height = selectedItemFrame.height - padding * 2
         let minX: CGFloat
-
+        
         if isDragging, let gestureXLocation {
             let raw = gestureXLocation - selectedItemFrame.width / 2 + padding
             let minAllowed = padding
@@ -275,7 +305,7 @@ private extension FloatingLayoutView {
         } else {
             minX = selectedItemFrame.minX + padding
         }
-
+        
         return CGRect(x: minX, y: selectedItemFrame.minY + padding, width: width, height: height)
     }
     
@@ -285,15 +315,24 @@ private extension FloatingLayoutView {
     private func nearestItem(to indicatorFrame: CGRect) -> Item {
         items.min(by: {
             abs((itemFrames[$0.id]?.midX ?? 0) - indicatorFrame.midX) <
-            abs((itemFrames[$1.id]?.midX ?? 0) - indicatorFrame.midX)
+                abs((itemFrames[$1.id]?.midX ?? 0) - indicatorFrame.midX)
         }) ?? selected
     }
 }
 
-extension FloatingLayoutView {
-    /// The dynamic name for the coordinate space.
-    private var coordinateSpaceName: String {
-        "FloatingLayoutView"
+    // MARK: - Effects
+private extension FloatingLayoutView {
+    
+    /// Returns the configured lens distortion and chromatic aberration effect for the current indicator frame.
+    private func lensEffect() -> some View {
+        indicatorLensEffect(
+            frame: indicatorFrame(),
+            cornerRadius: floatingConfig.indicatorCornerRadius,
+            refractionZoneWidth: floatingConfig.refractionZoneWidth,
+            aberrationZoneWidth: floatingConfig.aberrationZoneWidth,
+            aberrationStrength: floatingConfig.aberrationStrength,
+            refractionStrength: floatingConfig.refractionStrength
+        )
     }
 }
 

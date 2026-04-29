@@ -15,7 +15,10 @@ let package = Package(
     targets: [
         .target(
             name: "AdaptiveTabBar",
-            path: "Sources/AdaptiveTabBar"
+            path: "Sources/AdaptiveTabBar",
+            resources: [
+                .process("Metal")
+            ]
         )
     ]
 )

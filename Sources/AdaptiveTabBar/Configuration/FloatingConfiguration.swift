@@ -33,7 +33,7 @@ public struct FloatingConfiguration {
     
     /// The color applied to icon and title within the selection indicator bounds.
     /// Defaults to white for contrast against the indicator background.
-    public var activeItemColor: Color = .orange
+    public var activeItemColor: Color = .blue
 
     /// Configuration for the indicator's scaling (stretching/squeezing) effect.
     /// - Note: If nil, the indicator maintains its size during the transition.
@@ -42,6 +42,20 @@ public struct FloatingConfiguration {
     /// Animation for moving the indicator between tabs.
     /// - Note:  If nil, the indicator snaps to the new position instantly.
     public var indicatorTransitionAnimation: Animation? = .linear
+    
+    // MARK: - Lens Effect
+
+    /// Width in points of the zone near the boundary where lens distortion is applied. Typical range 2.0–12.0.
+    public var refractionZoneWidth: CGFloat = 12.0
+
+    /// Width in points of the zone near the boundary where chromatic aberration is applied. Typical range 1.0–6.0.
+    public var aberrationZoneWidth: CGFloat = 8.0
+
+    /// Maximum pixel displacement at the indicator boundary. Typical range 1.5–5.0.
+    public var refractionStrength: CGFloat = 2.0
+
+    /// RGB channel separation in pixels at the indicator boundary. Typical range 1.0–4.0.
+    public var aberrationStrength: CGFloat = 4.0
 
     // MARK: - Init
 
@@ -59,6 +73,10 @@ public struct FloatingConfiguration {
     ///   - activeItemColor: The color applied to icon and title within the selection indicator bounds.
     ///   - tabSelectionScaleEffect: Configuration for the indicator's scaling (stretching/squeezing) effect.
     ///   - indicatorTransitionAnimation: Animation for moving the indicator between tabs.
+    ///   - refractionZoneWidth: Width in points of the zone near the boundary where lens distortion is applied. Typical range 2.0–12.0.
+    ///   - aberrationZoneWidth: Width in points of the zone near the boundary where chromatic aberration is applied. Typical range 1.0–6.0.
+    ///   - refractionStrength: Maximum pixel displacement at the indicator boundary. Typical range 1.5–5.0.
+    ///   - aberrationStrength: RGB channel separation in pixels at the indicator boundary. Typical range 1.0–4.0.
     public init(
         leadingInset: CGFloat = 16,
         trailingInset: CGFloat = 16,
@@ -67,7 +85,7 @@ public struct FloatingConfiguration {
         shadowRadius: CGFloat = 8,
         indicatorPadding: CGFloat = 2,
         indicatorCornerRadius: CGFloat = 24,
-        activeItemColor: Color = .orange,
+        activeItemColor: Color = .blue,
         tabSelectionScaleEffect: SelectionScaleEffect? = nil,
         indicatorTransitionAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7)
     ) {
