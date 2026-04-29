@@ -6,14 +6,18 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D7C65FD82FA22ACE00F11C32 /* BarKit in Frameworks */ = {isa = PBXBuildFile; productRef = D7C65FD72FA22ACE00F11C32 /* BarKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		D746DFB22F159711001443C0 /* AdaptiveTabBarExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdaptiveTabBarExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D746DFB22F159711001443C0 /* BarKitExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BarKitExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D746DFB42F159711001443C0 /* AdaptiveTabBarExample */ = {
+		D746DFB42F159711001443C0 /* BarKitExample */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AdaptiveTabBarExample;
+			path = BarKitExample;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7C65FD82FA22ACE00F11C32 /* BarKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,7 +37,7 @@
 		D746DFA92F159711001443C0 = {
 			isa = PBXGroup;
 			children = (
-				D746DFB42F159711001443C0 /* AdaptiveTabBarExample */,
+				D746DFB42F159711001443C0 /* BarKitExample */,
 				D746DFB32F159711001443C0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +45,7 @@
 		D746DFB32F159711001443C0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D746DFB22F159711001443C0 /* AdaptiveTabBarExample.app */,
+				D746DFB22F159711001443C0 /* BarKitExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +53,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D746DFB12F159711001443C0 /* AdaptiveTabBarExample */ = {
+		D746DFB12F159711001443C0 /* BarKitExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D746DFBD2F159712001443C0 /* Build configuration list for PBXNativeTarget "AdaptiveTabBarExample" */;
+			buildConfigurationList = D746DFBD2F159712001443C0 /* Build configuration list for PBXNativeTarget "BarKitExample" */;
 			buildPhases = (
 				D746DFAE2F159711001443C0 /* Sources */,
 				D746DFAF2F159711001443C0 /* Frameworks */,
@@ -61,13 +66,14 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D746DFB42F159711001443C0 /* AdaptiveTabBarExample */,
+				D746DFB42F159711001443C0 /* BarKitExample */,
 			);
-			name = AdaptiveTabBarExample;
+			name = BarKitExample;
 			packageProductDependencies = (
+				D7C65FD72FA22ACE00F11C32 /* BarKit */,
 			);
-			productName = AdaptiveTabBarExample;
-			productReference = D746DFB22F159711001443C0 /* AdaptiveTabBarExample.app */;
+			productName = BarKitExample;
+			productReference = D746DFB22F159711001443C0 /* BarKitExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +91,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D746DFAD2F159711001443C0 /* Build configuration list for PBXProject "AdaptiveTabBarExample" */;
+			buildConfigurationList = D746DFAD2F159711001443C0 /* Build configuration list for PBXProject "BarKitExample" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -95,13 +101,14 @@
 			mainGroup = D746DFA92F159711001443C0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-            );
+				D7C65FD62FA22ACE00F11C32 /* XCLocalSwiftPackageReference "../../BarKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D746DFB32F159711001443C0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D746DFB12F159711001443C0 /* AdaptiveTabBarExample */,
+				D746DFB12F159711001443C0 /* BarKitExample */,
 			);
 		};
 /* End PBXProject section */
@@ -270,7 +277,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.maksimgaisin.AdaptiveTabBarExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maksimgaisin.BarKitExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -314,7 +321,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.maksimgaisin.AdaptiveTabBarExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maksimgaisin.BarKitExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -334,7 +341,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D746DFAD2F159711001443C0 /* Build configuration list for PBXProject "AdaptiveTabBarExample" */ = {
+		D746DFAD2F159711001443C0 /* Build configuration list for PBXProject "BarKitExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D746DFBB2F159712001443C0 /* Debug */,
@@ -343,7 +350,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D746DFBD2F159712001443C0 /* Build configuration list for PBXNativeTarget "AdaptiveTabBarExample" */ = {
+		D746DFBD2F159712001443C0 /* Build configuration list for PBXNativeTarget "BarKitExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D746DFBE2F159712001443C0 /* Debug */,
@@ -354,6 +361,19 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		D7C65FD62FA22ACE00F11C32 /* XCLocalSwiftPackageReference "../../BarKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../BarKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D7C65FD72FA22ACE00F11C32 /* BarKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BarKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D746DFAA2F159711001443C0 /* Project object */;
 }
