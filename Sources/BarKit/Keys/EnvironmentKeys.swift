@@ -16,4 +16,7 @@ extension EnvironmentValues {
     
     /// The unique coordinate space name for the current tab bar instance.
     @Entry var tabBarSpaceName: String = ""
+    
+    /// The unique coordinate space name for the current bar instance.
+    @Entry var barSpaceName: String = ""
 }

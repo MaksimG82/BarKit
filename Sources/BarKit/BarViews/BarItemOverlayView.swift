@@ -1,0 +1,119 @@
+//
+//  BarItemOverlayView.swift
+//  BarKit
+//
+//  Created by Maksim Gaisin on 29.04.26.
+//
+
+import SwiftUI
+
+/// A purely visual, non-interactive layer that mirrors the layout of `BarItemView`.
+/// Used as the upper layer in the dual-render stack for the selection color effect.
+struct BarItemOverlayView<Item: BarItemProtocol>: View {
+
+    // MARK: - Properties
+
+    /// The data model for this item view.
+    let item: Item
+
+    /// Indicates if the element is currently selected.
+    let isSelected: Bool
+
+    /// Returns true if the item should adapt to a space-constrained horizontal layout.
+    let isVerticalCompact: Bool
+
+    // MARK: - Visual Style
+
+    /// The color applied to the icon and title.
+    let itemColor: Color
+
+    /// The typography style for the title.
+    let textStyle: Font.TextStyle
+
+    /// The transition used for state changes.
+    let animation: Animation?
+
+    // MARK: - Metrics & Spacing
+
+    /// The icon size.
+    let iconSize: CGSize
+
+    /// The scaling factor applied to the icon when selected.
+    let selectedIconScale: CGFloat
+
+    /// The distance between the icon and the title.
+    let iconTitleSpacing: CGFloat
+
+    /// The inset applied to the top of the element.
+    let topPadding: CGFloat
+
+    /// The inset applied to the bottom of the element.
+    let bottomPadding: CGFloat
+
+    // MARK: - Init
+
+    /// Initializes a new `BarItemOverlayView`.
+    ///
+    /// - Parameters:
+    ///   - item: A data model conforming to ``BarItemProtocol``.
+    ///   - isSelected: Current selection state.
+    ///   - isVerticalCompact: Whether the layout is in compact height mode.
+    ///   - config: A configuration object defining the visual style.
+    init(
+        item: Item,
+        isSelected: Bool,
+        isVerticalCompact: Bool,
+        config: BarConfiguration
+    ) {
+        self.item = item
+        self.isSelected = isSelected
+        self.isVerticalCompact = isVerticalCompact
+
+        let itemConfig = config.itemStyles[item.style] ?? config.itemStyles[.regular] ?? ItemConfiguration()
+        itemColor = itemConfig.selectedColor
+        selectedIconScale = itemConfig.selectedIconScale
+        iconTitleSpacing = itemConfig.iconTitleSpacing
+        textStyle = itemConfig.textStyle
+        animation = config.itemStateAnimation
+
+        let side = itemConfig.iconSideLength * (isVerticalCompact ? itemConfig.compactIconScale : 1.0)
+        iconSize = CGSize(width: side, height: side)
+
+        let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
+        topPadding = insets.top
+        bottomPadding = insets.bottom
+    }
+
+    // MARK: - Body
+
+    var body: some View {
+        Group {
+            if isVerticalCompact {
+                HStack(spacing: iconTitleSpacing) { content }
+            } else {
+                VStack(spacing: iconTitleSpacing) { content }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, topPadding)
+        .padding(.bottom, bottomPadding)
+        .allowsHitTesting(false)
+    }
+
+    // MARK: - Subviews
+
+    private var content: some View {
+        Group {
+            BarIconView(icon: item.icon)
+                .frame(width: iconSize.width, height: iconSize.height)
+                .foregroundStyle(itemColor)
+                .scaleEffect(isSelected ? selectedIconScale : 1.0)
+
+            Text(item.title)
+                .font(.system(textStyle))
+                .foregroundStyle(itemColor)
+                .lineLimit(1)
+        }
+        .animation(animation, value: isSelected)
+    }
+}

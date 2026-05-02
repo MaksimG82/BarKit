@@ -22,3 +22,23 @@ struct TabItemFrameKey: PreferenceKey {
         value.merge(nextValue(), uniquingKeysWith: { $1 })
     }
 }
+
+
+/// A dictionary mapping item identifiers to their frames.
+typealias BarItemFrames = [AnyHashable: CGRect]
+
+
+/// A preference key for collecting and merging item frames.
+struct BarItemFrameKey: PreferenceKey {
+    
+    /// Initial value containing item IDs and their frame.
+    nonisolated(unsafe) static let defaultValue: BarItemFrames = [:]
+    
+    /// Merges coordinates from child views into a single dictionary.
+    static func reduce(
+        value: inout BarItemFrames,
+        nextValue: () -> TabItemFrames
+    ) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}

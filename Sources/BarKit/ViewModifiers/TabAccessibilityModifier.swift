@@ -21,3 +21,19 @@ struct TabAccessibilityModifier<Item: TabBarItemProtocol>: ViewModifier {
             .accessibilityRemoveTraits(.isImage)
     }
 }
+
+
+struct BarAccessibilityModifier<Item: BarItemProtocol>: ViewModifier {
+    let item: Item
+    let isSelected: Bool
+
+    func body(content: Content) -> some View {
+        #warning("Analize and test it (ATB-23)!")
+        content
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(item.accessibilityLabel ?? item.title)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
+            .accessibilityRemoveTraits(.isImage)
+    }
+}
