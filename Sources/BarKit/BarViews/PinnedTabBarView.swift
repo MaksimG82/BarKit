@@ -49,7 +49,9 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             axis: .horizontal,
             cornerRadius: 0,
             shadow: nil,
-            background: .color(.clear)
+            background: .color(.clear),
+            itemStyles: config.itemStyles,
+            baselineStyle: .regular
         )
     }
 
@@ -81,7 +83,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: pinnedConfig,
-            indicatorConfig: .init(color: .clear, isDragGestureEnabled: false),
+            indicatorConfig: nil,
             action: action
         )
         .frame(maxWidth: .infinity)
@@ -136,15 +138,8 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
         PinnedTabBarView(
             items: items,
             selected: $selected,
-            config: .init(
-                axis: .horizontal,
-                cornerRadius: 0,
-                shadow: nil,
-                background: .material(.ultraThin),
-                itemStyles: [.regular: .init()],
-                itemSpacing: 0,
-                itemStateAnimation: .easeInOut(duration: 0.2),
-                barAccessibilityLabel: "Tab Bar"
+            config: .init(itemStyles: [.regular: .init()],
+            
             )
         )
         .environment(\.debugLayoutEnabled, false)
@@ -171,9 +166,6 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: .init(
-                axis: .horizontal,
-                cornerRadius: 0,
-                shadow: nil,
                 background: .material(.ultraThin, tint: .blue.opacity(0.3)),
                 itemStyles: [
                     .regular: .init(iconSideLength: 24),

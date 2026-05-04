@@ -80,7 +80,7 @@ public struct BarView<Item: BarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         config: BarConfiguration,
-        indicatorConfig: SelectionIndicatorConfiguration = .init(),
+        indicatorConfig: SelectionIndicatorConfiguration? = .init(),
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items

@@ -110,16 +110,8 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         FloatingTabBarView(
             items: items,
             selected: $selected,
-            config: .init(
-                axis: .horizontal,
-                cornerRadius: 28,
-                shadow: .init(),
-                background: .material(.ultraThinMaterial),
-                itemStyles: [.regular: .init()],
-                itemSpacing: 0,
-                itemStateAnimation: .easeInOut(duration: 0.2),
-                barAccessibilityLabel: "Tab Bar"
-            )
+            config: .init(itemStyles: [.regular: .init()]),
+            floatingInsets: .init(top: 0, leading: 16, bottom: 36, trailing: 16)
         )
     }
     .ignoresSafeArea(.all, edges: .bottom)
