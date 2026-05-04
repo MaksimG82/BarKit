@@ -45,11 +45,12 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
 
     /// A derived configuration with pinned-specific overrides applied.
     private var pinnedConfig: BarConfiguration {
-        var c = config
-        c.axis = .horizontal
-        c.cornerRadius = 0
-        c.shadow = nil
-        return c
+        BarConfiguration(
+            axis: .horizontal,
+            cornerRadius: 0,
+            shadow: nil,
+            background: .color(.clear)
+        )
     }
 
     // MARK: - Init
@@ -139,7 +140,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
                 axis: .horizontal,
                 cornerRadius: 0,
                 shadow: nil,
-                background: .material(.ultraThinMaterial),
+                background: .material(.ultraThin),
                 itemStyles: [.regular: .init()],
                 itemSpacing: 0,
                 itemStateAnimation: .easeInOut(duration: 0.2),
@@ -173,7 +174,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
                 axis: .horizontal,
                 cornerRadius: 0,
                 shadow: nil,
-                background: .material(.ultraThinMaterial),
+                background: .material(.ultraThin, tint: .blue.opacity(0.3)),
                 itemStyles: [
                     .regular: .init(iconSideLength: 24),
                     .prominent: .init(iconSideLength: 40),
@@ -184,7 +185,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
                 barAccessibilityLabel: "Tab Bar"
             )
         )
-        .environment(\.debugLayoutEnabled, true)
+        .environment(\.debugLayoutEnabled, false)
     }
 }
 
