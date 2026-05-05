@@ -11,7 +11,7 @@ import SwiftUI
 struct ColorsSettingsView: View {
     @Environment(\.tabBarHeight) var tabBarHeight
 
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     // MARK: - State
 
@@ -100,7 +100,7 @@ private extension ColorsSettingsView {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             ColorsSettingsView(viewModel: viewModel)

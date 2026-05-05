@@ -8,12 +8,12 @@
 import BarKit
 import SwiftUI
 
-struct ExampleContentView: View {
+struct OldExampleContentView: View {
     // MARK: - Property Wrappers
 
     @Environment(\.tabBarHeight) var tabBarHeight
     @Environment(\.verticalSizeClass) var sizeClass
-    @State private var viewModel = ExampleViewModel()
+    @State private var viewModel = OldExampleViewModel()
 
     // MARK: - Body
 
@@ -48,7 +48,7 @@ struct ExampleContentView: View {
 
 // MARK: - View Components
 
-private extension ExampleContentView {
+private extension OldExampleContentView {
     var headerSection: some View {
         Section {
             VStack(alignment: .leading, spacing: 10) {
@@ -136,6 +136,75 @@ private extension ExampleContentView {
     }
 }
 
-#Preview {
+#Preview("Old Approach preview") {
+    OldExampleContentView()
+}
+
+struct ExampleContentView: View {
+ 
+    // MARK: - Property Wrappers
+ 
+    @State private var viewModel = ExampleViewModel()
+ 
+    // MARK: - Body
+ 
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            contentRouter
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+ 
+            tabBar
+                .id(viewModel.state.instanceID)
+        }
+    }
+}
+ 
+// MARK: - Subviews
+ 
+private extension ExampleContentView {
+ 
+    /// Routes to the appropriate screen based on the selected tab.
+    @ViewBuilder
+    var contentRouter: some View {
+        switch viewModel.state.selectedTab.type {
+        case .overview:   Text("Overview")
+        case .tabBar:     Text("Tab Bar")
+        case .standalone: Text("Standalone")
+        case .indicator:  Text("Indicator")
+        }
+    }
+ 
+    /// Renders the appropriate tab bar based on the current mode.
+    @ViewBuilder
+    var tabBar: some View {
+        switch viewModel.state.tabBar.mode {
+        case .floating:
+            FloatingTabBarView(
+                items: viewModel.state.items,
+                selected: selectedItem,
+                config: viewModel.state.tabBar.floatingConfig.barConfig,
+                indicatorConfig: viewModel.state.indicator.indicatorConfig,
+                floatingInsets: viewModel.state.tabBar.floatingConfig.insets
+            )
+            .ignoresSafeArea(.all, edges: .bottom)
+        case .pinned:
+            PinnedTabBarView(
+                items: viewModel.state.items,
+                selected: selectedItem,
+                config: viewModel.state.tabBar.pinnedConfig.barConfig
+            )
+        }
+    }
+ 
+    /// A binding that bridges `ExampleTabItem` selection to `ExampleIntent`.
+    var selectedItem: Binding<ExampleTabItem> {
+        Binding(
+            get: { viewModel.state.selectedTab },
+            set: { viewModel.send(.selectTab($0)) }
+        )
+    }
+}
+ 
+#Preview() {
     ExampleContentView()
 }

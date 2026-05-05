@@ -139,7 +139,6 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: .init(itemStyles: [.regular: .init()],
-            
             )
         )
         .environment(\.debugLayoutEnabled, false)

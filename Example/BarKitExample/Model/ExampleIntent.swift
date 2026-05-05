@@ -9,7 +9,7 @@ import BarKit
 import SwiftUI
 
 /// Defines all possible user intentions (actions) that can modify the state.
-enum ExampleIntent {
+enum OldExampleIntent {
     /// Defines target components for color updates.
     enum ColorType {
         /// The primary color for the selected tab.
@@ -43,7 +43,7 @@ enum ExampleIntent {
     // MARK: - Navigation
 
     /// Changes the currently selected tab.
-    case selectTab(ExampleTabItem)
+    case selectTab(OldExampleTabItem)
 
     // MARK: - Visual Style
 
@@ -74,7 +74,7 @@ enum ExampleIntent {
     case updateLayoutStyle(TabBarStyle)
 
     /// Replaces the entire set of tab items.
-    case updateItems([ExampleTabItem])
+    case updateItems([OldExampleTabItem])
 
     /// Adjusts the horizontal spacing between tabs.
     case updateTabSpacing(CGFloat)
@@ -95,7 +95,7 @@ enum ExampleIntent {
     case updateTabItemBottomPaddingCompact(CGFloat)
 
     /// Toggles the visual style (regular vs prominent) for a specific tab by its ID.
-    case toggleProminentStyle(ExampleTabItem.TabType)
+    case toggleProminentStyle(OldExampleTabItem.TabType)
 
     // MARK: - Floating layout setup
 
@@ -121,3 +121,59 @@ enum ExampleIntent {
     /// Reverts all configuration and state to their initial default values.
     case resetState
 }
+
+/// Defines all possible user actions that can modify the Example app state.
+enum ExampleIntent {
+ 
+    // MARK: - Navigation
+ 
+    /// Changes the currently selected tab.
+    case selectTab(ExampleTabItem)
+ 
+    // MARK: - Debug
+ 
+    /// Toggles the visual layout debugging mode.
+    case toggleDebugLayout
+ 
+    // MARK: - Screen Intents
+ 
+    /// Actions for the Tab Bar screen.
+    case tabBar(TabBarIntent)
+ 
+    /// Actions for the Standalone BarView screen.
+    case standalone(StandaloneIntent)
+ 
+    /// Actions for the Indicator screen.
+    case indicator(IndicatorIntent)
+}
+ 
+// MARK: - Sub-Intents
+ 
+/// Actions available on the Tab Bar screen.
+enum TabBarIntent {
+    case floating(FloatingTabBarIntent)
+    case pinned(PinnedTabBarIntent)
+    case switchMode(TabBarMode)
+}
+ 
+/// Actions available on the Floating tab bar.
+enum FloatingTabBarIntent {}
+ 
+/// Actions available on the Pinned tab bar.
+enum PinnedTabBarIntent {}
+ 
+/// Actions available on the Standalone BarView screen.
+enum StandaloneIntent {
+    case horizontal(HorizontalBarIntent)
+    case vertical(VerticalBarIntent)
+}
+ 
+/// Actions available on the horizontal BarView.
+enum HorizontalBarIntent {}
+ 
+/// Actions available on the vertical BarView.
+enum VerticalBarIntent {}
+ 
+/// Actions available on the Indicator screen.
+enum IndicatorIntent {}
+ 

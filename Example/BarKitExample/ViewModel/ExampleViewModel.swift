@@ -11,17 +11,17 @@ import SwiftUI
 
 /// Manages the state and logic for the Example application.
 @Observable
-final class ExampleViewModel {
+final class OldExampleViewModel {
     // MARK: - State
     
     /// The single source of truth for the view.
-    private(set) var state = ExampleState()
+    private(set) var state = OldExampleState()
     
     // MARK: - Intent Handling
     
     /// Entry point for all user actions.
     /// - Parameter intent: The user intent to process.
-    func send(_ intent: ExampleIntent) {
+    func send(_ intent: OldExampleIntent) {
         switch intent {
         case let .selectTab(item):
             state.selectedTab = item
@@ -123,4 +123,70 @@ final class ExampleViewModel {
             state = .init()
         }
     }
+}
+
+
+/// Manages the state and logic for the Example application.
+@Observable
+final class ExampleViewModel {
+ 
+    // MARK: - State
+ 
+    /// The single source of truth for the view.
+    private(set) var state = ExampleState()
+ 
+    // MARK: - Intent Handling
+ 
+    /// Entry point for all user actions.
+    func send(_ intent: ExampleIntent) {
+        switch intent {
+ 
+        case let .selectTab(item):
+            state.selectedTab = item
+ 
+        case .toggleDebugLayout:
+            state.isDebugLayoutEnabled.toggle()
+ 
+        case let .tabBar(tabBarIntent):
+            handle(tabBarIntent)
+ 
+        case let .standalone(standaloneIntent):
+            handle(standaloneIntent)
+ 
+        case let .indicator(indicatorIntent):
+            handle(indicatorIntent)
+        }
+    }
+}
+ 
+// MARK: - Private
+ 
+private extension ExampleViewModel {
+ 
+    func handle(_ intent: TabBarIntent) {
+        switch intent {
+        case let .switchMode(mode):
+            if mode != state.tabBar.mode {
+                state.instanceID = UUID()
+            }
+            state.tabBar.mode = mode
+        case .floating:
+            break
+        case .pinned:
+            break
+        }
+    }
+ 
+    func handle(_ intent: StandaloneIntent) {
+        switch intent {
+        case .horizontal:
+            break
+        case .vertical:
+            break
+        @unknown default:
+            break
+        }
+    }
+ 
+    func handle(_ intent: IndicatorIntent) {}
 }
