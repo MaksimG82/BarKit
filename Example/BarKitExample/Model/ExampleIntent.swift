@@ -157,10 +157,21 @@ enum TabBarIntent {
 }
  
 /// Actions available on the Floating tab bar.
-enum FloatingTabBarIntent {}
+enum FloatingTabBarIntent {
+    
+    /// Updates the floating tab bar insets that control its position relative to screen edges.
+    case updateInsets(EdgeInsets)
+    
+    /// Updates the background appearance of the floating tab bar.
+    case updateBackground(BarBackground)
+}
  
 /// Actions available on the Pinned tab bar.
-enum PinnedTabBarIntent {}
+enum PinnedTabBarIntent {
+    
+    /// Updates the background appearance of the pinned tab bar.
+    case updateBackground(BarBackground)
+}
  
 /// Actions available on the Standalone BarView screen.
 enum StandaloneIntent {

@@ -79,8 +79,8 @@ struct ExampleState {
 /// State for the Tab Bar screen.
 struct TabBarState {
     var mode: TabBarMode = .floating
-    var floatingConfig: FloatingTabBarState = .init()
-    var pinnedConfig: PinnedTabBarState = .init()
+    var floatingTabBarState: FloatingTabBarState = .init()
+    var pinnedTabBarState: PinnedTabBarState = .init()
 }
  
 /// State for the Floating tab bar.

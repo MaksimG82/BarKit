@@ -72,7 +72,7 @@ public struct ItemConfiguration {
     }
 }
 
-extension ItemConfiguration {
+public extension ItemConfiguration {
 
     /// Calculates the content height of an item excluding edge insets.
     /// In compact mode, icon and title are arranged horizontally — height is the max of the two.

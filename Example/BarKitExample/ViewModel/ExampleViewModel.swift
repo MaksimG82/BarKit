@@ -134,6 +134,18 @@ final class ExampleViewModel {
  
     /// The single source of truth for the view.
     private(set) var state = ExampleState()
+    
+    /// The bar configuration for the floating tab bar.
+    private(set) var floatingTabBarConfig: BarConfiguration {
+        get { state.tabBar.floatingTabBarState.barConfig }
+        set { state.tabBar.floatingTabBarState.barConfig = newValue }
+    }
+
+    /// The bar configuration for the pinned tab bar.
+    private(set) var pinnedTabBarConfig: BarConfiguration {
+        get { state.tabBar.pinnedTabBarState.barConfig }
+        set { state.tabBar.pinnedTabBarState.barConfig = newValue }
+    }
  
     // MARK: - Intent Handling
  
@@ -157,6 +169,18 @@ final class ExampleViewModel {
             handle(indicatorIntent)
         }
     }
+    
+    /// The bottom padding that content should apply to avoid being obscured by the floating bar.
+    /// - Parameters:
+    ///   - isCompact: Pass `true` when the vertical size class is compact (e.g. landscape).
+    func contentOffset(_ isCompact: Bool = false) -> CGFloat {
+        let itemConfig = floatingTabBarConfig.itemStyles[.regular] ?? ItemConfiguration()
+        let insets = isCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
+        return itemConfig.itemContentHeight(isVerticalCompact: isCompact)
+            + insets.top
+            + insets.bottom
+            + state.tabBar.floatingTabBarState.insets.bottom
+    }
 }
  
 // MARK: - Private
@@ -170,10 +194,21 @@ private extension ExampleViewModel {
                 state.instanceID = UUID()
             }
             state.tabBar.mode = mode
-        case .floating:
-            break
-        case .pinned:
-            break
+        
+        case let .floating(floatingIntent):
+            switch floatingIntent {
+            case let .updateInsets(insets):
+                state.tabBar.floatingTabBarState.insets = insets
+            
+            case let .updateBackground(background):
+                floatingTabBarConfig.background = background
+            }
+        
+        case let .pinned(pinnedIntent):
+            switch pinnedIntent {
+            case let .updateBackground(background):
+                pinnedTabBarConfig.background = background
+            }
         }
     }
  
@@ -190,3 +225,4 @@ private extension ExampleViewModel {
  
     func handle(_ intent: IndicatorIntent) {}
 }
+

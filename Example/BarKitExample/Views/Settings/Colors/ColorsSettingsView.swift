@@ -114,21 +114,3 @@ private extension ColorsSettingsView {
         }
     }
 }
-
-private enum MaterialSelection: String, CaseIterable {
-    case none = "None"
-    case ultraThin = "Ultra Thin"
-    case thin = "Thin"
-    case regular = "Regular"
-    case thick = "Thick"
-
-    var material: Material? {
-        switch self {
-        case .none: nil
-        case .ultraThin: .ultraThinMaterial
-        case .thin: .thinMaterial
-        case .regular: .regularMaterial
-        case .thick: .thickMaterial
-        }
-    }
-}

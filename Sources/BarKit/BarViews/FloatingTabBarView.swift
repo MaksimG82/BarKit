@@ -111,7 +111,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: .init(itemStyles: [.regular: .init()]),
-            floatingInsets: .init(top: 0, leading: 16, bottom: 36, trailing: 16)
+            floatingInsets: .init(top: 0, leading: 16, bottom: 20, trailing: 16)
         )
     }
     .ignoresSafeArea(.all, edges: .bottom)

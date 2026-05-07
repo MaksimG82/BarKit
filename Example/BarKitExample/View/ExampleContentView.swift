@@ -142,6 +142,8 @@ private extension OldExampleContentView {
 
 struct ExampleContentView: View {
  
+    @Environment(\.verticalSizeClass) private var sizeClass
+    
     // MARK: - Property Wrappers
  
     @State private var viewModel = ExampleViewModel()
@@ -150,12 +152,14 @@ struct ExampleContentView: View {
  
     var body: some View {
         ZStack(alignment: .bottom) {
-            contentRouter
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
- 
-            tabBar
+            NavigationStack {
+                contentRouter
+            }
+            .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+            TabBarContainer(viewModel: viewModel)
                 .id(viewModel.state.instanceID)
         }
+        .ignoresSafeArea(.all, edges: .bottom)
     }
 }
  
@@ -168,31 +172,9 @@ private extension ExampleContentView {
     var contentRouter: some View {
         switch viewModel.state.selectedTab.type {
         case .overview:   Text("Overview")
-        case .tabBar:     Text("Tab Bar")
+        case .tabBar:     TabBarScreen(viewModel: viewModel)
         case .standalone: Text("Standalone")
         case .indicator:  Text("Indicator")
-        }
-    }
- 
-    /// Renders the appropriate tab bar based on the current mode.
-    @ViewBuilder
-    var tabBar: some View {
-        switch viewModel.state.tabBar.mode {
-        case .floating:
-            FloatingTabBarView(
-                items: viewModel.state.items,
-                selected: selectedItem,
-                config: viewModel.state.tabBar.floatingConfig.barConfig,
-                indicatorConfig: viewModel.state.indicator.indicatorConfig,
-                floatingInsets: viewModel.state.tabBar.floatingConfig.insets
-            )
-            .ignoresSafeArea(.all, edges: .bottom)
-        case .pinned:
-            PinnedTabBarView(
-                items: viewModel.state.items,
-                selected: selectedItem,
-                config: viewModel.state.tabBar.pinnedConfig.barConfig
-            )
         }
     }
  
