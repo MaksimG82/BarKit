@@ -20,6 +20,11 @@ import SwiftUI
 /// ```
 public struct FloatingTabBarView<Item: BarItemProtocol>: View {
 
+    // MARK: - Environment
+    
+    /// Detects current vertical size class to toggle between compact and regular layouts.
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    
     // MARK: - Bindings
 
     /// The currently selected bar item.
@@ -36,14 +41,25 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     /// Appearance and behavior configuration for the selection indicator.
     private let indicatorConfig: SelectionIndicatorConfiguration
 
-    /// Insets that position the capsule relative to the screen edges.
+    /// Insets that position the capsule relative to the screen edges in regular size class.
     /// - `leading` / `trailing`: horizontal distance from screen edges.
     /// - `bottom`: distance above the home indicator / safe area edge.
     /// - `top`: ignored — floating bars do not constrain their top edge.
     private let floatingInsets: EdgeInsets
 
+    /// Insets that position the capsule in compact height size class (e.g. landscape).
+    /// If `nil`, `floatingInsets` is used for all size classes.
+    private let floatingInsetsCompact: EdgeInsets?
+
     /// An optional closure executed when an item is tapped, even if already selected.
     private let action: ((Item) -> Void)?
+    
+    // MARK: - Computed Properties
+
+    /// Resolves the active insets based on the current vertical size class.
+    private var activeInsets: EdgeInsets {
+        verticalSizeClass == .compact ? floatingInsetsCompact ?? floatingInsets : floatingInsets
+    }
 
     // MARK: - Init
 
@@ -55,6 +71,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     ///   - config: Visual and layout configuration for the bar.
     ///   - indicatorConfig: Configuration for the selection indicator.
     ///   - floatingInsets: Insets that position the capsule relative to screen edges.
+    ///   - floatingInsetsCompact:Insets for compact height size class (e.g. landscape).
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],
@@ -62,6 +79,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         config: BarConfiguration,
         indicatorConfig: SelectionIndicatorConfiguration = .init(),
         floatingInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16),
+        floatingInsetsCompact: EdgeInsets? = nil,
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items
@@ -69,6 +87,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         self.config = config
         self.indicatorConfig = indicatorConfig
         self.floatingInsets = floatingInsets
+        self.floatingInsetsCompact = floatingInsetsCompact
         self.action = action
     }
 
@@ -82,9 +101,9 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
             indicatorConfig: indicatorConfig,
             action: action
         )
-        .padding(.leading, floatingInsets.leading)
-        .padding(.trailing, floatingInsets.trailing)
-        .padding(.bottom, floatingInsets.bottom)
+        .padding(.leading, activeInsets.leading)
+        .padding(.trailing, activeInsets.trailing)
+        .padding(.bottom, activeInsets.bottom)
     }
 }
 
