@@ -20,7 +20,8 @@ struct TabBarContainer: View {
                 selected: selectedItem,
                 config: viewModel.floatingTabBarConfig,
                 indicatorConfig: viewModel.state.indicator.indicatorConfig,
-                floatingInsets: viewModel.state.tabBar.floatingTabBarState.insets
+                floatingInsets: viewModel.state.tabBar.floatingTabBarState.insets,
+                floatingInsetsCompact: viewModel.state.tabBar.floatingTabBarState.insetsCompact
             )
             
         case .pinned:

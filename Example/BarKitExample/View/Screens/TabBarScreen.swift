@@ -20,6 +20,7 @@ struct TabBarScreen: View {
             tabBarModePickerSection
             if viewModel.state.tabBar.mode == .floating {
                 insetsSection
+                insetsCompactSection
             }
             backgroundSection
         }
@@ -70,14 +71,14 @@ private extension TabBarScreen {
                 range: 0...48
             )
             .defersSystemGestures(on: .all)
-
+            
             SettingSlider(
                 title: "Trailing",
                 value: floatingTabBarInsetBinding(\.trailing),
                 range: 0...48
             )
             .defersSystemGestures(on: .all)
-
+            
             SettingSlider(
                 title: "Bottom",
                 value: floatingTabBarInsetBinding(\.bottom),
@@ -88,6 +89,34 @@ private extension TabBarScreen {
             Text("Edge insets")
         } footer: {
             Text("Controls the distance of the floating bar from the screen edges.")
+        }
+    }
+    var insetsCompactSection: some View {
+        Section {
+            SettingSlider(
+                title: "Leading",
+                value: floatingTabBarInsetCompactBinding(\.leading),
+                range: 0...48
+            )
+            .defersSystemGestures(on: .all)
+
+            SettingSlider(
+                title: "Trailing",
+                value: floatingTabBarInsetCompactBinding(\.trailing),
+                range: 0...48
+            )
+            .defersSystemGestures(on: .all)
+
+            SettingSlider(
+                title: "Bottom",
+                value: floatingTabBarInsetCompactBinding(\.bottom),
+                range: 8...64
+            )
+            .defersSystemGestures(on: .all)
+        } header: {
+            Text("Edge insets (Compact)")
+        } footer: {
+            Text("Controls the distance of the floating bar from the screen edges in landscape.")
         }
     }
     
@@ -236,6 +265,21 @@ private extension TabBarScreen {
                 var insets = viewModel.state.tabBar.floatingTabBarState.insets
                 insets[keyPath: keyPath] = newValue
                 viewModel.send(.tabBar(.floating(.updateInsets(insets))))
+            }
+        )
+    }
+
+    func floatingTabBarInsetCompactBinding(
+        _ keyPath: WritableKeyPath<EdgeInsets, CGFloat>
+    ) -> Binding<CGFloat> {
+        Binding(
+            get: {
+                viewModel.state.tabBar.floatingTabBarState.insetsCompact[keyPath: keyPath]
+            },
+            set: { newValue in
+                var insets = viewModel.state.tabBar.floatingTabBarState.insetsCompact
+                insets[keyPath: keyPath] = newValue
+                viewModel.send(.tabBar(.floating(.updateInsetsCompact(insets))))
             }
         )
     }

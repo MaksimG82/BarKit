@@ -160,8 +160,11 @@ enum TabBarIntent {
 /// Actions available on the Floating tab bar.
 enum FloatingTabBarIntent {
     
-    /// Updates the floating tab bar insets that control its position relative to screen edges.
+    /// Updates the floating tab bar insets for regular height size class.
     case updateInsets(EdgeInsets)
+
+    /// Updates the floating tab bar insets for compact height size class (e.g. landscape).
+    case updateInsetsCompact(EdgeInsets)
     
     /// Updates the background appearance of the floating tab bar.
     case updateBackground(BarBackground)

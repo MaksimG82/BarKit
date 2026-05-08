@@ -208,6 +208,9 @@ private extension ExampleViewModel {
             case let .updateInsets(insets):
                 state.tabBar.floatingTabBarState.insets = insets
                 
+            case let .updateInsetsCompact(insets):
+                state.tabBar.floatingTabBarState.insetsCompact = insets
+                
             case let .updateBackground(background):
                 floatingTabBarConfig.background = background
             }

@@ -92,8 +92,16 @@ struct TabBarState {
  
 /// State for the Floating tab bar.
 struct FloatingTabBarState {
+    
     var barConfig: BarConfiguration = .init()
-    var insets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16)
+    
+    var insets: EdgeInsets = .init(
+        top: 0, leading: 16, bottom: 20, trailing: 16
+    )
+    
+    var insetsCompact: EdgeInsets = .init(
+        top: 0, leading: 16, bottom: 8, trailing: 16
+    )
 }
  
 /// State for the Pinned tab bar.
