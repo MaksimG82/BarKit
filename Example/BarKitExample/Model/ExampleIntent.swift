@@ -154,6 +154,7 @@ enum TabBarIntent {
     case floating(FloatingTabBarIntent)
     case pinned(PinnedTabBarIntent)
     case switchMode(TabBarMode)
+    case update(MaterialSelection)
 }
  
 /// Actions available on the Floating tab bar.

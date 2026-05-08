@@ -194,16 +194,24 @@ private extension ExampleViewModel {
                 state.instanceID = UUID()
             }
             state.tabBar.mode = mode
-        
+            
+        case let .update(materilaSelection):
+            switch state.tabBar.mode {
+            case .floating:
+                state.tabBar.floatingTabBarMaterialSelection = materilaSelection
+            case .pinned:
+                state.tabBar.pinnedTabBarMaterialSelection = materilaSelection
+            }
+            
         case let .floating(floatingIntent):
             switch floatingIntent {
             case let .updateInsets(insets):
                 state.tabBar.floatingTabBarState.insets = insets
-            
+                
             case let .updateBackground(background):
                 floatingTabBarConfig.background = background
             }
-        
+            
         case let .pinned(pinnedIntent):
             switch pinnedIntent {
             case let .updateBackground(background):
@@ -225,4 +233,3 @@ private extension ExampleViewModel {
  
     func handle(_ intent: IndicatorIntent) {}
 }
-

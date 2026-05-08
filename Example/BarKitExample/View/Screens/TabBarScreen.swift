@@ -14,9 +14,6 @@ struct TabBarScreen: View {
     
     let viewModel: ExampleViewModel
     
-    @State private var floatingMaterial: MaterialSelection = .ultraThin
-    @State private var pinnedMaterial: MaterialSelection = .ultraThin
-    
     var body: some View {
         List {
             descriptionSection
@@ -213,21 +210,15 @@ private extension TabBarScreen {
         Binding(
             get: {
                 switch viewModel.state.tabBar.mode {
-                case .floating: floatingMaterial
-                case .pinned:   pinnedMaterial
+                case .floating: viewModel.state.tabBar.floatingTabBarMaterialSelection
+                case .pinned:   viewModel.state.tabBar.pinnedTabBarMaterialSelection
                 }
             },
-            set: { newValue in
-                switch viewModel.state.tabBar.mode {
-                case .floating: floatingMaterial = newValue
-                case .pinned:   pinnedMaterial = newValue
-                }
+            set: { materialSelection in
+                viewModel.send(.tabBar(.update(materialSelection)))
                 let tint = currentBackgroundColor
-                if let material = newValue.material {
-                    backgroundBinding.wrappedValue = .material(material, tint: tint)
-                } else {
-                    backgroundBinding.wrappedValue = .color(tint)
-                }
+                let newBackground: BarBackground = .material(materialSelection.material ?? .ultraThin, tint: tint)
+                backgroundBinding.wrappedValue = newBackground
             }
         )
     }
@@ -257,7 +248,7 @@ enum BarBackgroundType: String, CaseIterable {
 }
 
 enum MaterialSelection: String, CaseIterable {
-    case none = "None"
+    case bar = "bar"
     case ultraThin = "Ultra Thin"
     case thin = "Thin"
     case regular = "Regular"
@@ -265,7 +256,7 @@ enum MaterialSelection: String, CaseIterable {
 
     var material: Material? {
         switch self {
-        case .none: nil
+        case .bar: .bar
         case .ultraThin: .ultraThinMaterial
         case .thin: .thinMaterial
         case .regular: .regularMaterial
