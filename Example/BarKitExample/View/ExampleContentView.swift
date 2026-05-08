@@ -159,7 +159,10 @@ struct ExampleContentView: View {
             TabBarContainer(viewModel: viewModel)
                 .id(viewModel.state.instanceID)
         }
-        .ignoresSafeArea(.all, edges: .bottom)
+        .ignoresSafeArea(
+            .all,
+            edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
+        )
     }
 }
  
