@@ -21,6 +21,8 @@ struct TabBarScreen: View {
             if viewModel.state.tabBar.mode == .floating {
                 insetsSection
                 insetsCompactSection
+                cornerRadiusSection
+                shadowSection
             }
             backgroundSection
         }
@@ -91,6 +93,7 @@ private extension TabBarScreen {
             Text("Controls the distance of the floating bar from the screen edges.")
         }
     }
+    
     var insetsCompactSection: some View {
         Section {
             SettingSlider(
@@ -152,6 +155,43 @@ private extension TabBarScreen {
         }
     }
     
+    // MARK: - Corner Radius Section
+    
+    var cornerRadiusSection: some View {
+        Section {
+            SettingSlider(
+                title: "Corner Radius",
+                value: cornerRadiusBinding,
+                range: 0...40
+            )
+        } header: {
+            Text("Corner radius")
+        } footer: {
+            if viewModel.state.tabBar.mode == .pinned {
+                Text("Corner radius has no effect in Pinned mode.")
+            }
+        }
+    }
+    
+    // MARK: - Shadow Section
+    
+    var shadowSection: some View {
+        Section {
+            Toggle("Shadow", isOn: shadowEnabledBinding)
+            if viewModel.floatingTabBarConfig.shadow != nil {
+                ColorPicker("Color", selection: shadowColorBinding)
+                SettingSlider(title: "Radius", value: shadowBinding(\.radius), range: 0...24)
+                SettingSlider(title: "X", value: shadowBinding(\.x), range: -16...16)
+                SettingSlider(title: "Y", value: shadowBinding(\.y), range: -16...16)
+            }
+        } header: {
+            Text("Shadow")
+        } footer: {
+            Text("Shadow has no effect in Pinned mode.")
+                .opacity(viewModel.state.tabBar.mode == .pinned ? 1 : 0)
+        }
+    }
+    
     
     // MARK: - Toolbar
     
@@ -164,7 +204,7 @@ private extension TabBarScreen {
 
 private extension TabBarScreen {
     
-    // MARK: - Tab bar mode
+    // MARK: - Tab bar mode bindings
     
     var tabBarModeBinding: Binding<TabBarMode> {
         Binding (
@@ -173,7 +213,7 @@ private extension TabBarScreen {
         )
     }
     
-    // MARK: - Background section
+    // MARK: - Background section bindings
     
     var currentBackgroundColor: Color {
         switch backgroundBinding.wrappedValue {
@@ -252,7 +292,7 @@ private extension TabBarScreen {
         )
     }
     
-    // MARK: - Edge insets section
+    // MARK: - Edge insets bindings
     
     func floatingTabBarInsetBinding(
         _ keyPath: WritableKeyPath<EdgeInsets, CGFloat>
@@ -280,6 +320,45 @@ private extension TabBarScreen {
                 var insets = viewModel.state.tabBar.floatingTabBarState.insetsCompact
                 insets[keyPath: keyPath] = newValue
                 viewModel.send(.tabBar(.floating(.updateInsetsCompact(insets))))
+            }
+        )
+    }
+    
+    // MARK: - Corner radius binding
+    
+    var cornerRadiusBinding: Binding<CGFloat> {
+        Binding(
+            get: { viewModel.floatingTabBarConfig.cornerRadius },
+            set: { viewModel.send(.tabBar(.floating(.updateCornerRadius($0)))) }
+        )
+    }
+    
+    // MARK: - Shadow bindings
+    var shadowEnabledBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.floatingTabBarConfig.shadow != nil },
+            set: { viewModel.send(.tabBar(.floating(.updateShadow($0 ? .init() : nil)))) }
+        )
+    }
+
+    var shadowColorBinding: Binding<Color> {
+        Binding(
+            get: { viewModel.floatingTabBarConfig.shadow?.color ?? .black.opacity(0.2) },
+            set: {
+                var shadow = viewModel.floatingTabBarConfig.shadow ?? .init()
+                shadow.color = $0
+                viewModel.send(.tabBar(.floating(.updateShadow(shadow))))
+            }
+        )
+    }
+
+    func shadowBinding(_ keyPath: WritableKeyPath<ShadowConfiguration, CGFloat>) -> Binding<CGFloat> {
+        Binding(
+            get: { viewModel.floatingTabBarConfig.shadow?[keyPath: keyPath] ?? 0 },
+            set: {
+                var shadow = viewModel.floatingTabBarConfig.shadow ?? .init()
+                shadow[keyPath: keyPath] = $0
+                viewModel.send(.tabBar(.floating(.updateShadow(shadow))))
             }
         )
     }
@@ -317,7 +396,10 @@ enum MaterialSelection: String, CaseIterable {
             TabBarScreen(viewModel: viewModel)
             TabBarContainer(viewModel: viewModel)
         }
-        .ignoresSafeArea(.all, edges: .bottom)
+        .ignoresSafeArea(
+            .all,
+            edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
+        )
     }
     .onAppear {
         viewModel.send(.selectTab(ExampleTabItem.allItems[1]))

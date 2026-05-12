@@ -213,6 +213,12 @@ private extension ExampleViewModel {
                 
             case let .updateBackground(background):
                 floatingTabBarConfig.background = background
+            
+            case let .updateCornerRadius(cornerRadius):
+                floatingTabBarConfig.cornerRadius = cornerRadius
+            
+            case let .updateShadow(shadow):
+                floatingTabBarConfig.shadow = shadow
             }
             
         case let .pinned(pinnedIntent):

@@ -168,6 +168,12 @@ enum FloatingTabBarIntent {
     
     /// Updates the background appearance of the floating tab bar.
     case updateBackground(BarBackground)
+    
+    /// The corner radius of the floating bar.
+    case updateCornerRadius(CGFloat)
+    
+    /// Updates the shadow configuration of the floating tab bar. Pass `nil` to disable shadow.
+    case updateShadow(ShadowConfiguration?)
 }
  
 /// Actions available on the Pinned tab bar.
