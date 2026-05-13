@@ -192,6 +192,9 @@ private extension ExampleViewModel {
         case let .switchMode(mode):
             if mode != state.tabBar.mode {
                 state.instanceID = UUID()
+                if mode == .floating {
+                    state.items = state.items.map { $0.withStyle(.regular) }
+                }
             }
             state.tabBar.mode = mode
             
@@ -226,6 +229,16 @@ private extension ExampleViewModel {
             case let .updateBackground(background):
                 pinnedTabBarConfig.background = background
             }
+        case let .updateRegularItemConfig(config):
+            state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
+            state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
+
+        case let .updateProminentItemConfig(config):
+            state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
+
+        case let .updateTabItemStyle(item, style):
+            guard let index = state.items.firstIndex(where: { $0.id == item.id }) else { return }
+            state.items[index].style = style
         }
     }
  

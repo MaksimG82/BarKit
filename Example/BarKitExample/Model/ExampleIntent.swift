@@ -153,7 +153,18 @@ enum ExampleIntent {
 enum TabBarIntent {
     case floating(FloatingTabBarIntent)
     case pinned(PinnedTabBarIntent)
+    /// Switches between floating and pinned mode. Resets all prominent items to regular.
     case switchMode(TabBarMode)
+    
+    /// Updates the ItemConfiguration for .regular style.
+    case updateRegularItemConfig(ItemConfiguration)
+    
+    /// Updates the ItemConfiguration for .prominent style. Pinned mode only.
+    case updateProminentItemConfig(ItemConfiguration)
+    
+    /// Updates the style of a tab item. Pinned mode only.
+    case updateTabItemStyle(ExampleTabItem, BarItemStyle)
+    
     case update(MaterialSelection)
 }
  

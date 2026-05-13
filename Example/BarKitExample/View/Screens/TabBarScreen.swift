@@ -25,6 +25,7 @@ struct TabBarScreen: View {
                 shadowSection
             }
             backgroundSection
+            itemConfigurationSection
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
         .toolbar { resetButton }
@@ -180,9 +181,26 @@ private extension TabBarScreen {
             Toggle("Shadow", isOn: shadowEnabledBinding)
             if viewModel.floatingTabBarConfig.shadow != nil {
                 ColorPicker("Color", selection: shadowColorBinding)
-                SettingSlider(title: "Radius", value: shadowBinding(\.radius), range: 0...24)
-                SettingSlider(title: "X", value: shadowBinding(\.x), range: -16...16)
-                SettingSlider(title: "Y", value: shadowBinding(\.y), range: -16...16)
+                SettingSlider(
+                    title: "Radius",
+                    value: shadowBinding(\.radius),
+                    range: 0...24
+                )
+                SettingSlider(
+                    title: "X",
+                    value: shadowBinding(\.x),
+                    range: -16...16,
+                    step: 0.01,
+                    format: .fractionalTwo
+                )
+                
+                SettingSlider(
+                    title: "Y",
+                    value: shadowBinding(\.y),
+                    range: -16...16,
+                    step: 0.01,
+                    format: .fractionalTwo
+                )
             }
         } header: {
             Text("Shadow")
@@ -192,6 +210,120 @@ private extension TabBarScreen {
         }
     }
     
+    // MARK: - ItemConfigurationSection
+    
+    @ViewBuilder
+    var itemConfigurationSection: some View {
+        itemEdgeInsetsSection
+        itemEdgeInsetsCompactSection
+        itemColorsSection
+        itemIconSizeSection
+        itemTextStyleSection
+        if viewModel.state.tabBar.mode == .pinned {
+            prominentItemsSection
+        }
+    }
+    
+    var itemEdgeInsetsSection: some View {
+        Section {
+            SettingSlider(
+                title: "Top",
+                value: regularItemConfigBinding(\.edgeInsets.top),
+                range: 0...24
+            )
+            SettingSlider(
+                title: "Bottom",
+                value: regularItemConfigBinding(\.edgeInsets.bottom),
+                range: 0...24
+            )
+        } header: {
+            Text("Item padding")
+        }
+    }
+
+    var itemEdgeInsetsCompactSection: some View {
+        Section {
+            SettingSlider(
+                title: "Top",
+                value: regularItemConfigBinding(\.edgeInsetsCompact.top),
+                range: 0...24
+            )
+            SettingSlider(
+                title: "Bottom",
+                value: regularItemConfigBinding(\.edgeInsetsCompact.bottom),
+                range: 0...24
+            )
+        } header: {
+            Text("Item padding (Compact)")
+        }
+    }
+    
+    var itemColorsSection: some View {
+        Section {
+            ColorPicker("Selected", selection: regularItemConfigBinding(\.selectedColor))
+            ColorPicker("Unselected", selection: regularItemConfigBinding(\.unselectedColor))
+        } header: {
+            Text("Item colors")
+        }
+    }
+    
+    var itemIconSizeSection: some View {
+        Section {
+            SettingSlider(
+                title: "Icon Size",
+                value: regularItemConfigBinding(\.iconSideLength),
+                range: 16...48
+            )
+            SettingSlider(
+                title: "Selected Scale",
+                value: regularItemConfigBinding(\.selectedIconScale),
+                range: 1.0...1.5,
+                step: 0.01,
+                format: .fractionalTwo
+            )
+            SettingSlider(
+                title: "Compact Scale",
+                value: regularItemConfigBinding(\.compactIconScale),
+                range: 0.5...1.0,
+                step: 0.01,
+                format: .fractionalTwo
+            )
+        } header: {
+            Text("Icon size")
+        }
+    }
+    
+    var itemTextStyleSection: some View {
+        Section {
+            Picker("Text Style", selection: regularItemConfigBinding(\.textStyle)) {
+                ForEach(Font.TextStyle.allCases, id: \.self) {
+                    Text(String(describing: $0)).tag($0)
+                }
+            }
+        } header: {
+            Text("Text style")
+        }
+    }
+    
+    var prominentItemsSection: some View {
+        Section {
+            ForEach(viewModel.state.items) { item in
+                Toggle(item.title, isOn: Binding(
+                    get: { item.style == .prominent },
+                    set: { viewModel.send(.tabBar(.updateTabItemStyle(item, $0 ? .prominent : .regular))) }
+                ))
+            }
+            SettingSlider(
+                title: "Icon Size",
+                value: prominentItemConfigBinding(\.iconSideLength),
+                range: 24...56
+            )
+        } header: {
+            Text("Prominent items")
+        } footer: {
+            Text("Only icon size is configurable for prominent style.")
+        }
+    }
     
     // MARK: - Toolbar
     
@@ -203,7 +335,7 @@ private extension TabBarScreen {
 // MARK: - Bindings
 
 private extension TabBarScreen {
-    
+        
     // MARK: - Tab bar mode bindings
     
     var tabBarModeBinding: Binding<TabBarMode> {
@@ -359,6 +491,47 @@ private extension TabBarScreen {
                 var shadow = viewModel.floatingTabBarConfig.shadow ?? .init()
                 shadow[keyPath: keyPath] = $0
                 viewModel.send(.tabBar(.floating(.updateShadow(shadow))))
+            }
+        )
+    }
+    
+    // MARK: - Item configuration binding
+    
+    /// Returns a binding to the regular ItemConfiguration for the current tab bar mode.
+    var regularItemConfigBinding: Binding<ItemConfiguration> {
+        Binding(
+            get: {
+                viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init()
+            },
+            set: {
+                viewModel.send(.tabBar(.updateRegularItemConfig($0)))
+            }
+        )
+    }
+    
+    /// Returns a binding to a specific property of the regular ItemConfiguration.
+    func regularItemConfigBinding<T>(
+        _ keyPath: WritableKeyPath<ItemConfiguration, T>
+    ) -> Binding<T> {
+        Binding(
+            get: { regularItemConfigBinding.wrappedValue[keyPath: keyPath] },
+            set: {
+                var config = regularItemConfigBinding.wrappedValue
+                config[keyPath: keyPath] = $0
+                viewModel.send(.tabBar(.updateRegularItemConfig(config)))
+            }
+        )
+    }
+    
+    func prominentItemConfigBinding(
+        _ keyPath: WritableKeyPath<ItemConfiguration, CGFloat>
+    ) -> Binding<CGFloat> {
+        Binding(
+            get: { viewModel.pinnedTabBarConfig.itemStyles[.prominent]?[keyPath: keyPath] ?? ItemConfiguration().iconSideLength },
+            set: {
+                var config = viewModel.pinnedTabBarConfig.itemStyles[.prominent] ?? .init()
+                config[keyPath: keyPath] = $0
+                viewModel.send(.tabBar(.updateProminentItemConfig(config)))
             }
         )
     }
