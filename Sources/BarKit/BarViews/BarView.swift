@@ -337,43 +337,6 @@ private extension BarView {
     }
 }
 
-// MARK: - Shadow Extension
-
-private extension View {
-
-    /// Applies a `ShadowConfiguration` as a drop shadow, or does nothing if `nil`.
-    func barShadow(_ shadow: ShadowConfiguration?) -> some View {
-        #warning("Move to extension")
-        self.shadow(
-            color: shadow?.color ?? .clear,
-            radius: shadow?.radius ?? 0,
-            x: shadow?.x ?? 0,
-            y: shadow?.y ?? 0
-        )
-    }
-}
-
-// MARK: - Lens Effect Extension
-
-private extension View {
-    /// Applies lens effect if indicator configuration is provided.
-    @ViewBuilder
-    func indicatorLens(_ config: SelectionIndicatorConfiguration?, frame: CGRect) -> some View {
-        if let config {
-            indicatorLensEffect(
-                frame: frame,
-                cornerRadius: config.cornerRadius,
-                refractionZoneWidth: config.refractionZoneWidth,
-                aberrationZoneWidth: config.aberrationZoneWidth,
-                aberrationStrength: config.aberrationStrength,
-                refractionStrength: config.refractionStrength
-            )
-        } else {
-            self
-        }
-    }
-}
-
 #if DEBUG
 
 @available(iOS 17.0, *)
