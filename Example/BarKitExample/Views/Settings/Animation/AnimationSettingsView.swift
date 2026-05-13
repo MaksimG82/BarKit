@@ -11,7 +11,7 @@ import SwiftUI
 struct AnimationSettingsView: View {
     @Environment(\.tabBarHeight) var tabBarHeight
 
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     // MARK: - State
 
@@ -89,7 +89,7 @@ private extension AnimationSettingsView {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             AnimationSettingsView(viewModel: viewModel)

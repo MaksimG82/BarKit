@@ -98,7 +98,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
         VStack {
             Spacer()
             TabBarView(items: mockItems, selected: $selected)
-                .environment(\.debugLayoutEnabled, true)
+                .environment(\.debugLayoutEnabled, false)
         }
     }
 
@@ -123,7 +123,7 @@ public struct TabBarView<Item: TabBarItemProtocol>: View {
                 selected: $selected,
                 config: .init(style: .floating(.init()))
             )
-            .environment(\.debugLayoutEnabled, false)
+            .environment(\.debugLayoutEnabled, true)
         }
     }
 

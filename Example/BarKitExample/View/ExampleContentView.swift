@@ -8,12 +8,12 @@
 import BarKit
 import SwiftUI
 
-struct ExampleContentView: View {
+struct OldExampleContentView: View {
     // MARK: - Property Wrappers
 
     @Environment(\.tabBarHeight) var tabBarHeight
     @Environment(\.verticalSizeClass) var sizeClass
-    @State private var viewModel = ExampleViewModel()
+    @State private var viewModel = OldExampleViewModel()
 
     // MARK: - Body
 
@@ -48,7 +48,7 @@ struct ExampleContentView: View {
 
 // MARK: - View Components
 
-private extension ExampleContentView {
+private extension OldExampleContentView {
     var headerSection: some View {
         Section {
             VStack(alignment: .leading, spacing: 10) {
@@ -136,6 +136,60 @@ private extension ExampleContentView {
     }
 }
 
-#Preview {
+#Preview("Old Approach preview") {
+    OldExampleContentView()
+}
+
+struct ExampleContentView: View {
+ 
+    @Environment(\.verticalSizeClass) private var sizeClass
+    
+    // MARK: - Property Wrappers
+ 
+    @State private var viewModel = ExampleViewModel()
+ 
+    // MARK: - Body
+ 
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            NavigationStack {
+                contentRouter
+            }
+            .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+            TabBarContainer(viewModel: viewModel)
+                .id(viewModel.state.instanceID)
+        }
+        .ignoresSafeArea(
+            .all,
+            edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
+        )
+    }
+}
+ 
+// MARK: - Subviews
+ 
+private extension ExampleContentView {
+ 
+    /// Routes to the appropriate screen based on the selected tab.
+    @ViewBuilder
+    var contentRouter: some View {
+        switch viewModel.state.selectedTab.type {
+        case .overview:   Text("Overview")
+        case .tabBar:     TabBarScreen(viewModel: viewModel)
+        case .standalone: Text("Standalone")
+        case .indicator:  Text("Indicator")
+        }
+    }
+ 
+    /// A binding that bridges `ExampleTabItem` selection to `ExampleIntent`.
+    var selectedItem: Binding<ExampleTabItem> {
+        Binding(
+            get: { viewModel.state.selectedTab },
+            set: { viewModel.send(.selectTab($0)) }
+        )
+    }
+}
+ 
+#Preview() {
     ExampleContentView()
 }

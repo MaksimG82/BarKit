@@ -10,7 +10,7 @@ import SwiftUI
 
 struct FloatingSettingsView: View {
     @Environment(\.tabBarHeight) var tabBarHeight
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     var body: some View {
         List {
@@ -74,7 +74,7 @@ private extension FloatingSettingsView {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             FloatingSettingsView(viewModel: viewModel)

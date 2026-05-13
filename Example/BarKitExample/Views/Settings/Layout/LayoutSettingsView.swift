@@ -12,7 +12,7 @@ struct LayoutSettingsView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.tabBarHeight) var tabBarHeight
 
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     var body: some View {
         List {
@@ -87,16 +87,16 @@ private extension LayoutSettingsView {
             get: { viewModel.state.items.count },
             set: { count in
                 let items = switch count {
-                case 3: ExampleTabItem.threeItems
-                case 4: ExampleTabItem.fourItems
-                default: ExampleTabItem.fiveItems
+                case 3: OldExampleTabItem.threeItems
+                case 4: OldExampleTabItem.fourItems
+                default: OldExampleTabItem.fiveItems
                 }
                 viewModel.send(.updateItems(items))
             }
         )
     }
 
-    func prominentBinding(for item: ExampleTabItem) -> Binding<Bool> {
+    func prominentBinding(for item: OldExampleTabItem) -> Binding<Bool> {
         Binding(
             get: { item.style == .prominent },
             set: { _ in viewModel.send(.toggleProminentStyle(item.type)) }
@@ -129,7 +129,7 @@ private extension LayoutSettingsView {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             LayoutSettingsView(viewModel: viewModel)

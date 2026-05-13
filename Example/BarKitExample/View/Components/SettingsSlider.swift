@@ -29,6 +29,7 @@ where Value: BinaryFloatingPoint, Value.Stride: BinaryFloatingPoint {
                 .font(.subheadline)
             Slider(value: $value, in: range, step: step)
                 .contentShape(Rectangle())
+                .defersSystemGestures(on: .horizontal)
         }
     }
 }

@@ -11,7 +11,7 @@ import SwiftUI
 struct IconSizeSettingsView: View {
     @Environment(\.tabBarHeight) var tabBarHeight
 
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     // MARK: - Body
 
@@ -103,7 +103,7 @@ private extension IconSizeSettingsView {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             IconSizeSettingsView(viewModel: viewModel)

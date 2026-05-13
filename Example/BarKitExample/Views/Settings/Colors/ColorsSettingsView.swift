@@ -11,7 +11,7 @@ import SwiftUI
 struct ColorsSettingsView: View {
     @Environment(\.tabBarHeight) var tabBarHeight
 
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     // MARK: - State
 
@@ -100,7 +100,7 @@ private extension ColorsSettingsView {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             ColorsSettingsView(viewModel: viewModel)
@@ -111,24 +111,6 @@ private extension ColorsSettingsView {
                 config: viewModel.state.config
             )
             .overlay(alignment: .top) { Divider() }
-        }
-    }
-}
-
-private enum MaterialSelection: String, CaseIterable {
-    case none = "None"
-    case ultraThin = "Ultra Thin"
-    case thin = "Thin"
-    case regular = "Regular"
-    case thick = "Thick"
-
-    var material: Material? {
-        switch self {
-        case .none: nil
-        case .ultraThin: .ultraThinMaterial
-        case .thin: .thinMaterial
-        case .regular: .regularMaterial
-        case .thick: .thickMaterial
         }
     }
 }

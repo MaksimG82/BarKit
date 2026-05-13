@@ -11,7 +11,7 @@ import SwiftUI
 struct TypographySettingsView: View {
     @Environment(\.tabBarHeight) var tabBarHeight
 
-    var viewModel: ExampleViewModel
+    var viewModel: OldExampleViewModel
 
     var body: some View {
         List {
@@ -34,7 +34,7 @@ struct TypographySettingsView: View {
 }
 
 #Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @State var viewModel = OldExampleViewModel()
     NavigationStack {
         ZStack(alignment: .bottom) {
             TypographySettingsView(viewModel: viewModel)

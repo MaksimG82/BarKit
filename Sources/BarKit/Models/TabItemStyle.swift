@@ -6,11 +6,15 @@
 //
 
 /// Defines the visual style and emphasis of a tab bar item
-public enum TabItemStyle {
+public struct TabItemStyle: Hashable, Sendable {
+    
+    /// The unique identifier of style
+    public let identifier: String
+    
     /// Standard tab bar item appearance.
-    case regular
+    public static let regular = TabItemStyle(identifier: "regular")
 
     /// Visually emphasized tab bar item.
     /// May use a larger icon or extended layout.
-    case prominent
+    public static let prominent = TabItemStyle(identifier: "prominent")
 }
