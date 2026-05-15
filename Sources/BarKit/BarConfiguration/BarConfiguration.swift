@@ -52,7 +52,7 @@ public struct BarConfiguration {
     /// The item style used as the baseline for bar height calculation.
     /// When non-nil, `BarView` fixes its height to match this style's metrics,
     /// allowing prominent items to overflow upward. Set to `nil` if no prominent items are used.
-    public var baselineStyle: BarItemStyle? = nil
+    public var baselineStyle: BarItemStyle? = .regular
     
     // MARK: - Accessibility
 

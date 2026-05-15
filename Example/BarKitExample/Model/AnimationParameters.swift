@@ -61,6 +61,7 @@ struct AnimationParameters: Equatable {
     
     /// Creates a SelectionScaleEffect configuration if settings are present.
     func makeScaleEffect() -> SelectionScaleEffect? {
+        #warning("Remove Scle Effect from this structure")
         guard
             let scaleSettings,
             let animation = makeAnimation()

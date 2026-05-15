@@ -235,23 +235,91 @@ private extension ExampleViewModel {
 
         case let .updateProminentItemConfig(config):
             state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
-
+            
         case let .updateTabItemStyle(item, style):
             guard let index = state.items.firstIndex(where: { $0.id == item.id }) else { return }
             state.items[index].style = style
         }
     }
- 
+    
     func handle(_ intent: StandaloneIntent) {
         switch intent {
         case .horizontal:
             break
         case .vertical:
             break
-        @unknown default:
-            break
         }
     }
- 
-    func handle(_ intent: IndicatorIntent) {}
+    
+    func handle(_ intent: IndicatorIntent) {
+        switch intent {
+        case let .updateColor(color):
+            state.indicator.indicatorConfig.color = color
+            
+        case let .updateBorderEnabled(isEnabled):
+            state.indicator.indicatorConfig.border = isEnabled ? .init() : nil
+
+        case let .updateBorderColor(color):
+            state.indicator.indicatorConfig.border?.color = color
+
+        case let .updateBorderWidth(width):
+            state.indicator.indicatorConfig.border?.lineWidth = width
+            
+        case let .updateCornerRadius(radius):
+            state.indicator.indicatorConfig.cornerRadius = radius
+            
+        case let .updateAnimationParameters(parameters):
+            state.indicator.animationParameters = parameters
+            state.indicator.indicatorConfig.transitionAnimation = parameters.makeAnimation()
+        
+        case let .updateDragGestureEnabled(isEnabled):
+            state.indicator.indicatorConfig.isDragGestureEnabled = isEnabled
+            
+        case let .updateInset(inset):
+            state.indicator.indicatorConfig.inset = inset
+            
+        case let .updateScaleEffectEnabled(isEnabled):
+            state.indicator.indicatorConfig.scaleEffect = isEnabled ? .init() : nil
+
+        case let .updateScaleEffectX(x):
+            state.indicator.indicatorConfig.scaleEffect?.xScale = x
+
+        case let .updateScaleEffectY(y):
+            state.indicator.indicatorConfig.scaleEffect?.yScale = y
+
+        case let .updateScaleEffectDuration(duration):
+            state.indicator.indicatorConfig.scaleEffect?.duration = duration
+
+        case let .updateScaleAnimationParameters(parameters):
+            state.indicator.scaleAnimationParameters = parameters
+            state.indicator.indicatorConfig.scaleEffect?.animation = parameters.makeAnimation() ?? .linear
+
+        case let .updateLensDistortion(isEnabled):
+            if isEnabled {
+                state.indicator.indicatorConfig.effects.insert(.lensDistortion)
+            } else {
+                state.indicator.indicatorConfig.effects.remove(.lensDistortion)
+            }
+
+        case let .updateChromaticAberration(isEnabled):
+            if isEnabled {
+                state.indicator.indicatorConfig.effects.insert(.chromaticAberration)
+            } else {
+                state.indicator.indicatorConfig.effects.remove(.chromaticAberration)
+            }
+
+        case let .updateRefractionZoneWidth(width):
+            state.indicator.indicatorConfig.refractionZoneWidth = width
+
+        case let .updateRefractionStrength(strength):
+            state.indicator.indicatorConfig.refractionStrength = strength
+
+        case let .updateAberrationZoneWidth(width):
+            state.indicator.indicatorConfig.aberrationZoneWidth = width
+
+        case let .updateAberrationStrength(strength):
+            state.indicator.indicatorConfig.aberrationStrength = strength
+            
+        }
+    }
 }
