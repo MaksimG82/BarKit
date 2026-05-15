@@ -9,7 +9,6 @@ import SwiftUI
 import BarKit
 
 /// Bindings scoped to the Tab Bar screen.
-
 final class TabBarBindings: BindingProvider {
     
     // MARK: - Dependencies

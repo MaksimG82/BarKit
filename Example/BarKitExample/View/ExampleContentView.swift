@@ -180,7 +180,10 @@ private extension ExampleContentView {
             bindings: .init(viewModel: viewModel)
         )
         case .standalone: Text("Standalone")
-        case .indicator:  Text("Indicator")
+        case .indicator:  IndicatorScreen(
+            viewModel: viewModel,
+            bindings: .init(viewModel: viewModel)
+        )
         }
     }
  
