@@ -129,6 +129,7 @@ struct VerticalBarState {
  
 /// State for the Indicator screen.
 struct IndicatorState {
-    var barConfig: BarConfiguration = .init()
     var indicatorConfig: SelectionIndicatorConfiguration = .init()
+    var animationParameters: AnimationParameters = .init()
+    var scaleAnimationParameters: AnimationParameters = .init()
 }

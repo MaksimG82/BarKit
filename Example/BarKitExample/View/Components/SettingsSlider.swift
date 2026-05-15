@@ -13,6 +13,7 @@ struct SettingSlider<Value>: View
 where Value: BinaryFloatingPoint, Value.Stride: BinaryFloatingPoint {
     enum ValueFormat: String {
         case integer = "%.0f"
+        case fractionalOne = "%.1f"
         case fractionalTwo = "%.2f"
     }
 

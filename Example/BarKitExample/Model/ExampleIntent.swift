@@ -206,6 +206,80 @@ enum HorizontalBarIntent {}
 /// Actions available on the vertical BarView.
 enum VerticalBarIntent {}
  
-/// Actions available on the Indicator screen.
-enum IndicatorIntent {}
+enum IndicatorIntent {
+    
+    // MARK: - Color
+    
+    /// updates selection indicator color
+    case updateColor(Color)
+    
+    // MARK: - Border
+    
+    /// Enables or disables the border by setting `border` to a default value or `nil`.
+    case updateBorderEnabled(Bool)
+
+    /// Updates the color of the indicator border.
+    case updateBorderColor(Color)
+
+    /// Updates the line width of the indicator border.
+    case updateBorderWidth(CGFloat)
+    
+    // MARK: - Corner radius
+    
+    /// Updates the corner radius of the indicator.
+    case updateCornerRadius(CGFloat)
+    
+    // MARK: - Transition animation
+    
+    /// Updates the transition animation parameters.
+    case updateAnimationParameters(AnimationParameters)
+    
+    // MARK: - Drag gesture
+    
+    /// Enables or disables the drag gesture on the selection indicator.
+    case updateDragGestureEnabled(Bool)
+    
+    // MARK: - Insets
+    
+    /// Updates the inset between the indicator and the item frame.
+    case updateInset(EdgeInsets)
+    
+    // MARK: - Scale Effect
+
+    /// Enables or disables the scale effect on the selection indicator.
+    case updateScaleEffectEnabled(Bool)
+
+    /// Updates the x scale factor of the scale effect.
+    case updateScaleEffectX(CGFloat)
+
+    /// Updates the y scale factor of the scale effect.
+    case updateScaleEffectY(CGFloat)
+
+    /// Updates the reset duration of the scale effect.
+    case updateScaleEffectDuration(Double)
+
+    /// Updates the animation parameters for the scale effect.
+    case updateScaleAnimationParameters(AnimationParameters)
+    
+    // MARK: - Lens effects
+    
+    /// Enables or disables the lens distortion effect.
+    case updateLensDistortion(Bool)
+    
+    /// Enables or disables the chromatic aberration effect.
+    case updateChromaticAberration(Bool)
+    
+    /// Updates the refraction zone width.
+    case updateRefractionZoneWidth(CGFloat)
+    
+    /// Updates the refraction strength.
+    case updateRefractionStrength(CGFloat)
+    
+    /// Updates the aberration zone width.
+    case updateAberrationZoneWidth(CGFloat)
+    
+    /// Updates the aberration strength.
+    case updateAberrationStrength(CGFloat)
+    
+}
  

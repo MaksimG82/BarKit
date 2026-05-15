@@ -97,8 +97,6 @@ public struct BarView<Item: BarItemProtocol>: View {
             itemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame())
             
             overlayItemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame())
-
-            selectionIndicator
         }
         .frame(
             height: barHeight(),
@@ -107,6 +105,9 @@ public struct BarView<Item: BarItemProtocol>: View {
         .background {
             backgroundCapsule
                 .applyDebugVisuals(color: .green)
+        }
+        .overlay(alignment: .leading) {
+            selectionIndicator
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
@@ -189,6 +190,7 @@ private extension BarView {
                 .gesture(indicatorConfig.isDragGestureEnabled ? dragGesture : nil)
         }
     }
+    
     /// The bar background rendered behind the items stack.
     @ViewBuilder
     var backgroundCapsule: some View {
