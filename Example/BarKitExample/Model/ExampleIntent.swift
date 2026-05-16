@@ -51,7 +51,11 @@ enum TabBarIntent {
     /// Updates the style of a tab item. Pinned mode only.
     case updateTabItemStyle(ExampleTabItem, BarItemStyle)
     
+    /// Updates background of tabbar
     case update(MaterialSelection)
+    
+    /// Resets all Tab Bar settings to their default values.
+    case reset
 }
  
 /// Actions available on the Floating tab bar.
@@ -166,6 +170,11 @@ enum IndicatorIntent {
     
     /// Updates the aberration strength.
     case updateAberrationStrength(CGFloat)
+    
+    // MARK: - Reset
+    
+    /// Resets all Indicator settings to their default values.
+    case reset
     
 }
  
