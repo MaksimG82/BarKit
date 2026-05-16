@@ -290,26 +290,33 @@ private extension IndicatorScreen {
     // MARK: - Toolbar
 
     var resetButton: some View {
-        Button("Reset Indicator settings") { }
+        Button("Reset indicator settings") {
+            viewModel.send(.indicator(.reset))
+        }
     }
 }
 
 #Preview {
     @Previewable @State var viewModel = ExampleViewModel()
-
-    NavigationStack {
-        ZStack(alignment: .bottom) {
-            IndicatorScreen(viewModel: viewModel, bindings: .init(viewModel: viewModel))
-            TabBarContainer(viewModel: viewModel)
+    @Previewable @Environment(\.verticalSizeClass) var sizeClass
+    
+    ZStack(alignment: .bottom) {
+        NavigationStack {
+            IndicatorScreen(
+                viewModel: viewModel,
+                bindings: .init(viewModel: viewModel)
+            )
         }
-        .ignoresSafeArea(
-            .all,
-            edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
-        )
+        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        
+        TabBarContainer(viewModel: viewModel)
     }
+    .ignoresSafeArea(
+        .all,
+        edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
+    )
     .onAppear {
-        viewModel.send(.selectTab(ExampleTabItem.allItems[3]))
+        viewModel.send(.selectTab(ExampleTabItem.allItems[1]))
     }
 }
 
-//Effects (lensDistortion / chromaticAberration + их параметры)

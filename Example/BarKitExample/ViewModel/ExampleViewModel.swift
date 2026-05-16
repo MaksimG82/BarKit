@@ -56,7 +56,7 @@ final class ExampleViewModel {
     /// The bottom padding that content should apply to avoid being obscured by the floating bar.
     /// - Parameters:
     ///   - isCompact: Pass `true` when the vertical size class is compact (e.g. landscape).
-    func contentOffset(_ isCompact: Bool = false) -> CGFloat {
+    func contentOffset(_ isCompact: Bool) -> CGFloat {
         let itemConfig = floatingTabBarConfig.itemStyles[.regular] ?? ItemConfiguration()
         let insets = isCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
         return itemConfig.itemContentHeight(isVerticalCompact: isCompact)
@@ -112,6 +112,7 @@ private extension ExampleViewModel {
             case let .updateBackground(background):
                 pinnedTabBarConfig.background = background
             }
+            
         case let .updateRegularItemConfig(config):
             state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
             state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
@@ -122,17 +123,14 @@ private extension ExampleViewModel {
         case let .updateTabItemStyle(item, style):
             guard let index = state.items.firstIndex(where: { $0.id == item.id }) else { return }
             state.items[index].style = style
+            
+        case .reset:
+            state.tabBar = .init()
+            state.instanceID = UUID()
         }
     }
     
-    func handle(_ intent: StandaloneIntent) {
-        switch intent {
-        case .horizontal:
-            break
-        case .vertical:
-            break
-        }
-    }
+    func handle(_ intent: StandaloneIntent) { }
     
     func handle(_ intent: IndicatorIntent) {
         switch intent {
@@ -202,6 +200,9 @@ private extension ExampleViewModel {
 
         case let .updateAberrationStrength(strength):
             state.indicator.indicatorConfig.aberrationStrength = strength
+            
+        case .reset:
+            state.indicator = .init()
             
         }
     }

@@ -39,7 +39,7 @@ struct TabBarScreen: View {
 private extension TabBarScreen {
 
     var floatingLayoutLink: some View {
-        settingsLink("Floating layout settings", viewModel: viewModel) {
+        settingsLink("Floating layout", viewModel: viewModel) {
             insetsSection
             insetsCompactSection
             cornerRadiusSection
@@ -48,13 +48,13 @@ private extension TabBarScreen {
     }
 
     var backgroundLink: some View {
-        settingsLink("Background settings", viewModel: viewModel) {
+        settingsLink("Background", viewModel: viewModel) {
             backgroundSection
         }
     }
 
     var itemSettingsLink: some View {
-        settingsLink("Item settings", viewModel: viewModel) {
+        settingsLink("Tab bar item", viewModel: viewModel) {
             itemConfigurationSection
         }
     }
@@ -350,7 +350,9 @@ private extension TabBarScreen {
     // MARK: - Toolbar
     
     var resetButton: some View {
-        Button("Reset Tab bar settings") { }
+        Button("Reset tab bar settings") {
+            viewModel.send(.tabBar(.reset))
+        }
     }
 }
 
@@ -368,6 +370,7 @@ private extension TabBarScreen {
             )
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        
         TabBarContainer(viewModel: viewModel)
     }
     .ignoresSafeArea(
