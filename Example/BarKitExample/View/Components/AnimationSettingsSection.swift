@@ -18,8 +18,6 @@ struct AnimationSettingsSectionView: View {
     var body: some View {
         Section(
             header: Text(headerText).font(.headline)
-                .fontWeight(.bold)
-                .foregroundStyle(Color(UIColor.label))
                 .padding(.top, 24)
                 .padding(.bottom, 8)
             ,

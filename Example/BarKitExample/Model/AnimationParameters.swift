@@ -58,30 +58,4 @@ struct AnimationParameters: Equatable {
         case .smooth: return .smooth(duration: duration, extraBounce: bounce)
         }
     }
-    
-    /// Creates a SelectionScaleEffect configuration if settings are present.
-    func makeScaleEffect() -> SelectionScaleEffect? {
-        #warning("Remove Scle Effect from this structure")
-        guard
-            let scaleSettings,
-            let animation = makeAnimation()
-        else { return nil }
-        
-        return SelectionScaleEffect(
-            animation: animation,
-            xScale: scaleSettings.xScale,
-            yScale: scaleSettings.yScale
-        )
-    }
-    
-    // MARK: - Static Factory
-    
-    /// Returns a default configuration with pre-initialized scale settings.
-    static func defaultWithScaleSettings() -> AnimationParameters {
-        AnimationParameters(
-            type: .easeInOut,
-            duration: 0.15,
-            scaleSettings: AnimationParameters.ScaleSettings()
-        )
-    }
 }
