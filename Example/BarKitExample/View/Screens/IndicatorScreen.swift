@@ -19,20 +19,54 @@ struct IndicatorScreen: View {
     var body: some View {
         List {
             descriptionSection
-            unavailableSection
-            colorSection
-            borderSection
-            cornerRadiusSection
-            animationSection
-            dragGestureSection
-            insetSection
-            scaleEffectSection
-            scaleEffetAnimationSettings
-            effectsSection
+            if viewModel.state.tabBar.mode == .pinned {
+                unavailableSection
+            } else {
+                
+                dragGestureSection
+                insetSection
+                
+                appearanceLink
+                transitionAnimatrionLink
+                scaleEffectLink
+                lensEffectsLink
+            }
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
         .toolbar { resetButton }
         .navigationTitle("Selection indicator")
+    }
+}
+
+// MARK: - Navigation links
+
+private extension IndicatorScreen {
+
+    var appearanceLink: some View {
+        settingsLink("Appearance", viewModel: viewModel) {
+            colorSection
+            borderSection
+            cornerRadiusSection
+        }
+    }
+
+    var transitionAnimatrionLink: some View {
+        settingsLink("Transition animation", viewModel: viewModel) {
+            animationSection
+        }
+    }
+
+    var scaleEffectLink: some View {
+        settingsLink("Scale effect", viewModel: viewModel) {
+            scaleEffectSection
+            scaleEffetAnimationSettings
+        }
+    }
+    
+    var lensEffectsLink: some View {
+        settingsLink("Lens effect", viewModel: viewModel) {
+            effectsSection
+        }
     }
 }
 
@@ -44,7 +78,7 @@ private extension IndicatorScreen {
 
     var descriptionSection: some View {
         Section {
-            Text("Customize the selection indicator that highlights the active tab. Adjust its appearance, shape, animation, and Metal shader effects applied at the indicator boundary.")
+            Text("Customize the selection indicator that highlights the active tab.\nAdjust its appearance, shape, animation, and Metal shader effects applied at the indicator boundary.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
