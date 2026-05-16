@@ -8,35 +8,6 @@
 import BarKit
 import SwiftUI
 
-/// Represents the entire state of the Example app screen.
-/// Designed to be used within a ViewModel to drive the UI in a unidirectional flow.
-struct OldExampleState {
-    // MARK: - Configuration
-
-    /// The visual configuration of the TabBar.
-    var config: TabBarConfiguration = .init()
-
-    /// Flag for visual layout debugging.
-    var isDebugLayoutEnabled: Bool = false
-
-    // MARK: - Data & Selection
-
-    /// The list of tab items currently displayed in the bar.
-    var items: [OldExampleTabItem] = OldExampleTabItem.fiveItems
-
-    /// The currently active tab.
-    var selectedTab: OldExampleTabItem
-
-    // MARK: - Initialization
-
-    /// Initializes the state with default items and selects the first one.
-    init() {
-        let defaultItems = OldExampleTabItem.fiveItems
-        items = defaultItems
-        selectedTab = defaultItems.first ?? .init(type: .home, style: .regular)
-    }
-}
-
 /// Represents the entire state of the Example app.
 struct ExampleState {
  
