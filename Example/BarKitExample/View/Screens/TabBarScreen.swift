@@ -20,20 +20,46 @@ struct TabBarScreen: View {
         List {
             descriptionSection
             tabBarModePickerSection
+            
             if viewModel.state.tabBar.mode == .floating {
-                insetsSection
-                insetsCompactSection
-                cornerRadiusSection
-                shadowSection
+                floatingLayoutLink
             }
-            backgroundSection
-            itemConfigurationSection
+            
+            backgroundLink
+            itemSettingsLink
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
         .toolbar { resetButton }
-        .navigationTitle("Tab Bar")
+        .navigationTitle("Tab bar")
     }
 }
+
+// MARK: - Navigation links
+
+private extension TabBarScreen {
+
+    var floatingLayoutLink: some View {
+        settingsLink("Floating layout settings", viewModel: viewModel) {
+            insetsSection
+            insetsCompactSection
+            cornerRadiusSection
+            shadowSection
+        }
+    }
+
+    var backgroundLink: some View {
+        settingsLink("Background settings", viewModel: viewModel) {
+            backgroundSection
+        }
+    }
+
+    var itemSettingsLink: some View {
+        settingsLink("Item settings", viewModel: viewModel) {
+            itemConfigurationSection
+        }
+    }
+}
+
 
 // MARK: - View Components
 
@@ -60,8 +86,6 @@ private extension TabBarScreen {
             .pickerStyle(.segmented)
         } header: {
             Text("Tab bar mode")
-        } footer: {
-            Text("Floating renders a detached capsule above the home indicator. \nPinned spans the full screen width.")
         }
     }
     
@@ -330,19 +354,26 @@ private extension TabBarScreen {
     }
 }
 
+// MARK: - Preview
+
 #Preview {
     @Previewable @State var viewModel = ExampleViewModel()
-
-    NavigationStack {
-        ZStack(alignment: .bottom) {
-            TabBarScreen(viewModel: viewModel, bindings: .init(viewModel: viewModel))
-            TabBarContainer(viewModel: viewModel)
+    @Previewable @Environment(\.verticalSizeClass) var sizeClass
+    
+    ZStack(alignment: .bottom) {
+        NavigationStack {
+            TabBarScreen(
+                viewModel: viewModel,
+                bindings: .init(viewModel: viewModel)
+            )
         }
-        .ignoresSafeArea(
-            .all,
-            edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
-        )
+        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        TabBarContainer(viewModel: viewModel)
     }
+    .ignoresSafeArea(
+        .all,
+        edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
+    )
     .onAppear {
         viewModel.send(.selectTab(ExampleTabItem.allItems[1]))
     }
