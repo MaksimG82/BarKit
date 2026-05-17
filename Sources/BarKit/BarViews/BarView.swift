@@ -35,6 +35,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// Indicates whether the drag gesture is currently active.
     @State private var isDragging: Bool = false
+    
+    /// A unique identifier for the local coordinate space, stable across view re-renders.
+    @State private var coordinateSpaceID = UUID()
 
     // MARK: - Properties
 
@@ -63,8 +66,8 @@ public struct BarView<Item: BarItemProtocol>: View {
         itemFrames[selected.id] ?? .zero
     }
 
-    /// The stable name for the local coordinate space.
-    private var coordinateSpaceName: String { "BarView" }
+    /// The stable name for the local coordinate space, unique per `BarView` instance.
+    private var coordinateSpaceName: String { coordinateSpaceID.uuidString }
 
     // MARK: - Init
 
