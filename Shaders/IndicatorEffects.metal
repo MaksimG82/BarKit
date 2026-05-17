@@ -58,12 +58,13 @@ float roundedRectSDF(float2 point, float2 indicatorCenter, float2 indicatorHalfS
 
     float refractionEffect = smoothstep(-refractionZoneWidth, 0.0, sdf);
 
-    float2 gradient = normalize(float2(
+    float2 raw = float2(
         roundedRectSDF(position + float2(1.0, 0.0), indicatorCenter, indicatorHalfSize, cornerRadius) -
         roundedRectSDF(position - float2(1.0, 0.0), indicatorCenter, indicatorHalfSize, cornerRadius),
         roundedRectSDF(position + float2(0.0, 1.0), indicatorCenter, indicatorHalfSize, cornerRadius) -
         roundedRectSDF(position - float2(0.0, 1.0), indicatorCenter, indicatorHalfSize, cornerRadius)
-    ));
+    );
+    float2 gradient = length(raw) > 0.0001 ? normalize(raw) : float2(0.0, 1.0);
 
     float2 sampledPosition = position - gradient * refractionEffect * refractionStrength;
 

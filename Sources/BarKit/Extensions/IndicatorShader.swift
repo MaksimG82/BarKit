@@ -35,7 +35,7 @@ extension View {
         refractionStrength: CGFloat
     ) -> some View {
         if #available(iOS 17.0, *) {
-            let library = ShaderLibrary.bundle(Bundle.module)
+            let library = ShaderLibrary.indicatorLibrary
             self.layerEffect(
                 library.indicatorLensEffect(
                     .float2(frame.midX, frame.midY),

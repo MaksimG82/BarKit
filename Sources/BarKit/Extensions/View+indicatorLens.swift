@@ -23,4 +23,5 @@ extension View {
         } else {
             self
         }
-    }}
+    }
+}
