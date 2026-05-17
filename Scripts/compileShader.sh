@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# compile_shader.sh
+# compileShader.sh
 # Compiles a Metal shader from Shaders/ into two .metallib files:
 #   - <Name>-iphoneos.metallib        (device)
 #   - <Name>-iphonesimulator.metallib (simulator)
 #
-# Usage:   ./Scripts/compile_shader.sh <ShaderName>
-# Example: ./Scripts/compile_shader.sh IndicatorEffects
+# Usage:   ./Scripts/compileShader.sh <ShaderName>
+# Example: ./Scripts/compileShader.sh IndicatorEffects
 
 set -e
 
 # ── Validate argument ──────────────────────────────────────────────────────────
 if [ -z "$1" ]; then
     echo "Error: shader name required."
-    echo "Usage: ./Scripts/compile_shader.sh <ShaderName>"
+    echo "Usage: ./Scripts/compileShader.sh <ShaderName>"
     exit 1
 fi
 
