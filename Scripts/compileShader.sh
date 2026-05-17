@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # compile_shader.sh
-# Compiles a Metal shader from Shaders/ into a .metallib in Sources/BarKit/Metal/
+# Compiles a Metal shader from Shaders/ into two .metallib files:
+#   - <Name>-iphoneos.metallib        (device)
+#   - <Name>-iphonesimulator.metallib (simulator)
 #
-# Usage: ./Scripts/compile_shader.sh <ShaderName>
+# Usage:   ./Scripts/compile_shader.sh <ShaderName>
 # Example: ./Scripts/compile_shader.sh IndicatorEffects
 
 set -e
@@ -25,12 +27,12 @@ PACKAGE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ## Input .metal source file
 METAL_SRC="$PACKAGE_ROOT/Shaders/${SHADER_NAME}.metal"
 
-## Output .metallib destination
+## Output directory
 OUTPUT_DIR="$PACKAGE_ROOT/Sources/BarKit/Metal"
-OUTPUT_LIB="$OUTPUT_DIR/${SHADER_NAME}.metallib"
 
-## Temporary .air intermediate file
-TMP_AIR="/tmp/${SHADER_NAME}.air"
+## Temporary .air intermediate files
+TMP_AIR_DEVICE="/tmp/${SHADER_NAME}-iphoneos.air"
+TMP_AIR_SIM="/tmp/${SHADER_NAME}-iphonesimulator.air"
 
 # ── Validate source ────────────────────────────────────────────────────────────
 if [ ! -f "$METAL_SRC" ]; then
@@ -40,19 +42,37 @@ fi
 
 mkdir -p "$OUTPUT_DIR"
 
-# ── Compile ────────────────────────────────────────────────────────────────────
-echo "Compiling $SHADER_NAME.metal → .air ..."
+# ── Compile: device ───────────────────────────────────────────────────────────
+echo "[$SHADER_NAME] Compiling for iphoneos ..."
 xcrun -sdk iphoneos metal \
     -target air64-apple-ios16.0 \
+    -fmetal-math-mode=fast \
+    -fmetal-math-fp32-functions=fast \
     -c "$METAL_SRC" \
-    -o "$TMP_AIR"
+    -o "$TMP_AIR_DEVICE"
 
-echo "Linking .air → .metallib ..."
 xcrun -sdk iphoneos metallib \
-    "$TMP_AIR" \
-    -o "$OUTPUT_LIB"
+    "$TMP_AIR_DEVICE" \
+    -o "$OUTPUT_DIR/${SHADER_NAME}-iphoneos.metallib"
+
+echo "[$SHADER_NAME] Done: ${SHADER_NAME}-iphoneos.metallib"
+
+# ── Compile: simulator ────────────────────────────────────────────────────────
+echo "[$SHADER_NAME] Compiling for iphonesimulator ..."
+xcrun -sdk iphonesimulator metal \
+    -target air64-apple-ios16.0-simulator \
+    -fmetal-math-mode=fast \
+    -fmetal-math-fp32-functions=fast \
+    -c "$METAL_SRC" \
+    -o "$TMP_AIR_SIM"
+
+xcrun -sdk iphonesimulator metallib \
+    "$TMP_AIR_SIM" \
+    -o "$OUTPUT_DIR/${SHADER_NAME}-iphonesimulator.metallib"
+
+echo "[$SHADER_NAME] Done: ${SHADER_NAME}-iphonesimulator.metallib"
 
 # ── Cleanup ────────────────────────────────────────────────────────────────────
-rm -f "$TMP_AIR"
+rm -f "$TMP_AIR_DEVICE" "$TMP_AIR_SIM"
 
-echo "Done: $OUTPUT_LIB"
+echo "[$SHADER_NAME] All done."
