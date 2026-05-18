@@ -161,6 +161,7 @@ private extension BarView {
                 )
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
+            .accessibilityHidden(true)
             .mask(alignment: .leading) {
                 RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
                     .frame(
