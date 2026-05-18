@@ -113,8 +113,12 @@ public struct BarView<Item: BarItemProtocol>: View {
             selectionIndicator
         }
         .hapticFeedback(config.hapticFeedback, trigger: selected)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel(config.barAccessibilityLabel)
+        .modifier(
+            BarContainerAccessibilityModifier(
+                label: config.barAccessibilityLabel,
+                sortPriority: config.accessibilitySortPriority
+            )
+        )
     }
 }
 
@@ -157,6 +161,7 @@ private extension BarView {
                 )
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
+            .accessibilityHidden(true)
             .mask(alignment: .leading) {
                 RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
                     .frame(

@@ -58,12 +58,17 @@ public struct BarConfiguration {
 
     /// Accessibility label for the entire bar.
     public var barAccessibilityLabel: String
+
+    /// The sort priority used to order this bar relative to other accessibility elements.
+    /// Set a lower value (e.g. `-1`) to ensure VoiceOver reaches content before the bar
+    /// when both are placed in the same `ZStack`. Has no effect across different containers.
+    public var accessibilitySortPriority: Double
     
     // MARK: - Haptic feedback
     
     /// The haptic feedback style triggered when the selected item changes.
     /// Requires iOS 17 or later. Pass `nil` to disable haptic feedback.
-    public var hapticFeedback: HapticFeedback? = .selection
+    public var hapticFeedback: HapticFeedback?
     
     /// Creates a new `BarConfiguration`.
     ///
@@ -77,7 +82,8 @@ public struct BarConfiguration {
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
-    ///   - Parameter hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
+    ///   - hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
+    ///   - accessibilitySortPriority: Sort priority relative to other elements in the same container. Pass a lower value (e.g. `-1`) to ensure VoiceOver reaches content before the bar.
     public init(
         axis: Axis = .horizontal,
         cornerRadius: CGFloat = 28,
@@ -88,7 +94,8 @@ public struct BarConfiguration {
         itemStateAnimation: Animation? = .easeInOut(duration: 0.2),
         baselineStyle: BarItemStyle? = nil,
         barAccessibilityLabel: String = "Tab Bar",
-        hapticFeedback: HapticFeedback? = .selection
+        hapticFeedback: HapticFeedback? = .selection,
+        accessibilitySortPriority: Double = 0
     ) {
         self.axis = axis
         self.cornerRadius = cornerRadius
@@ -100,5 +107,6 @@ public struct BarConfiguration {
         self.baselineStyle = baselineStyle
         self.barAccessibilityLabel = barAccessibilityLabel
         self.hapticFeedback = hapticFeedback
+        self.accessibilitySortPriority = accessibilitySortPriority
     }
 }
