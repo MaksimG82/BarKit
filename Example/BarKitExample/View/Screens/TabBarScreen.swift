@@ -26,6 +26,7 @@ struct TabBarScreen: View {
             }
             
             backgroundLink
+            hapticFeedbackLink
             itemSettingsLink
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
@@ -57,6 +58,12 @@ private extension TabBarScreen {
         settingsLink("Tab bar item", viewModel: viewModel) {
             itemConfigurationSection
         }
+    }
+    
+    var hapticFeedbackLink: some View {
+        settingsLink("Haptic feedback", viewModel: viewModel) {
+              hapticFeedbackSection
+            }
     }
 }
 
@@ -344,6 +351,27 @@ private extension TabBarScreen {
             Text("Prominent items")
         } footer: {
             Text("Only icon size is configurable for prominent style.")
+        }
+    }
+    
+    // MARK: - Haptic Feedback section
+
+    var hapticFeedbackSection: some View {
+        Section {
+            Toggle("Haptic Feedback", isOn: bindings.hapticFeedbackEnabled())
+            if viewModel.floatingTabBarConfig.hapticFeedback != nil {
+                Picker("Style", selection: bindings.hapticFeedback()) {
+                    Text("Selection").tag(HapticFeedback.selection)
+                    Text("Impact").tag(HapticFeedback.impact)
+                    Text("Success").tag(HapticFeedback.success)
+                    Text("Warning").tag(HapticFeedback.warning)
+                    Text("Error").tag(HapticFeedback.error)
+                }
+            }
+        } header: {
+            Text("Haptic Feedback")
+        } footer: {
+            Text("Requires iOS 17 or later.")
         }
     }
     

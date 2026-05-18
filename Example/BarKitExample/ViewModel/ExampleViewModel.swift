@@ -89,6 +89,14 @@ private extension ExampleViewModel {
                 state.tabBar.pinnedTabBarMaterialSelection = materilaSelection
             }
             
+        case let .updateHapticFeedbackEnabled(isEnabled):
+            floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+
+        case let .updateHapticFeedback(feedback):
+            floatingTabBarConfig.hapticFeedback = feedback
+            pinnedTabBarConfig.hapticFeedback = feedback
+            
         case let .floating(floatingIntent):
             switch floatingIntent {
             case let .updateInsets(insets):

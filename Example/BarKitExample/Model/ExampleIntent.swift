@@ -54,6 +54,12 @@ enum TabBarIntent {
     /// Updates background of tabbar
     case update(MaterialSelection)
     
+    /// Enables or disables haptic feedback for the tab bar.
+    case updateHapticFeedbackEnabled(Bool)
+
+    /// Updates the haptic feedback style for the tab bar.
+    case updateHapticFeedback(HapticFeedback)
+    
     /// Resets all Tab Bar settings to their default values.
     case reset
 }
