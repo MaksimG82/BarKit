@@ -59,6 +59,12 @@ public struct BarConfiguration {
     /// Accessibility label for the entire bar.
     public var barAccessibilityLabel: String
     
+    // MARK: - Haptic feedback
+    
+    /// The haptic feedback style triggered when the selected item changes.
+    /// Requires iOS 17 or later. Pass `nil` to disable haptic feedback.
+    public var hapticFeedback: HapticFeedback? = .selection
+    
     /// Creates a new `BarConfiguration`.
     ///
     /// - Parameters:
@@ -71,6 +77,7 @@ public struct BarConfiguration {
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
+    ///   - Parameter hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
     public init(
         axis: Axis = .horizontal,
         cornerRadius: CGFloat = 28,
@@ -80,7 +87,8 @@ public struct BarConfiguration {
         itemSpacing: CGFloat = 0,
         itemStateAnimation: Animation? = .easeInOut(duration: 0.2),
         baselineStyle: BarItemStyle? = nil,
-        barAccessibilityLabel: String = "Tab Bar"
+        barAccessibilityLabel: String = "Tab Bar",
+        hapticFeedback: HapticFeedback? = .selection
     ) {
         self.axis = axis
         self.cornerRadius = cornerRadius
@@ -91,5 +99,6 @@ public struct BarConfiguration {
         self.itemStateAnimation = itemStateAnimation
         self.baselineStyle = baselineStyle
         self.barAccessibilityLabel = barAccessibilityLabel
+        self.hapticFeedback = hapticFeedback
     }
 }

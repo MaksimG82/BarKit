@@ -112,6 +112,7 @@ public struct BarView<Item: BarItemProtocol>: View {
         .overlay(alignment: .leading) {
             selectionIndicator
         }
+        .hapticFeedback(config.hapticFeedback, trigger: selected)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(config.barAccessibilityLabel)
     }
