@@ -136,23 +136,16 @@ private extension IndicatorScreen {
     // MARK: - Corner radius
     
     var cornerRadiusSection: some View {
-        Section {
-            SettingSlider(
-                title: "Corner Radius",
-                value: bindings.cornerRadius(),
-                range: 0...40
-            )
-        } header: {
-            Text("Corner Radius")
-        } footer: {
-            Text("For best results, keep the indicator corner radius close to the bar's corner radius.")
-        }
+        CornerRadiusSection(
+            cornerRadius: bindings.cornerRadius(),
+            footer: "For best results, keep the indicator corner radius close to the bar's corner radius."
+        )
     }
     
     // MARK: - Animation
     
     var animationSection: some View {
-        AnimationSettingsSectionView(
+        AnimationSection(
             parameters: bindings.animationParameters(),
             headerText: "Transition Animation",
             footerText: "Animation applied when the indicator moves between tabs."
@@ -234,7 +227,7 @@ private extension IndicatorScreen {
     @ViewBuilder
     var scaleEffetAnimationSettings: some View {
         if viewModel.state.indicator.indicatorConfig.scaleEffect != nil {
-            AnimationSettingsSectionView(
+            AnimationSection(
                 parameters: bindings.scaleAnimationParameters(),
                 headerText: "Scale Animation",
                 footerText: "Animation applied to the scaling phase of the indicator."

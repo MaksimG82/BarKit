@@ -1,5 +1,5 @@
 //
-//  AnimationSettingsSection.swift
+//  AnimationSection.swift
 //  BarKitExample
 //
 //  Created by Maksim Gaisin on 12.04.26.
@@ -9,7 +9,7 @@ import SwiftUI
 
 typealias AnimationType = AnimationParameters.AnimationType
 
-struct AnimationSettingsSectionView: View {
+struct AnimationSection: View {
     @Binding var parameters: AnimationParameters
     
     let headerText: String
@@ -41,7 +41,7 @@ struct AnimationSettingsSectionView: View {
 
 // MARK: - View Components
 
-private extension AnimationSettingsSectionView {
+private extension AnimationSection {
     var durationSlider: some View {
         SettingSlider(
             title: "Duration",
@@ -105,26 +105,12 @@ private extension AnimationSettingsSectionView {
             }
         }
     }
-    
-    // MARK: - Actions
-    
-    private func updateDefaults(for type: AnimationType) {
-        switch type {
-        case .easeIn, .easeOut, .easeInOut, .linear:
-            parameters.duration = 0.35
-        case .spring, .bouncy, .snappy, .smooth:
-            parameters.duration = 0.5
-            parameters.bounce = 0.0
-        case .none:
-            parameters.duration = 0.0
-        }
-    }
 }
 
 #Preview("Section without scale effect settings") {
     @Previewable @State var parameters: AnimationParameters = .init()
     Form {
-        AnimationSettingsSectionView(
+        AnimationSection(
             parameters: $parameters,
             headerText: "Tab item animation",
             footerText: "The animation applied to internal elements (icon and title) during selection changes."
@@ -140,13 +126,13 @@ private extension AnimationSettingsSectionView {
     )
     
     Form {
-        AnimationSettingsSectionView(
+        AnimationSection(
             parameters: $parameters,
             headerText: "Tab item animation",
             footerText: "The animation applied to internal elements (icon and title) during selection changes."
         )
         
-        AnimationSettingsSectionView(
+        AnimationSection(
             parameters: $parametersWithScaleEffects,
             headerText: "Indicator Scale Effect",
             footerText: "Animation for scaling the indicator during transitions."
