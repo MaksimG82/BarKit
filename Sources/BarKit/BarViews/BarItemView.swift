@@ -112,13 +112,13 @@ struct BarItemView<Item: BarItemProtocol>: View {
         .contentShape(Rectangle())
         .applyDebugVisuals(color: .blue)
         .onTapGesture(perform: action)
-        .modifier(BarAccessibilityModifier(item: item, isSelected: isSelected))
         .capturePreference(
             key: BarItemFrameKey.self,
             in: .named(coordinateSpaceName)
         ) { proxy in
             [item.id: proxy.frame(in: .named(coordinateSpaceName))]
         }
+        .modifier(BarItemAccessibilityModifier(item: item, isSelected: isSelected))
     }
 
     // MARK: - Subviews
@@ -129,7 +129,7 @@ struct BarItemView<Item: BarItemProtocol>: View {
                 .frame(width: iconSize.width, height: iconSize.height)
                 .foregroundStyle(itemColor)
                 .scaleEffect(isSelected ? selectedIconScale : 1.0)
-
+                
             Text(item.title)
                 .font(.system(textStyle))
                 .foregroundStyle(itemColor)
