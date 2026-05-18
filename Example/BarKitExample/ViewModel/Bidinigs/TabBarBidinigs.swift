@@ -213,4 +213,22 @@ final class TabBarBindings: BindingProvider {
             set: { self.viewModel.send(.tabBar(.updateTabItemStyle(item, $0 ? .prominent : .regular))) }
         )
     }
+    
+    // MARK: - Haptic Feedback
+
+    /// Binding for the haptic feedback enabled toggle.
+    func hapticFeedbackEnabled() -> Binding<Bool> {
+        Binding(
+            get: { self.viewModel.floatingTabBarConfig.hapticFeedback != nil },
+            set: { self.viewModel.send(.tabBar(.updateHapticFeedbackEnabled($0))) }
+        )
+    }
+
+    /// Binding for the haptic feedback style picker.
+    func hapticFeedback() -> Binding<HapticFeedback> {
+        Binding(
+            get: { self.viewModel.floatingTabBarConfig.hapticFeedback ?? .selection },
+            set: { self.viewModel.send(.tabBar(.updateHapticFeedback($0))) }
+        )
+    }
 }
