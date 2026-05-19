@@ -96,10 +96,11 @@ public struct BarView<Item: BarItemProtocol>: View {
     // MARK: - Body
 
     public var body: some View {
+        let indicatorFrame = indicatorFrame()
         ZStack(alignment: .leading) {
-            itemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame())
+            itemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame)
             
-            overlayItemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame())
+            overlayItemsStack(indicatorFrame: indicatorFrame).indicatorLens(indicatorConfig, frame: indicatorFrame)
         }
         .frame(
             height: barHeight(),
@@ -110,7 +111,7 @@ public struct BarView<Item: BarItemProtocol>: View {
                 .applyDebugVisuals(color: .green)
         }
         .overlay(alignment: .leading) {
-            selectionIndicator
+            selectionIndicator(frame: indicatorFrame)
         }
         .hapticFeedback(config.hapticFeedback, trigger: selected)
         .modifier(
@@ -146,60 +147,6 @@ private extension BarView {
         .defersSystemGestures(on: .all)
     }
 
-    /// A non-interactive overlay stack, masked to the selection indicator shape.
-    /// Renders items in their selected color only within the indicator bounds.
-    /// Rendered only when `indicatorConfig` is provided.
-    @ViewBuilder
-    var overlayItemsStack: some View {
-        if let indicatorConfig {
-            itemStack { item in
-                BarItemOverlayView(
-                    item: item,
-                    isSelected: item.id == selected.id,
-                    isVerticalCompact: isVerticalCompact,
-                    config: config
-                )
-            }
-            .adaptiveCoordinateSpace(name: coordinateSpaceName)
-            .accessibilityHidden(true)
-            .mask(alignment: .leading) {
-                RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
-                    .frame(
-                        width: max(0, indicatorFrame().width),
-                        height: max(0, indicatorFrame().height)
-                    )
-                    .offset(x: indicatorFrame().minX)
-            }
-        }
-    }
-
-    /// A visual highlight that identifies the currently selected item.
-    /// Rendered only when `indicatorConfig` is provided.
-    @ViewBuilder
-    var selectionIndicator: some View {
-        if let indicatorConfig {
-            RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
-                .fill(indicatorConfig.color)
-                .overlay {
-                    if let border = indicatorConfig.border {
-                        RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
-                            .strokeBorder(border.color, lineWidth: border.lineWidth)
-                    }
-                }
-                .frame(
-                    width: max(0, selectedItemFrame.width - indicatorConfig.inset.leading - indicatorConfig.inset.trailing),
-                    height: max(0, selectedItemFrame.height - indicatorConfig.inset.top - indicatorConfig.inset.bottom)
-                )
-                .scaleEffect(
-                    x: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.xScale ?? 1.0 : 1.0,
-                    y: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.yScale ?? 1.0 : 1.0,
-                    anchor: .center
-                )
-                .offset(x: indicatorFrame().minX)
-                .gesture(indicatorConfig.isDragGestureEnabled ? dragGesture : nil)
-        }
-    }
-    
     /// The bar background rendered behind the items stack.
     @ViewBuilder
     var backgroundCapsule: some View {
@@ -218,6 +165,60 @@ private extension BarView {
                 .fill(.clear)
                 .overlay { RoundedRectangle(cornerRadius: config.cornerRadius).fill(tint) }
                 .barShadow(config.shadow)
+        }
+    }
+    
+    /// A non-interactive overlay stack, masked to the selection indicator shape.
+    /// Renders items in their selected color only within the indicator bounds.
+    /// Rendered only when `indicatorConfig` is provided.
+    @ViewBuilder
+    func overlayItemsStack(indicatorFrame: CGRect) -> some View {
+        if let indicatorConfig {
+            itemStack { item in
+                BarItemOverlayView(
+                    item: item,
+                    isSelected: item.id == selected.id,
+                    isVerticalCompact: isVerticalCompact,
+                    config: config
+                )
+            }
+            .adaptiveCoordinateSpace(name: coordinateSpaceName)
+            .accessibilityHidden(true)
+            .mask(alignment: .leading) {
+                RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
+                    .frame(
+                        width: max(0, indicatorFrame.width),
+                        height: max(0, indicatorFrame.height)
+                    )
+                    .offset(x: indicatorFrame.minX)
+            }
+        }
+    }
+
+    /// A visual highlight that identifies the currently selected item.
+    /// Rendered only when `indicatorConfig` is provided.
+    @ViewBuilder
+    func selectionIndicator(frame: CGRect) -> some View {
+        if let indicatorConfig {
+            RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
+                .fill(indicatorConfig.color)
+                .overlay {
+                    if let border = indicatorConfig.border {
+                        RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
+                            .strokeBorder(border.color, lineWidth: border.lineWidth)
+                    }
+                }
+                .frame(
+                    width: max(0, frame.width),
+                    height: max(0, frame.height)
+                )
+                .scaleEffect(
+                    x: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.xScale ?? 1.0 : 1.0,
+                    y: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.yScale ?? 1.0 : 1.0,
+                    anchor: .center
+                )
+                .offset(x: frame.minX)
+                .gesture(indicatorConfig.isDragGestureEnabled ? dragGesture : nil)
         }
     }
 
@@ -284,8 +285,11 @@ private extension BarView {
         case let (transition?, scale?):
             isSelectionIndicatorScaling = true
             withAnimation(transition) { performSelection() }
-            DispatchQueue.main.asyncAfter(deadline: .now() + scale.duration) {
-                withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+            Task {
+                try? await Task.sleep(for: .seconds(scale.duration))
+                await MainActor.run {
+                    withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+                }
             }
 
         case (let transition?, nil):
@@ -294,8 +298,11 @@ private extension BarView {
         case (nil, let scale?):
             isSelectionIndicatorScaling = true
             performSelection()
-            DispatchQueue.main.asyncAfter(deadline: .now() + scale.duration) {
-                withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+            Task {
+                try? await Task.sleep(for: .seconds(scale.duration))
+                await MainActor.run {
+                    withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+                }
             }
 
         default:
