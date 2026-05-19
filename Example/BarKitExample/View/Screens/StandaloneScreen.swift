@@ -43,7 +43,8 @@ extension StandaloneScreen {
             selected: bindings.selectedItem(),
             config: viewModel.state.standalone.barConfiguration
         )
-        .padding(viewModel.state.standalone.insets)
+        .padding(.leading, viewModel.state.standalone.insets.leading)
+        .padding(.top, viewModel.state.standalone.insets.top)
         .background(Color(.secondarySystemBackground))
     }
     

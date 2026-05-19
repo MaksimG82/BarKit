@@ -103,8 +103,7 @@ public struct BarView<Item: BarItemProtocol>: View {
             overlayItemsStack(indicatorFrame: indicatorFrame).indicatorLens(indicatorConfig, frame: indicatorFrame)
         }
         .frame(
-            width: config.axis == .vertical ? barSize() : nil,
-            height: config.axis == .horizontal ? barSize() : nil,
+            height: barHeight(),
             alignment: .bottom
         )
         .background {
@@ -240,7 +239,7 @@ private extension BarView {
                 ForEach(items) { content($0) }
             }
         case .vertical:
-            VStack(alignment: .center, spacing: config.itemSpacing) {
+            VStack(alignment: .leading, spacing: config.itemSpacing) {
                 ForEach(items) { content($0) }
             }
         }
@@ -351,7 +350,8 @@ private extension BarView {
             } else {
                 minY = selectedItemFrame.minY + inset.top
             }
-            return CGPoint(x: selectedItemFrame.minX + inset.leading, y: minY)
+            let minX = itemFrames.values.map(\.minX).min() ?? selectedItemFrame.minX + inset.leading
+            return CGPoint(x: minX, y: minY)
         }
     }
 
@@ -362,12 +362,19 @@ private extension BarView {
         let inset = indicatorConfig.inset
         let offset = indicatorOffset()
 
-        return CGRect(
-            x: offset.x,
-            y: offset.y,
-            width: selectedItemFrame.width - inset.leading - inset.trailing,
-            height: selectedItemFrame.height - inset.top - inset.bottom
-        )
+        let width: CGFloat
+        let height: CGFloat
+
+        switch config.axis {
+        case .horizontal:
+            width = selectedItemFrame.width - inset.leading - inset.trailing
+            height = selectedItemFrame.height - inset.top - inset.bottom
+        case .vertical:
+            width = (itemFrames.values.map(\.width).max() ?? selectedItemFrame.width) - inset.leading - inset.trailing
+            height = selectedItemFrame.height - inset.top - inset.bottom
+        }
+
+        return CGRect(x: offset.x, y: offset.y, width: width, height: height)
     }
     
     /// Returns the item whose center is closest to the indicator's current center.
@@ -385,23 +392,15 @@ private extension BarView {
         }) ?? selected
     }
     
-    /// Calculates the fixed size of the bar along its primary axis.
-    /// Returns `nil` if `baselineStyle` is not set, leaving the size unconstrained.
-    func barSize() -> CGFloat? {
-        guard let baselineStyle = config.baselineStyle,
-              let itemConfig = config.itemStyles[baselineStyle] else { return nil }
-        let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
-
-        switch config.axis {
-        case .horizontal:
-            return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.top + insets.bottom
-        case .vertical:
-            return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.leading + insets.trailing
-        }
-    }
-    
-    /// Calculates the fixed bar height based on the baseline item style metrics and current size class.
-    /// Returns `nil` if `baselineStyle` is not set, leaving height unconstrained.
+    /// Constrains the bar's primary-axis dimension when items of mixed styles are present
+    /// and the bar height should be based on a specific baseline style — not the tallest item.
+    /// This allows prominent items (e.g. a raised center tab) to overflow beyond the bar bounds.
+    ///
+    /// Returns `nil` in the common case where all items share the same style,
+    /// letting SwiftUI size the bar naturally from its content.
+    ///
+    /// - Note: Currently only meaningful for horizontal bars with a prominent center item.
+    ///   For vertical bars, width is determined by item content — no equivalent is needed.
     func barHeight() -> CGFloat? {
         guard let baselineStyle = config.baselineStyle,
               let itemConfig = config.itemStyles[baselineStyle] else { return nil }

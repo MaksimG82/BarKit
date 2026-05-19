@@ -37,6 +37,12 @@ public struct BarConfiguration {
     public var background: BarBackground
     
     // MARK: - Item
+    
+    /// The arrangement of icon and title within each bar item.
+    /// When `nil`, the layout is inferred from the bar axis and current size class:
+    /// horizontal bar uses `.vertical` in regular, `.horizontal` in compact;
+    /// vertical bar always uses `.horizontal`.
+    public var itemContentAxis: ItemContentAxis?
 
     /// Visual configuration per item style.
     /// Defines appearance for each `BarItemStyle` used in the bar.

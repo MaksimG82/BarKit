@@ -57,8 +57,8 @@ public struct ItemConfiguration {
         selectedIconScale: CGFloat = 1.1,
         compactIconScale: CGFloat = 0.8,
         iconTitleSpacing: CGFloat = 4,
-        edgeInsets: EdgeInsets = .init(top: 8, leading: 0, bottom: 8, trailing: 0),
-        edgeInsetsCompact: EdgeInsets = .init(top: 4, leading: 0, bottom: 4, trailing: 0),
+        edgeInsets: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8),
+        edgeInsetsCompact: EdgeInsets = .init(top: 4, leading: 4, bottom: 4, trailing: 4),
     ) {
         self.selectedColor = selectedColor
         self.unselectedColor = unselectedColor
