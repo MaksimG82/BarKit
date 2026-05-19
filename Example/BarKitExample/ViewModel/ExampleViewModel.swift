@@ -131,6 +131,10 @@ private extension ExampleViewModel {
         case let .updateTabItemStyle(item, style):
             guard let index = state.tabBarItems.firstIndex(where: { $0.id == item.id }) else { return }
             state.tabBarItems[index].style = style
+        
+        case let .updateItemContentAxis(axis):
+            floatingTabBarConfig.itemContentAxis = axis
+            pinnedTabBarConfig.itemContentAxis = axis
             
         case .reset:
             state.tabBar = .init()

@@ -52,6 +52,9 @@ enum TabBarIntent {
     /// Updates the style of a tab item. Pinned mode only.
     case updateTabItemStyle(ExampleTabItem, BarItemStyle)
     
+    /// Updates the arrangement of icon and title within each bar item.
+    case updateItemContentAxis(ItemContentAxis?)
+    
     /// Updates background of tabbar
     case update(MaterialSelection)
     

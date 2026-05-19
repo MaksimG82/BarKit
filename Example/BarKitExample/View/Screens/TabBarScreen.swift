@@ -188,6 +188,7 @@ private extension TabBarScreen {
         itemColorsSection
         itemIconSizeSection
         itemTextStyleSection
+        itemContentAxisSection
         if viewModel.state.tabBar.mode == .pinned {
             prominentItemsSection
         }
@@ -244,6 +245,10 @@ private extension TabBarScreen {
     
     var itemTextStyleSection: some View {
         ItemTextStyleSection(textStyle: bindings.regularItemConfig(\.textStyle))
+    }
+    
+    var itemContentAxisSection: some View {
+        ItemContentAxisSection(axis: bindings.itemContentAxis())
     }
     
     var prominentItemsSection: some View {

@@ -87,6 +87,7 @@ public struct BarConfiguration {
     ///   - itemSpacing: Spacing between items in the stack.
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
+    ///   - itemContentAxis: The arrangement of icon and title within each bar item.
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
     ///   - hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
     ///   - accessibilitySortPriority: Sort priority relative to other elements in the same container. Pass a lower value (e.g. `-1`) to ensure VoiceOver reaches content before the bar.
@@ -99,6 +100,7 @@ public struct BarConfiguration {
         itemSpacing: CGFloat = 0,
         itemStateAnimation: Animation? = .easeInOut(duration: 0.2),
         baselineStyle: BarItemStyle? = nil,
+        itemContentAxis: ItemContentAxis? = nil,
         barAccessibilityLabel: String = "Tab Bar",
         hapticFeedback: HapticFeedback? = .selection,
         accessibilitySortPriority: Double = 0

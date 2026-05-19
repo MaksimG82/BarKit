@@ -214,6 +214,21 @@ final class TabBarBindings: BindingProvider {
         )
     }
     
+    // MARK: - Item Content Axis
+
+    /// Binding for the item content layout axis arrangement based on the current mode.
+    func itemContentAxis() -> Binding<ItemContentAxis?> {
+        Binding(
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemContentAxis
+                case .pinned:   self.viewModel.pinnedTabBarConfig.itemContentAxis
+                }
+            },
+            set: { self.viewModel.send(.tabBar(.updateItemContentAxis($0))) }
+        )
+    }
+    
     // MARK: - Haptic Feedback
 
     /// Binding for the haptic feedback enabled toggle.
