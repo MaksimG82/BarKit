@@ -47,7 +47,10 @@ private extension ExampleContentView {
             viewModel: viewModel,
             bindings: .init(viewModel: viewModel)
         )
-        case .standalone: Text("Standalone")
+        case .standalone: StandaloneScreen(
+            viewModel: viewModel,
+            bindings: .init(viewModel: viewModel)
+        )
         case .indicator:  IndicatorScreen(
             viewModel: viewModel,
             bindings: .init(viewModel: viewModel)

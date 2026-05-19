@@ -16,7 +16,7 @@ struct TabBarContainer: View {
         switch viewModel.state.tabBar.mode {
         case .floating:
             FloatingTabBarView(
-                items: viewModel.state.items,
+                items: viewModel.state.tabBarItems,
                 selected: selectedItem,
                 config: viewModel.floatingTabBarConfig,
                 indicatorConfig: viewModel.state.indicator.indicatorConfig,
@@ -26,7 +26,7 @@ struct TabBarContainer: View {
             
         case .pinned:
             PinnedTabBarView(
-                items: viewModel.state.items,
+                items: viewModel.state.tabBarItems,
                 selected: selectedItem,
                 config: viewModel.pinnedTabBarConfig
             )

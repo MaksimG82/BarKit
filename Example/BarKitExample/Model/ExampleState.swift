@@ -14,7 +14,7 @@ struct ExampleState {
     // MARK: - Navigation
  
     /// The list of tab items displayed in the bar.
-    var items: [ExampleTabItem] = ExampleTabItem.allItems
+    var tabBarItems: [ExampleTabItem] = ExampleTabItem.allItems
  
     /// The currently active tab.
     var selectedTab: ExampleTabItem
@@ -41,7 +41,7 @@ struct ExampleState {
     // MARK: - Initialization
  
     init() {
-        selectedTab = ExampleTabItem.allItems.first!
+        selectedTab = ExampleTabItem.allItems[0]
     }
 }
  
@@ -82,20 +82,23 @@ struct PinnedTabBarState {
  
 /// State for the Standalone BarView screen.
 struct StandaloneState {
-    var horizontal: HorizontalBarState = .init()
-    var vertical: VerticalBarState = .init()
-}
+    
+    /// The list of items displayed in the standalone bar.
+    var items: [ExampleBarItem] = ExampleBarItem.allItems
+
+    /// The currently selected standalone bar item.
+    var selectedItem: ExampleBarItem
+    
+    /// The bar configuration for the standalone bar.
+    var barConfiguration: BarConfiguration = .init()
+    
+    var insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+    
+    // MARK: - Initialization
  
-/// State for the horizontal BarView.
-struct HorizontalBarState {
-    var barConfig: BarConfiguration = .init()
-    var insets: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-}
- 
-/// State for the vertical BarView.
-struct VerticalBarState {
-    var barConfig: BarConfiguration = .init()
-    var insets: EdgeInsets = .init(top: 16, leading: 0, bottom: 16, trailing: 0)
+    init() {
+        selectedItem = ExampleBarItem.allItems[0]
+    }
 }
  
 /// State for the Indicator screen.

@@ -76,7 +76,7 @@ private extension ExampleViewModel {
             if mode != state.tabBar.mode {
                 state.instanceID = UUID()
                 if mode == .floating {
-                    state.items = state.items.map { $0.withStyle(.regular) }
+                    state.tabBarItems = state.tabBarItems.map { $0.withStyle(.regular) }
                 }
             }
             state.tabBar.mode = mode
@@ -129,8 +129,8 @@ private extension ExampleViewModel {
             state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
             
         case let .updateTabItemStyle(item, style):
-            guard let index = state.items.firstIndex(where: { $0.id == item.id }) else { return }
-            state.items[index].style = style
+            guard let index = state.tabBarItems.firstIndex(where: { $0.id == item.id }) else { return }
+            state.tabBarItems[index].style = style
             
         case .reset:
             state.tabBar = .init()
@@ -138,7 +138,18 @@ private extension ExampleViewModel {
         }
     }
     
-    func handle(_ intent: StandaloneIntent) { }
+    func handle(_ intent: StandaloneIntent) {
+        switch intent {
+        case let .selectItem(item):
+            state.standalone.selectedItem = item
+            
+        case let .updateAxis(axis):
+            state.standalone.barConfiguration.axis = axis
+            
+        case .reset:
+            state.standalone.barConfiguration = .init()
+        }
+    }
     
     func handle(_ intent: IndicatorIntent) {
         switch intent {

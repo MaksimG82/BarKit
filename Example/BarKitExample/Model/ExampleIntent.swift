@@ -10,7 +10,6 @@ import SwiftUI
 
 /// Defines all possible user actions that can modify the Example app state.
 enum ExampleIntent {
- 
     // MARK: - Navigation
  
     /// Changes the currently selected tab.
@@ -38,7 +37,9 @@ enum ExampleIntent {
 /// Actions available on the Tab Bar screen.
 enum TabBarIntent {
     case floating(FloatingTabBarIntent)
+    
     case pinned(PinnedTabBarIntent)
+    
     /// Switches between floating and pinned mode. Resets all prominent items to regular.
     case switchMode(TabBarMode)
     
@@ -66,7 +67,6 @@ enum TabBarIntent {
  
 /// Actions available on the Floating tab bar.
 enum FloatingTabBarIntent {
-    
     /// Updates the floating tab bar insets for regular height size class.
     case updateInsets(EdgeInsets)
 
@@ -85,22 +85,21 @@ enum FloatingTabBarIntent {
  
 /// Actions available on the Pinned tab bar.
 enum PinnedTabBarIntent {
-    
     /// Updates the background appearance of the pinned tab bar.
     case updateBackground(BarBackground)
 }
  
 /// Actions available on the Standalone BarView screen.
 enum StandaloneIntent {
-    case horizontal(HorizontalBarIntent)
-    case vertical(VerticalBarIntent)
+    /// Selects a standalone bar item.
+    case selectItem(ExampleBarItem)
+    
+    /// Updates the layout axis of the standalone bar.
+    case updateAxis(BarConfiguration.Axis)
+    
+    /// Resets all settings to their default values.
+    case reset
 }
- 
-/// Actions available on the horizontal BarView.
-enum HorizontalBarIntent {}
- 
-/// Actions available on the vertical BarView.
-enum VerticalBarIntent {}
  
 enum IndicatorIntent {
     

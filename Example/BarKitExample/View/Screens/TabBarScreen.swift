@@ -248,7 +248,7 @@ private extension TabBarScreen {
     
     var prominentItemsSection: some View {
         Section {
-            ForEach(viewModel.state.items) { item in
+            ForEach(viewModel.state.tabBarItems) { item in
                 Toggle(item.title, isOn: bindings.tabItemStyle(for: item))
             }
             SettingSlider(
