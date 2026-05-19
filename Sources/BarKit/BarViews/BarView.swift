@@ -30,8 +30,8 @@ public struct BarView<Item: BarItemProtocol>: View {
     /// A dictionary mapping each item's unique identifier to its frame in the local coordinate space.
     @State private var itemFrames: [AnyHashable: CGRect] = [:]
 
-    /// The current horizontal position of the user's finger during a drag gesture.
-    @State private var gestureXLocation: CGFloat? = nil
+    /// The current position of the user's finger during a drag gesture.
+    @State private var gestureLocation: CGPoint? = nil
 
     /// Indicates whether the drag gesture is currently active.
     @State private var isDragging: Bool = false
@@ -97,20 +97,21 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     public var body: some View {
         let indicatorFrame = indicatorFrame()
-        ZStack(alignment: .leading) {
+        ZStack(alignment: config.axis == .horizontal ? .leading : .top) {
             itemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame)
             
             overlayItemsStack(indicatorFrame: indicatorFrame).indicatorLens(indicatorConfig, frame: indicatorFrame)
         }
         .frame(
-            height: barHeight(),
+            width: config.axis == .vertical ? barSize() : nil,
+            height: config.axis == .horizontal ? barSize() : nil,
             alignment: .bottom
         )
         .background {
             backgroundCapsule
                 .applyDebugVisuals(color: .green)
         }
-        .overlay(alignment: .leading) {
+        .overlay(alignment: config.axis == .horizontal ? .leading : .top) {
             selectionIndicator(frame: indicatorFrame)
         }
         .hapticFeedback(config.hapticFeedback, trigger: selected)
@@ -184,13 +185,16 @@ private extension BarView {
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
             .accessibilityHidden(true)
-            .mask(alignment: .leading) {
+            .mask(alignment: config.axis == .horizontal ? .leading : .top) {
                 RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
                     .frame(
                         width: max(0, indicatorFrame.width),
                         height: max(0, indicatorFrame.height)
                     )
-                    .offset(x: indicatorFrame.minX)
+                    .offset(
+                        x: config.axis == .horizontal ? indicatorFrame.minX : 0,
+                        y: config.axis == .vertical ? indicatorFrame.minY : 0
+                    )
             }
         }
     }
@@ -217,7 +221,10 @@ private extension BarView {
                     y: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.yScale ?? 1.0 : 1.0,
                     anchor: .center
                 )
-                .offset(x: frame.minX)
+                .offset(
+                    x: config.axis == .horizontal ? frame.minX : 0,
+                    y: config.axis == .vertical ? frame.minY : 0
+                )
                 .gesture(indicatorConfig.isDragGestureEnabled ? dragGesture : nil)
         }
     }
@@ -250,13 +257,13 @@ private extension BarView {
             .onChanged { value in
                 isSelectionIndicatorScaling = true
                 isDragging = true
-                gestureXLocation = value.location.x
+                gestureLocation = value.location
             }
             .onEnded { _ in
                 isSelectionIndicatorScaling = true
                 handleSelection(nearestItem(to: indicatorFrame()))
                 isDragging = false
-                gestureXLocation = nil
+                gestureLocation = nil
             }
     }
 }
@@ -315,34 +322,82 @@ private extension BarView {
 
 private extension BarView {
     
-    /// Computes the current frame of the selection indicator, accounting for drag position.
-    func indicatorFrame() -> CGRect {
+    /// Computes the current offset of the selection indicator, accounting for drag position and layout axis.
+    func indicatorOffset() -> CGPoint {
         guard let indicatorConfig else { return .zero }
-        
+
         let inset = indicatorConfig.inset
-        let width = selectedItemFrame.width - inset.leading - inset.trailing
-        let height = selectedItemFrame.height - inset.top - inset.bottom
-        let minX: CGFloat
 
-        if isDragging, let gestureXLocation {
-            let raw = gestureXLocation - selectedItemFrame.width / 2 + inset.leading
-            let minAllowed = inset.leading
-            let maxAllowed = (selectedItemFrame.width + config.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.leading
-            minX = max(minAllowed, min(maxAllowed, raw))
-        } else {
-            minX = selectedItemFrame.minX + inset.leading
+        switch config.axis {
+        case .horizontal:
+            let minX: CGFloat
+            if isDragging, let gestureLocation {
+                let raw = gestureLocation.x - selectedItemFrame.width / 2 + inset.leading
+                let minAllowed = inset.leading
+                let maxAllowed = (selectedItemFrame.width + config.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.leading
+                minX = max(minAllowed, min(maxAllowed, raw))
+            } else {
+                minX = selectedItemFrame.minX + inset.leading
+            }
+            return CGPoint(x: minX, y: selectedItemFrame.minY + inset.top)
+
+        case .vertical:
+            let minY: CGFloat
+            if isDragging, let gestureLocation {
+                let raw = gestureLocation.y - selectedItemFrame.height / 2 + inset.top
+                let minAllowed = inset.top
+                let maxAllowed = (selectedItemFrame.height + config.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.top
+                minY = max(minAllowed, min(maxAllowed, raw))
+            } else {
+                minY = selectedItemFrame.minY + inset.top
+            }
+            return CGPoint(x: selectedItemFrame.minX + inset.leading, y: minY)
         }
-
-        return CGRect(x: minX, y: selectedItemFrame.minY + inset.top, width: width, height: height)
     }
 
+    /// Computes the current frame of the selection indicator.
+    func indicatorFrame() -> CGRect {
+        guard let indicatorConfig else { return .zero }
+
+        let inset = indicatorConfig.inset
+        let offset = indicatorOffset()
+
+        return CGRect(
+            x: offset.x,
+            y: offset.y,
+            width: selectedItemFrame.width - inset.leading - inset.trailing,
+            height: selectedItemFrame.height - inset.top - inset.bottom
+        )
+    }
+    
     /// Returns the item whose center is closest to the indicator's current center.
     /// Falls back to the current selection if `items` is empty.
     func nearestItem(to frame: CGRect) -> Item {
         items.min(by: {
-            abs((itemFrames[$0.id]?.midX ?? 0) - frame.midX) <
-            abs((itemFrames[$1.id]?.midX ?? 0) - frame.midX)
+            switch config.axis {
+            case .horizontal:
+                abs((itemFrames[$0.id]?.midX ?? 0) - frame.midX) <
+                abs((itemFrames[$1.id]?.midX ?? 0) - frame.midX)
+            case .vertical:
+                abs((itemFrames[$0.id]?.midY ?? 0) - frame.midY) <
+                abs((itemFrames[$1.id]?.midY ?? 0) - frame.midY)
+            }
         }) ?? selected
+    }
+    
+    /// Calculates the fixed size of the bar along its primary axis.
+    /// Returns `nil` if `baselineStyle` is not set, leaving the size unconstrained.
+    func barSize() -> CGFloat? {
+        guard let baselineStyle = config.baselineStyle,
+              let itemConfig = config.itemStyles[baselineStyle] else { return nil }
+        let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
+
+        switch config.axis {
+        case .horizontal:
+            return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.top + insets.bottom
+        case .vertical:
+            return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.leading + insets.trailing
+        }
     }
     
     /// Calculates the fixed bar height based on the baseline item style metrics and current size class.
