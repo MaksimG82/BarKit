@@ -8,21 +8,30 @@
 import SwiftUI
 
 /// A reusable settings section for configuring item edge insets.
+/// A reusable settings section for configuring item edge insets.
 struct ItemEdgeInsetsSection: View {
 
     /// The header title for the section.
     let title: String
 
     /// Binding for the top inset.
-    @Binding var top: CGFloat
+    var top: Binding<CGFloat>?
 
     /// Binding for the bottom inset.
-    @Binding var bottom: CGFloat
+    var bottom: Binding<CGFloat>?
+
+    /// Binding for the leading inset.
+    var leading: Binding<CGFloat>?
+    
+    /// Binding for the trailing inset.
+    var trailing: Binding<CGFloat>?
 
     var body: some View {
         Section {
-            SettingSlider(title: "Top", value: $top, range: 0...24)
-            SettingSlider(title: "Bottom", value: $bottom, range: 0...24)
+            if let top { SettingSlider(title: "Top", value: top, range: 0...24) }
+            if let bottom { SettingSlider(title: "Bottom", value: bottom, range: 0...24) }
+            if let leading { SettingSlider(title: "Leading", value: leading, range: 0...24) }
+            if let trailing { SettingSlider(title: "Trailing", value: trailing, range: 0...24) }
         } header: {
             Text(title)
         }

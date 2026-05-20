@@ -16,8 +16,7 @@ struct ExampleBarItem: BarItemProtocol {
     enum DrinkType: String, CaseIterable {
         case wine     = "Wine"
         case beer     = "Beer"
-        case coffee   = "Coffee"
-        case water    = "Water"
+        case tea      = "Tea"
         case cocktail = "Cocktail"
     }
 
@@ -40,8 +39,7 @@ struct ExampleBarItem: BarItemProtocol {
         switch type {
         case .wine:     .system("wineglass.fill")
         case .beer:     .system("mug.fill")
-        case .coffee:   .system("cup.and.saucer.fill")
-        case .water:    .system("waterbottle.fill")
+        case .tea:   .system("cup.and.saucer.fill")
         case .cocktail: .system("bubbles.and.sparkles")
         }
     }

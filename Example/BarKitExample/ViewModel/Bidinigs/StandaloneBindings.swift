@@ -198,12 +198,9 @@ final class StandaloneBindings: BindingProvider {
     func itemContentAxis() -> Binding<ItemContentAxis?> {
         Binding(
             get: {
-                switch self.viewModel.state.tabBar.mode {
-                case .floating: self.viewModel.floatingTabBarConfig.itemContentAxis
-                case .pinned:   self.viewModel.pinnedTabBarConfig.itemContentAxis
-                }
+                self.viewModel.state.standalone.barConfiguration.itemContentAxis
             },
-            set: { self.viewModel.send(.tabBar(.updateItemContentAxis($0))) }
+            set: { self.viewModel.send(.standalone(.updateItemContentAxis($0))) }
         )
     }
 }

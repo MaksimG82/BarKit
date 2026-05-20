@@ -33,7 +33,6 @@ struct IndicatorSection: View {
     }
     
     var body: some View {
-        preview
         dragGestureSection
         insetSection
         appearanceLink
@@ -48,8 +47,7 @@ struct IndicatorSection: View {
 private extension IndicatorSection {
 
     var appearanceLink: some View {
-        settingsLink("Appearance", viewModel: viewModel) {
-            preview
+        settingsLink("Appearance", viewModel: viewModel, header: { preview }) {
             colorSection
             borderSection
             cornerRadiusSection
@@ -57,23 +55,20 @@ private extension IndicatorSection {
     }
 
     var transitionAnimationLink: some View {
-        settingsLink("Transition animation", viewModel: viewModel) {
-            preview
+        settingsLink("Transition animation", viewModel: viewModel, header: { preview }) {
             animationSection
         }
     }
 
     var scaleEffectLink: some View {
-        settingsLink("Scale effect", viewModel: viewModel) {
-            preview
+        settingsLink("Scale effect", viewModel: viewModel, header: { preview }) {
             scaleEffectSection
             scaleEffectAnimationSettings
         }
     }
 
     var lensEffectsLink: some View {
-        settingsLink("Lens effect", viewModel: viewModel) {
-            preview
+        settingsLink("Lens effect", viewModel: viewModel, header: { preview }) {
             effectsSection
         }
     }

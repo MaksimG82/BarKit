@@ -49,7 +49,7 @@ private extension StandaloneScreen {
     }
     
     var indicatorLink: some View {
-        settingsLink("Selection indicator", viewModel: viewModel, header: { barPreview }) {
+        settingsLink("Selection indicator", viewModel: viewModel, header: { barPreview }){
             indicatorSection
         }
     }
@@ -84,12 +84,12 @@ extension StandaloneScreen {
         Group {
             switch viewModel.state.standalone.barConfiguration.axis {
             case .horizontal:
-                VStack(spacing: 0) {
+                VStack(spacing: 8) {
                     previewContent
                     barView
                 }
             case .vertical:
-                HStack(spacing: 0) {
+                HStack(spacing: 16) {
                     barView
                     previewContent
                 }
@@ -126,6 +126,7 @@ extension StandaloneScreen {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .frame(height: viewModel.state.standalone.barConfiguration.axis == .horizontal ? 120 : nil)
+        .cornerRadius(16)
     }
     
     // MARK: - Axis
@@ -170,7 +171,8 @@ extension StandaloneScreen {
                 stateKeyPath: \.standalone.indicator,
                 wrapIntent: { .standalone(.indicator($0)) }
             ),
-            stateKeyPath: \.standalone.indicator
+            stateKeyPath: \.standalone.indicator,
+            preview: { barPreview }
         )
     }
     
@@ -209,7 +211,10 @@ extension StandaloneScreen {
         ItemEdgeInsetsSection(
             title: "Item padding",
             top: bindings.regularItemConfig(\.edgeInsets.top),
-            bottom: bindings.regularItemConfig(\.edgeInsets.bottom)
+            bottom: bindings.regularItemConfig(\.edgeInsets.bottom),
+            leading: bindings.regularItemConfig(\.edgeInsets.leading),
+            trailing: bindings.regularItemConfig(\.edgeInsets.trailing),
+            
         )
     }
     
