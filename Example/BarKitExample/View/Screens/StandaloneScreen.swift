@@ -22,8 +22,9 @@ struct StandaloneScreen: View {
             barPreview
             List {
                 axisSection
-                indicatorLink
                 appearanceLink
+                indicatorLink
+                backgroundLink
             }
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
@@ -39,19 +40,15 @@ struct StandaloneScreen: View {
 private extension StandaloneScreen {
     
     var appearanceLink: some View {
-        settingsLink("Appearance", viewModel: viewModel) {
-            barPreview
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowBackground(Color.clear)
+        settingsLink("Appearance", viewModel: viewModel, header: { barPreview }) {
             cornerRadiusSection
             shadowSection
-            
         }
     }
 
     var backgroundLink: some View {
-        settingsLink("Background", viewModel: viewModel) {
-//            backgroundSection
+        settingsLink("Background", viewModel: viewModel, header: { barPreview }) {
+            backgroundSection
         }
     }
 
@@ -68,17 +65,8 @@ private extension StandaloneScreen {
     }
     
     var indicatorLink: some View {
-        settingsLink("Selection indicator", viewModel: viewModel) {
-            IndicatorSection(
-                viewModel: viewModel,
-                bindings: .init(
-                    viewModel: viewModel,
-                    stateKeyPath: \.standalone.indicator,
-                    wrapIntent: { .standalone(.indicator($0)) }
-                ),
-                stateKeyPath: \.standalone.indicator,
-                preview: { barPreview }
-            )
+        settingsLink("Selection indicator", viewModel: viewModel, header: { barPreview }) {
+            indicatorSection
         }
     }
     
@@ -168,6 +156,30 @@ extension StandaloneScreen {
             shadowRadius: bindings.shadow(\.radius),
             shadowX: bindings.shadow(\.x),
             shadowY: bindings.shadow(\.y)
+        )
+    }
+    
+    // MARK: indicator section
+    var insicatorSection: some View {
+        IndicatorSection(
+            viewModel: viewModel,
+            bindings: .init(
+                viewModel: viewModel,
+                stateKeyPath: \.standalone.indicator,
+                wrapIntent: { .standalone(.indicator($0)) }
+            ),
+            stateKeyPath: \.standalone.indicator
+        )
+    }
+    
+    // MARK: - Background section
+    
+    var backgroundSection: some View {
+        BarBackgroundSection(
+            background: bindings.background(),
+            backgroundType: bindings.backgroundType(),
+            backgroundColor: bindings.backgroundColor(),
+            materialSelection: bindings.materialSelection()
         )
     }
     
