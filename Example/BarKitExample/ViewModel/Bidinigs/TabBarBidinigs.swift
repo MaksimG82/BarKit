@@ -183,7 +183,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for the full regular `ItemConfiguration`.
     func regularItemConfig() -> Binding<ItemConfiguration> {
         Binding(
-            get: { self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init() },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init()
+                case .pinned: self.viewModel.pinnedTabBarConfig.itemStyles[.regular] ?? .init()
+                }
+            },
             set: { self.viewModel.send(.tabBar(.updateRegularItemConfig($0))) }
         )
     }
@@ -191,7 +196,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for a single property of the regular `ItemConfiguration`.
     func regularItemConfig<T>(_ keyPath: WritableKeyPath<ItemConfiguration, T>) -> Binding<T> {
         binding(
-            get: { self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init() },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init()
+                case .pinned: self.viewModel.pinnedTabBarConfig.itemStyles[.regular] ?? .init()
+                }
+            },
             keyPath: keyPath,
             send: { .tabBar(.updateRegularItemConfig($0)) }
         )

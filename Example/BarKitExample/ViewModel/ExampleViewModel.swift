@@ -97,6 +97,7 @@ private extension ExampleViewModel {
             case .floating: floatingTabBarConfig.hapticFeedback = feedback
             case .pinned:   pinnedTabBarConfig.hapticFeedback = feedback
             }
+            
         case let .indicator(indicatorIntent):
             handle(indicatorIntent, state: &state.tabBar.indicator)
             
@@ -125,8 +126,12 @@ private extension ExampleViewModel {
             }
             
         case let .updateRegularItemConfig(config):
-            state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
-            state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
+            switch state.tabBar.mode {
+            case .floating:
+                state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
+            case .pinned:
+                state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
+            }
 
         case let .updateProminentItemConfig(config):
             state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
@@ -136,8 +141,10 @@ private extension ExampleViewModel {
             state.tabBarItems[index].style = style
         
         case let .updateItemContentAxis(axis):
-            floatingTabBarConfig.itemContentAxis = axis
-            pinnedTabBarConfig.itemContentAxis = axis
+            switch state.tabBar.mode {
+            case .floating: floatingTabBarConfig.itemContentAxis = axis
+            case .pinned: pinnedTabBarConfig.itemContentAxis = axis
+            }
             
         case .reset:
             state.tabBar = .init()
@@ -238,7 +245,6 @@ private extension ExampleViewModel {
             
         case .reset:
             state = .init()
-            
         }
     }
 }
