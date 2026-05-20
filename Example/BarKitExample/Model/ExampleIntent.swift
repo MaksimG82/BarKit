@@ -109,6 +109,24 @@ enum StandaloneIntent {
     /// Updates the shadow configuration of the bar. Pass `nil` to disable shadow.
     case updateShadow(ShadowConfiguration?)
     
+    /// Updates the background appearance of the bar.
+    case updateBackground(BarBackground)
+    
+    /// Updates background of the bar
+    case updateMaterialSelection(MaterialSelection)
+    
+    /// Enables or disables haptic feedback for the bar.
+    case updateHapticFeedbackEnabled(Bool)
+    
+    /// Updates the haptic feedback style for the bar.
+    case updateHapticFeedback(HapticFeedback)
+    
+    /// Updates the ItemConfiguration for .regular style.
+    case updateRegularItemConfig(ItemConfiguration)
+    
+    /// Updates the arrangement of icon and title within each bar item.
+    case updateItemContentAxis(ItemContentAxis?)
+    
     /// Resets all settings to their default values.
     case reset
 }

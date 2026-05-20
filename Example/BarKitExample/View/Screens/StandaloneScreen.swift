@@ -23,8 +23,10 @@ struct StandaloneScreen: View {
             List {
                 axisSection
                 appearanceLink
-                indicatorLink
                 backgroundLink
+                indicatorLink
+                itemSettingsLink
+                hapticFeedbackLink
             }
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
@@ -45,6 +47,12 @@ private extension StandaloneScreen {
             shadowSection
         }
     }
+    
+    var indicatorLink: some View {
+        settingsLink("Selection indicator", viewModel: viewModel, header: { barPreview }) {
+            indicatorSection
+        }
+    }
 
     var backgroundLink: some View {
         settingsLink("Background", viewModel: viewModel, header: { barPreview }) {
@@ -52,24 +60,18 @@ private extension StandaloneScreen {
         }
     }
 
-    var itemSettingsLink: some View {
-        settingsLink("Tab bar item", viewModel: viewModel) {
-//            itemConfigurationSection
-        }
-    }
     
     var hapticFeedbackLink: some View {
         settingsLink("Haptic feedback", viewModel: viewModel) {
-//              hapticFeedbackSection
+              hapticFeedbackSection
             }
     }
     
-    var indicatorLink: some View {
-        settingsLink("Selection indicator", viewModel: viewModel, header: { barPreview }) {
-            indicatorSection
+    var itemSettingsLink: some View {
+        settingsLink("Bar item", viewModel: viewModel, header: { barPreview }) {
+            itemConfigurationSection
         }
     }
-    
 }
 
 
@@ -160,7 +162,7 @@ extension StandaloneScreen {
     }
     
     // MARK: indicator section
-    var insicatorSection: some View {
+    var indicatorSection: some View {
         IndicatorSection(
             viewModel: viewModel,
             bindings: .init(
@@ -181,6 +183,68 @@ extension StandaloneScreen {
             backgroundColor: bindings.backgroundColor(),
             materialSelection: bindings.materialSelection()
         )
+    }
+    
+    // MARK: - Haptic Feedback section
+
+    var hapticFeedbackSection: some View {
+        HapticFeedbackSection(
+            isEnabled: bindings.hapticFeedbackEnabled(),
+            hapticFeedback: bindings.hapticFeedback()
+        )
+    }
+    
+    // MARK: - ItemConfigurationSection
+    
+    @ViewBuilder
+    var itemConfigurationSection: some View {
+        itemEdgeInsetsSection
+        itemColorsSection
+        itemIconSizeSection
+        itemTextStyleSection
+        itemContentAxisSection
+    }
+    
+    var itemEdgeInsetsSection: some View {
+        ItemEdgeInsetsSection(
+            title: "Item padding",
+            top: bindings.regularItemConfig(\.edgeInsets.top),
+            bottom: bindings.regularItemConfig(\.edgeInsets.bottom)
+        )
+    }
+    
+    var itemColorsSection: some View {
+        ItemColorsSection(
+            selectedColor: bindings.regularItemConfig(\.selectedColor),
+            unselectedColor: bindings.regularItemConfig(\.unselectedColor)
+        )
+    }
+    
+    var itemIconSizeSection: some View {
+        Section {
+            SettingSlider(
+                title: "Icon Size",
+                value: bindings.regularItemConfig(\.iconSideLength),
+                range: 16...48
+            )
+            SettingSlider(
+                title: "Selected Scale",
+                value: bindings.regularItemConfig(\.selectedIconScale),
+                range: 1.0...1.5,
+                step: 0.01,
+                format: .fractionalTwo
+            )
+        } header: {
+            Text("Icon size")
+        }
+    }
+    
+    var itemTextStyleSection: some View {
+        ItemTextStyleSection(textStyle: bindings.regularItemConfig(\.textStyle))
+    }
+    
+    var itemContentAxisSection: some View {
+        ItemContentAxisSection(axis: bindings.itemContentAxis())
     }
     
     // MARK: - Toolbar

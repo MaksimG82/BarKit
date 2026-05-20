@@ -169,8 +169,26 @@ private extension ExampleViewModel {
         case let .updateShadow(shadow):
             state.standalone.barConfiguration.shadow = shadow
             
+        case let .updateBackground(background):
+            state.standalone.barConfiguration.background = background
+            
+        case let .updateMaterialSelection(materialSelection):
+            state.standalone.materialSelection = materialSelection
+            
+        case let .updateHapticFeedbackEnabled(isEnabled):
+            state.standalone.barConfiguration.hapticFeedback = isEnabled ? .selection : nil
+
+        case let .updateHapticFeedback(feedback):
+            state.standalone.barConfiguration.hapticFeedback = feedback
+            
+        case let .updateRegularItemConfig(config):
+            state.standalone.barConfiguration.itemStyles[.regular] = config
+
+        case let .updateItemContentAxis(axis):
+            state.standalone.barConfiguration.itemContentAxis = axis
+            
         case .reset:
-            state.standalone.barConfiguration = .init()
+            state.standalone = .init()
         }
     }
     

@@ -86,4 +86,124 @@ final class StandaloneBindings: BindingProvider {
             }
         )
     }
+    
+    // MARK: - Background
+
+    /// The current tint or solid color extracted from the active background configuration.
+    private var currentBackgroundColor: Color {
+        switch viewModel.state.standalone.barConfiguration.background {
+        case let .color(color):        return color
+        case let .material(_, tint):   return tint
+        case let .customBlur(_, tint): return tint
+        }
+    }
+
+    /// Binding for the full `BarBackground`.
+    func background() -> Binding<BarBackground> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.background },
+            set: { self.viewModel.send(.standalone(.updateBackground($0))) }
+        )
+    }
+
+    /// Binding for the background type, preserving current tint on switch.
+    func backgroundType() -> Binding<BarBackgroundType> {
+        Binding(
+            get: {
+                switch self.background().wrappedValue {
+                case .color:      .color
+                case .material:   .material
+                case .customBlur: .customBlur
+                }
+            },
+            set: { newType in
+                switch newType {
+                case .color:      self.background().wrappedValue = .color(self.currentBackgroundColor)
+                case .material:   self.background().wrappedValue = .material(.ultraThinMaterial, tint: self.currentBackgroundColor)
+                case .customBlur: self.background().wrappedValue = .customBlur(.init(), tint: self.currentBackgroundColor)
+                }
+            }
+        )
+    }
+
+    /// Binding for the tint or solid color, preserving the current background type.
+    func backgroundColor() -> Binding<Color> {
+        Binding(
+            get: { self.currentBackgroundColor },
+            set: { newColor in
+                switch self.background().wrappedValue {
+                case .color:
+                    self.background().wrappedValue = .color(newColor)
+                case let .material(material, _):
+                    self.background().wrappedValue = .material(material, tint: newColor)
+                case let .customBlur(config, _):
+                    self.background().wrappedValue = .customBlur(config, tint: newColor)
+                }
+            }
+        )
+    }
+
+    /// Binding for the material selection.
+    func materialSelection() -> Binding<MaterialSelection> {
+        Binding(
+            get: { self.viewModel.state.standalone.materialSelection },
+            set: { materialSelection in
+                self.viewModel.send(.standalone(.updateMaterialSelection(materialSelection)))
+                let tint = self.currentBackgroundColor
+                self.background().wrappedValue = .material(materialSelection.material ?? .ultraThin, tint: tint)
+            }
+        )
+    }
+    
+    // MARK: - Haptic Feedback
+
+    /// Binding for the haptic feedback enabled toggle.
+    func hapticFeedbackEnabled() -> Binding<Bool> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.hapticFeedback != nil },
+            set: { self.viewModel.send(.standalone(.updateHapticFeedbackEnabled($0))) }
+        )
+    }
+
+    /// Binding for the haptic feedback style picker.
+    func hapticFeedback() -> Binding<HapticFeedback> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.hapticFeedback ?? .selection },
+            set: { self.viewModel.send(.standalone(.updateHapticFeedback($0))) }
+        )
+    }
+    
+    // MARK: - Item Configuration
+
+    /// Binding for the full regular `ItemConfiguration`.
+    func regularItemConfig() -> Binding<ItemConfiguration> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.itemStyles[.regular] ?? .init() },
+            set: { self.viewModel.send(.standalone(.updateRegularItemConfig($0))) }
+        )
+    }
+
+    /// Binding for a single property of the regular `ItemConfiguration`.
+    func regularItemConfig<T>(_ keyPath: WritableKeyPath<ItemConfiguration, T>) -> Binding<T> {
+        binding(
+            get: { self.viewModel.state.standalone.barConfiguration.itemStyles[.regular] ?? .init() },
+            keyPath: keyPath,
+            send: { .standalone(.updateRegularItemConfig($0)) }
+        )
+    }
+    
+    // MARK: - Item Content Axis
+
+    /// Binding for the item content layout axis arrangement based on the current mode.
+    func itemContentAxis() -> Binding<ItemContentAxis?> {
+        Binding(
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemContentAxis
+                case .pinned:   self.viewModel.pinnedTabBarConfig.itemContentAxis
+                }
+            },
+            set: { self.viewModel.send(.tabBar(.updateItemContentAxis($0))) }
+        )
+    }
 }

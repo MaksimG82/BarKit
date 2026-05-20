@@ -95,6 +95,8 @@ struct StandaloneState {
     /// The selection indicator state for the standalone bar.
     var indicator: BarIndicatorState = .init()
     
+    var materialSelection: MaterialSelection = .ultraThin
+    
     var insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     
     // MARK: - Initialization

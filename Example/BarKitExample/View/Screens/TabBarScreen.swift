@@ -20,15 +20,16 @@ struct TabBarScreen: View {
         List {
             descriptionSection
             tabBarModePickerSection
-            
             if viewModel.state.tabBar.mode == .floating {
                 floatingLayoutLink
+            }
+            backgroundLink
+            itemSettingsLink
+            
+            if viewModel.state.tabBar.mode == .floating {
                 indicatorLink
             }
-            
-            backgroundLink
             hapticFeedbackLink
-            itemSettingsLink
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
         .toolbar { resetButton }
