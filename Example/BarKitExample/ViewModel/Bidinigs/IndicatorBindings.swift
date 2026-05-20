@@ -8,209 +8,222 @@
 import SwiftUI
 import BarKit
 
-/// Bindings scoped to the Indicator screen.
+/// Bindings scoped to a single selection indicator configuration.
 final class IndicatorBindings: BindingProvider {
-    
+
     // MARK: - Dependencies
-    
+
     let viewModel: ExampleViewModel
-    
+
+    /// Key path to the `BarIndicatorState` this binding scope reads from.
+    private let stateKeyPath: KeyPath<ExampleState, BarIndicatorState>
+
+    /// Wraps an `IndicatorIntent` into the correct `ExampleIntent` for this scope.
+    private let wrapIntent: (IndicatorIntent) -> ExampleIntent
+
     // MARK: - Initialization
-    
-    init(viewModel: ExampleViewModel) {
+
+    init(
+        viewModel: ExampleViewModel,
+        stateKeyPath: KeyPath<ExampleState, BarIndicatorState>,
+        wrapIntent: @escaping (IndicatorIntent) -> ExampleIntent
+    ) {
         self.viewModel = viewModel
+        self.stateKeyPath = stateKeyPath
+        self.wrapIntent = wrapIntent
     }
-    
+
+    // MARK: - Convenience
+
+    private var indicatorState: BarIndicatorState {
+        viewModel.state[keyPath: stateKeyPath]
+    }
+
+    private func send(_ intent: IndicatorIntent) {
+        viewModel.send(wrapIntent(intent))
+    }
+
     // MARK: - Color
-    
+
+    /// Binding for the indicator color.
     func color() -> Binding<Color> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.color,
-            send: { .indicator(.updateColor($0.color)) }
+        Binding(
+            get: { self.indicatorState.configuration.color },
+            set: { self.send(.updateColor($0)) }
         )
     }
-    
+
     // MARK: - Border
 
     /// Binding for the border visibility toggle.
     func borderEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.border != nil },
-            set: { self.viewModel.send(.indicator(.updateBorderEnabled($0))) }
+            get: { self.indicatorState.configuration.border != nil },
+            set: { self.send(.updateBorderEnabled($0)) }
         )
     }
 
     /// Binding for the border color.
     func borderColor() -> Binding<Color> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.border?.color ?? .white.opacity(0.3) },
-            set: { self.viewModel.send(.indicator(.updateBorderColor($0))) }
+            get: { self.indicatorState.configuration.border?.color ?? .white.opacity(0.3) },
+            set: { self.send(.updateBorderColor($0)) }
         )
     }
 
     /// Binding for the border line width.
     func borderWidth() -> Binding<CGFloat> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.border?.lineWidth ?? 1 },
-            set: { self.viewModel.send(.indicator(.updateBorderWidth($0))) }
+            get: { self.indicatorState.configuration.border?.lineWidth ?? 1 },
+            set: { self.send(.updateBorderWidth($0)) }
         )
     }
-    
+
     /// Binding for the indicator corner radius.
     func cornerRadius() -> Binding<CGFloat> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.cornerRadius,
-            send: { .indicator(.updateCornerRadius($0.cornerRadius)) }
+        Binding(
+            get: { self.indicatorState.configuration.cornerRadius },
+            set: { self.send(.updateCornerRadius($0)) }
         )
     }
-    
+
     // MARK: - Animation
 
     /// Binding for the full animation parameters.
     func animationParameters() -> Binding<AnimationParameters> {
-        binding(
-            get: { self.viewModel.state.indicator.animationParameters },
-            keyPath: \.self,
-            send: { .indicator(.updateAnimationParameters($0)) }
+        Binding(
+            get: { self.indicatorState.animationParameters },
+            set: { self.send(.updateAnimationParameters($0)) }
         )
     }
 
     // MARK: - Drag gesture
-    
+
     /// Binding for the drag gesture toggle.
     func dragGestureEnabled() -> Binding<Bool> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.isDragGestureEnabled,
-            send: { .indicator(.updateDragGestureEnabled($0.isDragGestureEnabled)) }
+        Binding(
+            get: { self.indicatorState.configuration.isDragGestureEnabled },
+            set: { self.send(.updateDragGestureEnabled($0)) }
         )
     }
-    
+
     // MARK: - Insets
-    
+
     /// Binding for the horizontal inset (leading and trailing).
     func indicatorHorizontalInset() -> Binding<CGFloat> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.inset.leading },
+            get: { self.indicatorState.configuration.inset.leading },
             set: {
-                var inset = self.viewModel.state.indicator.indicatorConfig.inset
+                var inset = self.indicatorState.configuration.inset
                 inset.leading = $0
                 inset.trailing = $0
-                self.viewModel.send(.indicator(.updateInset(inset)))
+                self.send(.updateInset(inset))
             }
         )
     }
-    
+
     /// Binding for the vertical inset (top and bottom).
     func indicatorVerticalInset() -> Binding<CGFloat> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.inset.top },
+            get: { self.indicatorState.configuration.inset.top },
             set: {
-                var inset = self.viewModel.state.indicator.indicatorConfig.inset
+                var inset = self.indicatorState.configuration.inset
                 inset.top = $0
                 inset.bottom = $0
-                self.viewModel.send(.indicator(.updateInset(inset)))
+                self.send(.updateInset(inset))
             }
         )
     }
-    
+
     // MARK: - Scale Effect
 
     /// Binding for the scale effect toggle.
     func scaleEffectEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.scaleEffect != nil },
-            set: { self.viewModel.send(.indicator(.updateScaleEffectEnabled($0))) }
+            get: { self.indicatorState.configuration.scaleEffect != nil },
+            set: { self.send(.updateScaleEffectEnabled($0)) }
         )
     }
 
     /// Binding for the horizontal scale factor.
     func scaleEffectX() -> Binding<CGFloat> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.scaleEffect?.xScale ?? 1.2 },
-            set: { self.viewModel.send(.indicator(.updateScaleEffectX($0))) }
+            get: { self.indicatorState.configuration.scaleEffect?.xScale ?? 1.2 },
+            set: { self.send(.updateScaleEffectX($0)) }
         )
     }
 
     /// Binding for the vertical scale factor.
     func scaleEffectY() -> Binding<CGFloat> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.scaleEffect?.yScale ?? 1.2 },
-            set: { self.viewModel.send(.indicator(.updateScaleEffectY($0))) }
+            get: { self.indicatorState.configuration.scaleEffect?.yScale ?? 1.2 },
+            set: { self.send(.updateScaleEffectY($0)) }
         )
     }
 
     /// Binding for the scale effect reset duration.
     func scaleEffectDuration() -> Binding<Double> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.scaleEffect?.duration ?? 0.2 },
-            set: { self.viewModel.send(.indicator(.updateScaleEffectDuration($0))) }
+            get: { self.indicatorState.configuration.scaleEffect?.duration ?? 0.2 },
+            set: { self.send(.updateScaleEffectDuration($0)) }
         )
     }
 
     /// Binding for the scale effect animation parameters.
     func scaleAnimationParameters() -> Binding<AnimationParameters> {
-        binding(
-            get: { self.viewModel.state.indicator.scaleAnimationParameters },
-            keyPath: \.self,
-            send: { .indicator(.updateScaleAnimationParameters($0)) }
+        Binding(
+            get: { self.indicatorState.scaleAnimationParameters },
+            set: { self.send(.updateScaleAnimationParameters($0)) }
         )
     }
-    
+
     // MARK: - Lens effects
-    
+
     /// Binding for the lens distortion toggle.
     func lensDistortionEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.effects.contains(.lensDistortion) },
-            set: { self.viewModel.send(.indicator(.updateLensDistortion($0))) }
+            get: { self.indicatorState.configuration.effects.contains(.lensDistortion) },
+            set: { self.send(.updateLensDistortion($0)) }
         )
     }
 
     /// Binding for the chromatic aberration toggle.
     func chromaticAberrationEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.viewModel.state.indicator.indicatorConfig.effects.contains(.chromaticAberration) },
-            set: { self.viewModel.send(.indicator(.updateChromaticAberration($0))) }
+            get: { self.indicatorState.configuration.effects.contains(.chromaticAberration) },
+            set: { self.send(.updateChromaticAberration($0)) }
         )
     }
 
     /// Binding for the refraction zone width.
     func refractionZoneWidth() -> Binding<CGFloat> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.refractionZoneWidth,
-            send: { .indicator(.updateRefractionZoneWidth($0.refractionZoneWidth)) }
+        Binding(
+            get: { self.indicatorState.configuration.refractionZoneWidth },
+            set: { self.send(.updateRefractionZoneWidth($0)) }
         )
     }
 
     /// Binding for the refraction strength.
     func refractionStrength() -> Binding<CGFloat> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.refractionStrength,
-            send: { .indicator(.updateRefractionStrength($0.refractionStrength)) }
+        Binding(
+            get: { self.indicatorState.configuration.refractionStrength },
+            set: { self.send(.updateRefractionStrength($0)) }
         )
     }
 
     /// Binding for the aberration zone width.
     func aberrationZoneWidth() -> Binding<CGFloat> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.aberrationZoneWidth,
-            send: { .indicator(.updateAberrationZoneWidth($0.aberrationZoneWidth)) }
+        Binding(
+            get: { self.indicatorState.configuration.aberrationZoneWidth },
+            set: { self.send(.updateAberrationZoneWidth($0)) }
         )
     }
 
     /// Binding for the aberration strength.
     func aberrationStrength() -> Binding<CGFloat> {
-        binding(
-            get: { self.viewModel.state.indicator.indicatorConfig },
-            keyPath: \.aberrationStrength,
-            send: { .indicator(.updateAberrationStrength($0.aberrationStrength)) }
+        Binding(
+            get: { self.indicatorState.configuration.aberrationStrength },
+            set: { self.send(.updateAberrationStrength($0)) }
         )
     }
-
 }

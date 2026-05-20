@@ -47,9 +47,6 @@ final class ExampleViewModel {
  
         case let .standalone(standaloneIntent):
             handle(standaloneIntent)
- 
-        case let .indicator(indicatorIntent):
-            handle(indicatorIntent)
         }
     }
     
@@ -96,6 +93,9 @@ private extension ExampleViewModel {
         case let .updateHapticFeedback(feedback):
             floatingTabBarConfig.hapticFeedback = feedback
             pinnedTabBarConfig.hapticFeedback = feedback
+            
+        case let .indicator(indicatorIntent):
+            handle(indicatorIntent, state: &state.tabBar.indicator)
             
         case let .floating(floatingIntent):
             switch floatingIntent {
@@ -150,82 +150,91 @@ private extension ExampleViewModel {
         case let .updateAxis(axis):
             state.standalone.barConfiguration.axis = axis
             
+        case let .indicator(indicatorIntent):
+            handle(indicatorIntent, state: &state.standalone.indicator)
+            
+        case let .updateCornerRadius(radius):
+            state.standalone.barConfiguration.cornerRadius = radius
+
+        case let .updateShadow(shadow):
+            state.standalone.barConfiguration.shadow = shadow
+            
         case .reset:
             state.standalone.barConfiguration = .init()
         }
     }
     
-    func handle(_ intent: IndicatorIntent) {
+    func handle(_ intent: IndicatorIntent, state: inout BarIndicatorState) {
         switch intent {
         case let .updateColor(color):
-            state.indicator.indicatorConfig.color = color
+            state.configuration.color = color
             
         case let .updateBorderEnabled(isEnabled):
-            state.indicator.indicatorConfig.border = isEnabled ? .init() : nil
+            state.configuration.border = isEnabled ? .init() : nil
 
         case let .updateBorderColor(color):
-            state.indicator.indicatorConfig.border?.color = color
+            state.configuration.border?.color = color
 
         case let .updateBorderWidth(width):
-            state.indicator.indicatorConfig.border?.lineWidth = width
+            state.configuration.border?.lineWidth = width
             
         case let .updateCornerRadius(radius):
-            state.indicator.indicatorConfig.cornerRadius = radius
+            state.configuration.cornerRadius = radius
             
         case let .updateAnimationParameters(parameters):
-            state.indicator.animationParameters = parameters
-            state.indicator.indicatorConfig.transitionAnimation = parameters.makeAnimation()
+            state.animationParameters = parameters
+            state.configuration.transitionAnimation = parameters.makeAnimation()
         
         case let .updateDragGestureEnabled(isEnabled):
-            state.indicator.indicatorConfig.isDragGestureEnabled = isEnabled
+            state.configuration.isDragGestureEnabled = isEnabled
             
         case let .updateInset(inset):
-            state.indicator.indicatorConfig.inset = inset
+            state.configuration.inset = inset
             
         case let .updateScaleEffectEnabled(isEnabled):
-            state.indicator.indicatorConfig.scaleEffect = isEnabled ? .init() : nil
+            state.configuration.scaleEffect = isEnabled ? .init() : nil
 
         case let .updateScaleEffectX(x):
-            state.indicator.indicatorConfig.scaleEffect?.xScale = x
+            state.configuration.scaleEffect?.xScale = x
 
         case let .updateScaleEffectY(y):
-            state.indicator.indicatorConfig.scaleEffect?.yScale = y
+            state.configuration.scaleEffect?.yScale = y
 
         case let .updateScaleEffectDuration(duration):
-            state.indicator.indicatorConfig.scaleEffect?.duration = duration
+            state.configuration.scaleEffect?.duration = duration
 
         case let .updateScaleAnimationParameters(parameters):
-            state.indicator.scaleAnimationParameters = parameters
-            state.indicator.indicatorConfig.scaleEffect?.animation = parameters.makeAnimation() ?? .linear
+            state.scaleAnimationParameters = parameters
+            state.configuration.scaleEffect?.animation = parameters.makeAnimation() ?? .linear
 
         case let .updateLensDistortion(isEnabled):
             if isEnabled {
-                state.indicator.indicatorConfig.effects.insert(.lensDistortion)
+                state.configuration.effects.insert(.lensDistortion)
             } else {
-                state.indicator.indicatorConfig.effects.remove(.lensDistortion)
+                state.configuration.effects.remove(.lensDistortion)
             }
 
         case let .updateChromaticAberration(isEnabled):
             if isEnabled {
-                state.indicator.indicatorConfig.effects.insert(.chromaticAberration)
+                state.configuration.effects.insert(.chromaticAberration)
             } else {
-                state.indicator.indicatorConfig.effects.remove(.chromaticAberration)
+                state.configuration.effects.remove(.chromaticAberration)
             }
 
         case let .updateRefractionZoneWidth(width):
-            state.indicator.indicatorConfig.refractionZoneWidth = width
+            state.configuration.refractionZoneWidth = width
 
         case let .updateRefractionStrength(strength):
-            state.indicator.indicatorConfig.refractionStrength = strength
+            state.configuration.refractionStrength = strength
 
         case let .updateAberrationZoneWidth(width):
-            state.indicator.indicatorConfig.aberrationZoneWidth = width
+            state.configuration.aberrationZoneWidth = width
 
         case let .updateAberrationStrength(strength):
-            state.indicator.indicatorConfig.aberrationStrength = strength
+            state.configuration.aberrationStrength = strength
             
         case .reset:
-            state.indicator = .init()
+            state = .init()
             
         }
     }

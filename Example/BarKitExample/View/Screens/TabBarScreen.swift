@@ -23,6 +23,7 @@ struct TabBarScreen: View {
             
             if viewModel.state.tabBar.mode == .floating {
                 floatingLayoutLink
+                indicatorLink
             }
             
             backgroundLink
@@ -65,6 +66,21 @@ private extension TabBarScreen {
               hapticFeedbackSection
             }
     }
+    
+    var indicatorLink: some View {
+        settingsLink("Selection indicator", viewModel: viewModel) {
+            IndicatorSection(
+                viewModel: viewModel,
+                bindings: .init(
+                    viewModel: viewModel,
+                    stateKeyPath: \.tabBar.indicator,
+                    wrapIntent: { .tabBar(.indicator($0)) }
+                ),
+                stateKeyPath: \.tabBar.indicator
+            )
+        }
+    }
+    
 }
 
 

@@ -19,7 +19,7 @@ struct TabBarContainer: View {
                 items: viewModel.state.tabBarItems,
                 selected: selectedItem,
                 config: viewModel.floatingTabBarConfig,
-                indicatorConfig: viewModel.state.indicator.indicatorConfig,
+                indicatorConfig: viewModel.state.tabBar.indicator.configuration,
                 floatingInsets: viewModel.state.tabBar.floatingTabBarState.insets,
                 floatingInsetsCompact: viewModel.state.tabBar.floatingTabBarState.insetsCompact
             )

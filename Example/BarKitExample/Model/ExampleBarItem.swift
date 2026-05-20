@@ -55,3 +55,15 @@ extension ExampleBarItem {
         DrinkType.allCases.map { .init(type: $0, style: .regular) }
     }
 }
+
+// MARK: Helper
+
+extension BarIcon {
+    /// The underlying icon name string.
+    var name: String {
+        switch self {
+        case let .custom(name): name
+        case let .system(name): name
+        }
+    }
+}

@@ -51,10 +51,7 @@ private extension ExampleContentView {
             viewModel: viewModel,
             bindings: .init(viewModel: viewModel)
         )
-        case .indicator:  IndicatorScreen(
-            viewModel: viewModel,
-            bindings: .init(viewModel: viewModel)
-        )
+        case .indicator: Text("TO BE REPLACED")
         }
     }
  

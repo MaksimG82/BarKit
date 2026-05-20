@@ -41,4 +41,49 @@ final class StandaloneBindings: BindingProvider {
             send: { .standalone(.updateAxis($0.axis)) }
         )
     }
+    
+    // MARK: - Corner radius
+    
+    /// Binding for the corner radius of the bar.
+    func cornerRadius() -> Binding<CGFloat> {
+        binding(
+            get: { self.viewModel.state.standalone.barConfiguration },
+            keyPath: \.cornerRadius,
+            send: { .standalone(.updateCornerRadius($0.cornerRadius)) }
+        )
+    }
+    
+    // MARK: - Shadow
+
+    /// Binding for the shadow visibility of the bar.
+    func shadowEnabled() -> Binding<Bool> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.shadow != nil },
+            set: { self.viewModel.send(.standalone(.updateShadow($0 ? .init() : nil))) }
+        )
+    }
+
+    /// Binding for the shadow color of the bar.
+    func shadowColor() -> Binding<Color> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.shadow?.color ?? .black.opacity(0.2) },
+            set: {
+                var shadow = self.viewModel.state.standalone.barConfiguration.shadow ?? .init()
+                shadow.color = $0
+                self.viewModel.send(.standalone(.updateShadow(shadow)))
+            }
+        )
+    }
+
+    /// Binding for a single property of the bar shadow configuration.
+    func shadow(_ keyPath: WritableKeyPath<ShadowConfiguration, CGFloat>) -> Binding<CGFloat> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.shadow?[keyPath: keyPath] ?? 0 },
+            set: {
+                var shadow = self.viewModel.state.standalone.barConfiguration.shadow ?? .init()
+                shadow[keyPath: keyPath] = $0
+                self.viewModel.send(.standalone(.updateShadow(shadow)))
+            }
+        )
+    }
 }
