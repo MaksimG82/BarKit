@@ -108,7 +108,7 @@ final class TabBarBindings: BindingProvider {
                 }
             },
             set: { materialSelection in
-                self.viewModel.send(.tabBar(.update(materialSelection)))
+                self.viewModel.send(.tabBar(.updateMaterialSelection(materialSelection)))
                 let tint = self.currentBackgroundColor
                 self.background().wrappedValue = .material(materialSelection.material ?? .ultraThin, tint: tint)
             }
@@ -234,7 +234,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for the haptic feedback enabled toggle.
     func hapticFeedbackEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.viewModel.floatingTabBarConfig.hapticFeedback != nil },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.hapticFeedback != nil
+                case .pinned:   self.viewModel.pinnedTabBarConfig.hapticFeedback != nil
+                }
+            },
             set: { self.viewModel.send(.tabBar(.updateHapticFeedbackEnabled($0))) }
         )
     }
@@ -242,7 +247,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for the haptic feedback style picker.
     func hapticFeedback() -> Binding<HapticFeedback> {
         Binding(
-            get: { self.viewModel.floatingTabBarConfig.hapticFeedback ?? .selection },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.hapticFeedback ?? .selection
+                case .pinned:   self.viewModel.pinnedTabBarConfig.hapticFeedback ?? .selection
+                }
+            },
             set: { self.viewModel.send(.tabBar(.updateHapticFeedback($0))) }
         )
     }

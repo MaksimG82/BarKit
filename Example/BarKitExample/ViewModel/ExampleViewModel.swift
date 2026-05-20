@@ -78,7 +78,7 @@ private extension ExampleViewModel {
             }
             state.tabBar.mode = mode
             
-        case let .update(materilaSelection):
+        case let .updateMaterialSelection(materilaSelection):
             switch state.tabBar.mode {
             case .floating:
                 state.tabBar.floatingTabBarMaterialSelection = materilaSelection
@@ -87,13 +87,16 @@ private extension ExampleViewModel {
             }
             
         case let .updateHapticFeedbackEnabled(isEnabled):
-            floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
-            pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            switch state.tabBar.mode {
+            case .floating: floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            case .pinned:   pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            }
 
         case let .updateHapticFeedback(feedback):
-            floatingTabBarConfig.hapticFeedback = feedback
-            pinnedTabBarConfig.hapticFeedback = feedback
-            
+            switch state.tabBar.mode {
+            case .floating: floatingTabBarConfig.hapticFeedback = feedback
+            case .pinned:   pinnedTabBarConfig.hapticFeedback = feedback
+            }
         case let .indicator(indicatorIntent):
             handle(indicatorIntent, state: &state.tabBar.indicator)
             
