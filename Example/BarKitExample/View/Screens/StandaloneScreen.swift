@@ -205,6 +205,8 @@ extension StandaloneScreen {
         itemIconSizeSection
         itemTextStyleSection
         itemContentAxisSection
+        itemAlignmentSection
+        itemContentAlignmentSection
     }
     
     var itemEdgeInsetsSection: some View {
@@ -250,6 +252,32 @@ extension StandaloneScreen {
     
     var itemContentAxisSection: some View {
         ItemContentAxisSection(axis: bindings.itemContentAxis())
+    }
+    
+    var itemAlignmentSection: some View {
+        Section {
+            Picker("Item Alignment", selection: bindings.itemAlignment()) {
+                Text("Start").tag(BarItemAlignment.start)
+                Text("Center").tag(BarItemAlignment.center)
+                Text("End").tag(BarItemAlignment.end)
+            }
+            .pickerStyle(.segmented)
+        } header: {
+            Text("Item alignment")
+        }
+    }
+
+    var itemContentAlignmentSection: some View {
+        Section {
+            Picker("Content Alignment", selection: bindings.itemContentAlignment()) {
+                Text("Start").tag(BarItemAlignment.start)
+                Text("Center").tag(BarItemAlignment.center)
+                Text("End").tag(BarItemAlignment.end)
+            }
+            .pickerStyle(.segmented)
+        } header: {
+            Text("Item content alignment")
+        }
     }
     
     // MARK: - Toolbar

@@ -127,6 +127,12 @@ enum StandaloneIntent {
     /// Updates the arrangement of icon and title within each bar item.
     case updateItemContentAxis(ItemContentAxis?)
     
+    /// Updates the alignment of items along the cross-axis of the bar.
+    case updateItemAlignment(BarItemAlignment)
+
+    /// Updates the alignment of icon and title within each item.
+    case updateItemContentAlignment(BarItemAlignment)
+    
     /// Resets all settings to their default values.
     case reset
 }

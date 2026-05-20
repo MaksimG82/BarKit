@@ -187,6 +187,12 @@ private extension ExampleViewModel {
         case let .updateItemContentAxis(axis):
             state.standalone.barConfiguration.itemContentAxis = axis
             
+        case let .updateItemAlignment(alignment):
+            state.standalone.barConfiguration.itemAlignment = alignment
+
+        case let .updateItemContentAlignment(alignment):
+            state.standalone.barConfiguration.itemContentAlignment = alignment
+            
         case .reset:
             state.standalone = .init()
         }

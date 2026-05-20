@@ -203,4 +203,22 @@ final class StandaloneBindings: BindingProvider {
             set: { self.viewModel.send(.standalone(.updateItemContentAxis($0))) }
         )
     }
+    
+    // MARK: - Alignment
+
+    /// Binding for the item alignment along the cross-axis of the bar.
+    func itemAlignment() -> Binding<BarItemAlignment> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.itemAlignment },
+            set: { self.viewModel.send(.standalone(.updateItemAlignment($0))) }
+        )
+    }
+
+    /// Binding for the icon and title alignment within each item.
+    func itemContentAlignment() -> Binding<BarItemAlignment> {
+        Binding(
+            get: { self.viewModel.state.standalone.barConfiguration.itemContentAlignment },
+            set: { self.viewModel.send(.standalone(.updateItemContentAlignment($0))) }
+        )
+    }
 }
