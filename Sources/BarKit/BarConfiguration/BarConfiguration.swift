@@ -37,17 +37,25 @@ public struct BarConfiguration {
     public var background: BarBackground
     
     // MARK: - Item
+
+    /// Visual configuration per item style.
+    /// Defines appearance for each `BarItemStyle` used in the bar.
+    /// Falls back to `.regular` configuration if a style has no explicit entry.
+    public var itemStyles: [BarItemStyle: ItemConfiguration]
     
     /// The arrangement of icon and title within each bar item.
     /// When `nil`, the layout is inferred from the bar axis and current size class:
     /// horizontal bar uses `.vertical` in regular, `.horizontal` in compact;
     /// vertical bar always uses `.horizontal`.
     public var itemContentAxis: ItemContentAxis?
+    
+    /// The alignment of icon and title within each item along the cross-axis of the item's content stack.
+    /// For a vertical content axis, this controls horizontal alignment.
+    /// For a horizontal content axis, this controls vertical alignment.
+    public var itemContentAlignment: BarItemAlignment
 
-    /// Visual configuration per item style.
-    /// Defines appearance for each `BarItemStyle` used in the bar.
-    /// Falls back to `.regular` configuration if a style has no explicit entry.
-    public var itemStyles: [BarItemStyle: ItemConfiguration]
+    /// The alignment of items along the cross-axis of the bar.
+    public var itemAlignment: BarItemAlignment
     
     /// Spacing between items in the stack.
     public var itemSpacing: CGFloat
@@ -84,10 +92,12 @@ public struct BarConfiguration {
     ///   - shadow: Shadow applied to the bar capsule. Pass `nil` for no shadow.
     ///   - background: The background appearance of the bar.
     ///   - itemStyles: Visual configuration per item style.
+    ///   - itemContentAxis: The arrangement of icon and title within each bar item.
+    ///   - itemContentAlignment: The alignment of icon and title within each item along the cross-axis of the item's content stack
+    ///   - itemAlignment: The alignment of items along the cross-axis of the bar.
     ///   - itemSpacing: Spacing between items in the stack.
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
-    ///   - itemContentAxis: The arrangement of icon and title within each bar item.
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
     ///   - hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
     ///   - accessibilitySortPriority: Sort priority relative to other elements in the same container. Pass a lower value (e.g. `-1`) to ensure VoiceOver reaches content before the bar.
@@ -97,10 +107,12 @@ public struct BarConfiguration {
         shadow: ShadowConfiguration? = .init(),
         background: BarBackground = .material(.ultraThinMaterial),
         itemStyles: [BarItemStyle: ItemConfiguration] = [.regular: .init()],
+        itemContentAxis: ItemContentAxis? = nil,
+        itemContentAlignment: BarItemAlignment = .center,
+        itemAlignment: BarItemAlignment = .center,
         itemSpacing: CGFloat = 0,
         itemStateAnimation: Animation? = .easeInOut(duration: 0.2),
         baselineStyle: BarItemStyle? = nil,
-        itemContentAxis: ItemContentAxis? = nil,
         barAccessibilityLabel: String = "Tab Bar",
         hapticFeedback: HapticFeedback? = .selection,
         accessibilitySortPriority: Double = 0
@@ -110,6 +122,9 @@ public struct BarConfiguration {
         self.shadow = shadow
         self.background = background
         self.itemStyles = itemStyles
+        self.itemContentAxis = itemContentAxis
+        self.itemAlignment = itemAlignment
+        self.itemContentAlignment = itemContentAlignment
         self.itemSpacing = itemSpacing
         self.itemStateAnimation = itemStateAnimation
         self.baselineStyle = baselineStyle

@@ -30,6 +30,9 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
     /// The icon-title arrangement inherited from `BarConfiguration`.
     /// `nil` defers resolution to `resolvedContentAxis`.
     let itemContentAxis: ItemContentAxis?
+    
+    /// The alignment of icon and title within the item along the cross-axis of the content stack.
+    let itemContentAlignment: BarItemAlignment
 
     // MARK: - Visual Style
 
@@ -85,6 +88,7 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
         self.isVerticalCompact = isVerticalCompact
         axis = config.axis
         itemContentAxis = config.itemContentAxis
+        itemContentAlignment = config.itemContentAlignment
 
         let itemConfig = config.itemStyles[item.style] ?? config.itemStyles[.regular] ?? ItemConfiguration()
         itemColor = itemConfig.selectedColor
@@ -104,9 +108,9 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
     var body: some View {
         Group {
             if resolvedContentAxis == .horizontal {
-                HStack(spacing: iconTitleSpacing) { content }
+                HStack(alignment: itemContentAlignment.vertical, spacing: iconTitleSpacing) { content }
             } else {
-                VStack(spacing: iconTitleSpacing) { content }
+                VStack(alignment: itemContentAlignment.horizontal, spacing: iconTitleSpacing) { content }
             }
         }
         .frame(maxWidth: axis == .vertical ? nil : .infinity)

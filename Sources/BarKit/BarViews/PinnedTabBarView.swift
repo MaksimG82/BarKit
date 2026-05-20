@@ -35,7 +35,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     private let items: [Item]
 
     /// Visual style and behavior configuration for the bar.
-    /// - Note: `axis`, `cornerRadius`, and `shadow` are ignored.
+    /// - Note: `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
     private let config: BarConfiguration
 
     /// An optional closure executed when an item is tapped, even if already selected.
@@ -51,6 +51,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             shadow: nil,
             background: .color(.clear),
             itemStyles: config.itemStyles,
+            itemAlignment: .end,
             baselineStyle: .regular
         )
     }
@@ -62,7 +63,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     /// - Parameters:
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
-    ///   - config: Visual and behavior configuration. `axis`, `cornerRadius`, and `shadow` are ignored.
+    ///   - config: Visual and behavior configuration. `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],

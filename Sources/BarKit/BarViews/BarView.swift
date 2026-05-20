@@ -235,11 +235,11 @@ private extension BarView {
     ) -> some View {
         switch config.axis {
         case .horizontal:
-            HStack(alignment: .bottom, spacing: config.itemSpacing) {
+            HStack(alignment: config.itemAlignment.vertical, spacing: config.itemSpacing) {
                 ForEach(items) { content($0) }
             }
         case .vertical:
-            VStack(alignment: .leading, spacing: config.itemSpacing) {
+            VStack(alignment: config.itemAlignment.horizontal, spacing: config.itemSpacing) {
                 ForEach(items) { content($0) }
             }
         }

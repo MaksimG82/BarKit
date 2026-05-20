@@ -18,3 +18,4 @@ public struct BarItemStyle: Hashable, Sendable {
     /// May use a larger icon or extended layout.
     public static let prominent = BarItemStyle(identifier: "prominent")
 }
+
