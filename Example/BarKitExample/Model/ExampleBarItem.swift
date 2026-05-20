@@ -14,7 +14,7 @@ struct ExampleBarItem: BarItemProtocol {
 
     /// The type of drink represented by this item.
     enum DrinkType: String, CaseIterable {
-        case whiskey  = "Whiskey"
+        case wine     = "Wine"
         case beer     = "Beer"
         case coffee   = "Coffee"
         case water    = "Water"
@@ -38,7 +38,7 @@ struct ExampleBarItem: BarItemProtocol {
     /// The icon displayed in the bar for this item.
     var icon: BarIcon {
         switch type {
-        case .whiskey:  .system("wineglass.fill")
+        case .wine:     .system("wineglass.fill")
         case .beer:     .system("mug.fill")
         case .coffee:   .system("cup.and.saucer.fill")
         case .water:    .system("waterbottle.fill")

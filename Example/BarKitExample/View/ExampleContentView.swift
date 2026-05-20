@@ -51,7 +51,7 @@ private extension ExampleContentView {
             viewModel: viewModel,
             bindings: .init(viewModel: viewModel)
         )
-        case .indicator: Text("TO BE REPLACED")
+        case .codegeneration: Text("Under construction")
         }
     }
  
