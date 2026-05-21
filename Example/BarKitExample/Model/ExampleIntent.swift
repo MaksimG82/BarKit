@@ -53,7 +53,7 @@ enum TabBarIntent {
     case updateItemContentAxis(ItemContentAxis?)
     
     /// Updates background of tabbar
-    case updateMaterialSelection(MaterialSelection)
+    case updateMaterialSelection(BarMaterial)
     
     /// Enables or disables haptic feedback for the tab bar.
     case updateHapticFeedbackEnabled(Bool)
@@ -113,7 +113,7 @@ enum StandaloneIntent {
     case updateBackground(BarBackground)
     
     /// Updates background of the bar
-    case updateMaterialSelection(MaterialSelection)
+    case updateMaterialSelection(BarMaterial)
     
     /// Enables or disables haptic feedback for the bar.
     case updateHapticFeedbackEnabled(Bool)

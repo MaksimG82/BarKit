@@ -118,9 +118,12 @@ final class StandaloneBindings: BindingProvider {
             },
             set: { newType in
                 switch newType {
-                case .color:      self.background().wrappedValue = .color(self.currentBackgroundColor)
-                case .material:   self.background().wrappedValue = .material(.ultraThinMaterial, tint: self.currentBackgroundColor)
-                case .customBlur: self.background().wrappedValue = .customBlur(.init(), tint: self.currentBackgroundColor)
+                case .color:
+                    self.background().wrappedValue = .color(self.currentBackgroundColor)
+                case .material:
+                    self.background().wrappedValue = .material(.ultraThin, tint: self.currentBackgroundColor)
+                case .customBlur:
+                    self.background().wrappedValue = .customBlur(.init(), tint: self.currentBackgroundColor)
                 }
             }
         )
@@ -144,13 +147,13 @@ final class StandaloneBindings: BindingProvider {
     }
 
     /// Binding for the material selection.
-    func materialSelection() -> Binding<MaterialSelection> {
+    func materialSelection() -> Binding<BarMaterial> {
         Binding(
             get: { self.viewModel.state.standalone.materialSelection },
-            set: { materialSelection in
-                self.viewModel.send(.standalone(.updateMaterialSelection(materialSelection)))
+            set: { barMaterial in
+                self.viewModel.send(.standalone(.updateMaterialSelection(barMaterial)))
                 let tint = self.currentBackgroundColor
-                self.background().wrappedValue = .material(materialSelection.material ?? .ultraThin, tint: tint)
+                self.background().wrappedValue = .material(barMaterial, tint: tint)
             }
         )
     }

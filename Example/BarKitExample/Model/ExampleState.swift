@@ -53,10 +53,6 @@ struct TabBarState {
     
     var pinnedTabBarState: PinnedTabBarState = .init()
     
-    var floatingTabBarMaterialSelection: MaterialSelection = .ultraThin
-    
-    var pinnedTabBarMaterialSelection: MaterialSelection = .ultraThin
-    
     /// The selection indicator state for the Tab bar.
     var indicator: BarIndicatorState = .init()
 }
@@ -95,8 +91,6 @@ struct StandaloneState {
     /// The selection indicator state for the standalone bar.
     var indicator: BarIndicatorState = .init()
     
-    var materialSelection: MaterialSelection = .ultraThin
-    
     var insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     
     // MARK: - Initialization
@@ -110,8 +104,5 @@ struct StandaloneState {
 struct BarIndicatorState {
     
     var configuration: SelectionIndicatorConfiguration = .init()
-    
-    var animationParameters: AnimationParameters = .init()
-    
-    var scaleAnimationParameters: AnimationParameters = .init()
+
 }

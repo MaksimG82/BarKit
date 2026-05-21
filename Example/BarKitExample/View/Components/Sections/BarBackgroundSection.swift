@@ -21,7 +21,7 @@ struct BarBackgroundSection: View {
     @Binding var backgroundColor: Color
 
     /// Binding for the material selection picker.
-    @Binding var materialSelection: MaterialSelection
+    @Binding var materialSelection: BarMaterial
 
     var body: some View {
         Section {
@@ -36,7 +36,7 @@ struct BarBackgroundSection: View {
             case .material:
                 ColorPicker("Tint", selection: $backgroundColor)
                 Picker("Material", selection: $materialSelection) {
-                    ForEach(MaterialSelection.allCases, id: \.self) {
+                    ForEach(BarMaterial.allCases, id: \.self) {
                         Text($0.rawValue).tag($0)
                     }
                 }
