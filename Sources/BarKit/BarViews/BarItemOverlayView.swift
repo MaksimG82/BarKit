@@ -95,7 +95,7 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
         selectedIconScale = itemConfig.selectedIconScale
         iconTitleSpacing = itemConfig.iconTitleSpacing
         textStyle = itemConfig.textStyle
-        animation = config.itemStateAnimation
+        animation = config.resolvedItemStateAnimation
 
         let side = itemConfig.iconSideLength * (isVerticalCompact ? itemConfig.compactIconScale : 1.0)
         iconSize = CGSize(width: side, height: side)

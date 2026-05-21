@@ -14,14 +14,18 @@ public enum BarMaterial: String, CaseIterable {
     case thin = "Thin"
     case regular = "Regular"
     case thick = "Thick"
+}
 
-    public var material: Material? {
+public extension BarMaterial {
+
+    /// The corresponding SwiftUI `Material` value.
+    var resolved: Material {
         switch self {
-        case .bar: .bar
+        case .bar:      .bar
         case .ultraThin: .ultraThinMaterial
-        case .thin: .thinMaterial
-        case .regular: .regularMaterial
-        case .thick: .thickMaterial
+        case .thin:      .thinMaterial
+        case .regular:   .regularMaterial
+        case .thick:     .thickMaterial
         }
     }
 }

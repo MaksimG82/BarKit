@@ -157,7 +157,7 @@ private extension BarView {
                 .barShadow(config.shadow)
         case let .material(material, tint):
             RoundedRectangle(cornerRadius: config.cornerRadius)
-                .fill(material)
+                .fill(material.resolved)
                 .overlay { RoundedRectangle(cornerRadius: config.cornerRadius).fill(tint) }
                 .barShadow(config.shadow)
         case let .customBlur(_, tint):
@@ -427,7 +427,7 @@ private extension BarView {
             axis: .horizontal,
             cornerRadius: 28,
             shadow: .init(),
-            background: .material(.ultraThinMaterial),
+            background: .material(.ultraThin),
             itemStyles: [.regular: .init()],
             itemSpacing: 0,
             itemStateAnimation: .custom(.easeInOut(duration: 0.2)),

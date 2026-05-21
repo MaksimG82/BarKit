@@ -108,7 +108,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             color
         case let .material(material, tint):
             Rectangle()
-                .fill(material)
+                .fill(material.resolved)
                 .overlay { tint }
         case let .customBlur(_, tint):
             Rectangle()
@@ -172,7 +172,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
                     .prominent: .init(iconSideLength: 40),
                 ],
                 itemSpacing: 0,
-                itemStateAnimation: .easeInOut(duration: 0.2),
+                itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
                 baselineStyle: .regular,
                 barAccessibilityLabel: "Tab Bar"
             )

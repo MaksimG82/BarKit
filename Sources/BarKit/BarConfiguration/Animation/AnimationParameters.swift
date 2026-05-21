@@ -10,9 +10,9 @@ import SwiftUI
 /// Defines the timing curve and duration of an animation.
 /// Used as a serializable alternative to `SwiftUI.Animation`.
 public struct AnimationParameters: Equatable {
-
+    
     // MARK: - Nested Types
-
+    
     /// Supported animation timing curves.
     public enum AnimationType: String, CaseIterable {
         case none     = "None"
@@ -25,20 +25,20 @@ public struct AnimationParameters: Equatable {
         case smooth   = "Smooth"
         case linear   = "Linear"
     }
-
+    
     // MARK: - Properties
-
+    
     /// The timing curve of the animation.
     public var type: AnimationType
-
+    
     /// The duration of the animation in seconds.
     public var duration: Double
-
+    
     /// The bounce or extra bounce factor. Used by spring-based types.
     public var bounce: Double
-
+    
     // MARK: - Init
-
+    
     /// Creates a new `AnimationParameters` instance.
     /// - Parameters:
     ///   - type: The timing curve of the animation.
@@ -53,12 +53,13 @@ public struct AnimationParameters: Equatable {
         self.duration = duration
         self.bounce = bounce
     }
+}
 
-    // MARK: - Methods
-
+public extension AnimationParameters {
+    
     /// Converts current parameters into a SwiftUI `Animation`.
     /// Returns `nil` when `type` is `.none`.
-    public func makeAnimation() -> Animation? {
+    var resolved: Animation? {
         switch type {
         case .none:      return nil
         case .linear:    return .linear(duration: duration)

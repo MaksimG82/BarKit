@@ -24,7 +24,7 @@ public enum BarAnimation {
     public var animation: Animation? {
         switch self {
         case let .parameters(value):
-            return value.makeAnimation()
+            return value.resolved
         case let .custom(animation):
             return animation
         }

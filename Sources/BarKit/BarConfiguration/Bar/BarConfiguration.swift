@@ -105,7 +105,7 @@ public struct BarConfiguration {
         axis: Axis = .horizontal,
         cornerRadius: CGFloat = 28,
         shadow: ShadowConfiguration? = .init(),
-        background: BarBackground = .material(.ultraThinMaterial),
+        background: BarBackground = .material(.ultraThin),
         itemStyles: [BarItemStyle: ItemConfiguration] = [.regular: .init()],
         itemContentAxis: ItemContentAxis? = nil,
         itemContentAlignment: BarItemAlignment = .center,
