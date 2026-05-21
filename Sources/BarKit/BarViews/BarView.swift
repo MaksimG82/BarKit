@@ -279,7 +279,7 @@ private extension BarView {
             return
         }
         
-        let transitionAnimation = indicatorConfig.transitionAnimation
+        let transitionAnimation = indicatorConfig.resolvedTransitionAnimation
         let scaleEffect = indicatorConfig.scaleEffect
 
         let performSelection = {
@@ -288,26 +288,26 @@ private extension BarView {
         }
 
         switch (transitionAnimation, scaleEffect) {
-        case let (transition?, scale?):
+        case let (transition?, scaleEffect?):
             isSelectionIndicatorScaling = true
             withAnimation(transition) { performSelection() }
             Task {
-                try? await Task.sleep(for: .seconds(scale.duration))
+                try? await Task.sleep(for: .seconds(scaleEffect.duration))
                 await MainActor.run {
-                    withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
                 }
             }
 
         case (let transition?, nil):
             withAnimation(transition) { performSelection() }
 
-        case (nil, let scale?):
+        case (nil, let scaleEffect?):
             isSelectionIndicatorScaling = true
             performSelection()
             Task {
-                try? await Task.sleep(for: .seconds(scale.duration))
+                try? await Task.sleep(for: .seconds(scaleEffect.duration))
                 await MainActor.run {
-                    withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
                 }
             }
 
@@ -430,7 +430,7 @@ private extension BarView {
             background: .material(.ultraThinMaterial),
             itemStyles: [.regular: .init()],
             itemSpacing: 0,
-            itemStateAnimation: .easeInOut(duration: 0.2),
+            itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
             barAccessibilityLabel: "Bar"
         ))
         .padding(.horizontal, 16)

@@ -61,7 +61,7 @@ public struct BarConfiguration {
     public var itemSpacing: CGFloat
     
     /// The animation applied to the icon and title when an item changes between selected and unselected states.
-    public var itemStateAnimation: Animation?
+    public var itemStateAnimation: BarAnimation?
     
     /// The item style used as the baseline for bar height calculation.
     /// When non-nil, `BarView` fixes its height to match this style's metrics,
@@ -111,7 +111,7 @@ public struct BarConfiguration {
         itemContentAlignment: BarItemAlignment = .center,
         itemAlignment: BarItemAlignment = .center,
         itemSpacing: CGFloat = 0,
-        itemStateAnimation: Animation? = .easeInOut(duration: 0.2),
+        itemStateAnimation: BarAnimation? = .parameters(.init(type: .easeInOut, duration: 0.2)),
         baselineStyle: BarItemStyle? = nil,
         barAccessibilityLabel: String = "Tab Bar",
         hapticFeedback: HapticFeedback? = .selection,
@@ -132,4 +132,15 @@ public struct BarConfiguration {
         self.hapticFeedback = hapticFeedback
         self.accessibilitySortPriority = accessibilitySortPriority
     }
+}
+
+// MARK: - Helpers
+
+public extension BarConfiguration {
+    
+    /// Resolves the item state animation for use in view modifiers.
+    var resolvedItemStateAnimation: Animation? {
+        itemStateAnimation?.animation
+    }
+    
 }
