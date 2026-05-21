@@ -47,7 +47,7 @@ struct BarBackgroundSection: View {
         } header: {
             Text("Background")
         } footer: {
-            Text("Defines the visual fill of the bar — solid color, system blur, or custom blur.")
+            Text("Defines the visual fill of the bar — solid color, system blur, or custom blur.\nNotes: Colors are stored as fixed RGB values and won't adapt to light/dark mode.\nSystem color names like .red won't be preserved in generated code.")
         }
     }
 }

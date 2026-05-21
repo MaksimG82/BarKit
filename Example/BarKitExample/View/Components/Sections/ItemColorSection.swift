@@ -22,6 +22,8 @@ struct ItemColorsSection: View {
             ColorPicker("Unselected", selection: $unselectedColor)
         } header: {
             Text("Item colors")
+        } footer: {
+            Text("Colors are stored as fixed RGB values and won't adapt to light/dark mode.\nSystem color names like .red won't be preserved in generated code.")
         }
     }
 }

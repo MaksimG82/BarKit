@@ -86,7 +86,7 @@ private extension IndicatorSection {
         } header: {
             Text("Color")
         } footer: {
-            Text("Note: setting the indicator color to fully transparent conflicts with the drag gesture.")
+            Text("Notes: setting the indicator color to fully transparent conflicts with the drag gesture.\nColors are stored as fixed RGB values and won't adapt to light/dark mode.\nSystem color names like .red won't be preserved in generated code.")
         }
     }
 
