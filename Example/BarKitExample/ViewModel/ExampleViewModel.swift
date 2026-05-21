@@ -47,9 +47,6 @@ final class ExampleViewModel {
  
         case let .standalone(standaloneIntent):
             handle(standaloneIntent)
- 
-        case let .indicator(indicatorIntent):
-            handle(indicatorIntent)
         }
     }
     
@@ -76,12 +73,12 @@ private extension ExampleViewModel {
             if mode != state.tabBar.mode {
                 state.instanceID = UUID()
                 if mode == .floating {
-                    state.items = state.items.map { $0.withStyle(.regular) }
+                    state.tabBarItems = state.tabBarItems.map { $0.withStyle(.regular) }
                 }
             }
             state.tabBar.mode = mode
             
-        case let .update(materilaSelection):
+        case let .updateMaterialSelection(materilaSelection):
             switch state.tabBar.mode {
             case .floating:
                 state.tabBar.floatingTabBarMaterialSelection = materilaSelection
@@ -90,12 +87,19 @@ private extension ExampleViewModel {
             }
             
         case let .updateHapticFeedbackEnabled(isEnabled):
-            floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
-            pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            switch state.tabBar.mode {
+            case .floating: floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            case .pinned:   pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            }
 
         case let .updateHapticFeedback(feedback):
-            floatingTabBarConfig.hapticFeedback = feedback
-            pinnedTabBarConfig.hapticFeedback = feedback
+            switch state.tabBar.mode {
+            case .floating: floatingTabBarConfig.hapticFeedback = feedback
+            case .pinned:   pinnedTabBarConfig.hapticFeedback = feedback
+            }
+            
+        case let .indicator(indicatorIntent):
+            handle(indicatorIntent, state: &state.tabBar.indicator)
             
         case let .floating(floatingIntent):
             switch floatingIntent {
@@ -122,15 +126,25 @@ private extension ExampleViewModel {
             }
             
         case let .updateRegularItemConfig(config):
-            state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
-            state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
+            switch state.tabBar.mode {
+            case .floating:
+                state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
+            case .pinned:
+                state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
+            }
 
         case let .updateProminentItemConfig(config):
             state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
             
         case let .updateTabItemStyle(item, style):
-            guard let index = state.items.firstIndex(where: { $0.id == item.id }) else { return }
-            state.items[index].style = style
+            guard let index = state.tabBarItems.firstIndex(where: { $0.id == item.id }) else { return }
+            state.tabBarItems[index].style = style
+        
+        case let .updateItemContentAxis(axis):
+            switch state.tabBar.mode {
+            case .floating: floatingTabBarConfig.itemContentAxis = axis
+            case .pinned: pinnedTabBarConfig.itemContentAxis = axis
+            }
             
         case .reset:
             state.tabBar = .init()
@@ -138,80 +152,123 @@ private extension ExampleViewModel {
         }
     }
     
-    func handle(_ intent: StandaloneIntent) { }
-    
-    func handle(_ intent: IndicatorIntent) {
+    func handle(_ intent: StandaloneIntent) {
         switch intent {
-        case let .updateColor(color):
-            state.indicator.indicatorConfig.color = color
+        case let .selectItem(item):
+            state.standalone.selectedItem = item
             
-        case let .updateBorderEnabled(isEnabled):
-            state.indicator.indicatorConfig.border = isEnabled ? .init() : nil
-
-        case let .updateBorderColor(color):
-            state.indicator.indicatorConfig.border?.color = color
-
-        case let .updateBorderWidth(width):
-            state.indicator.indicatorConfig.border?.lineWidth = width
+        case let .updateAxis(axis):
+            state.standalone.barConfiguration.axis = axis
+            
+        case let .indicator(indicatorIntent):
+            handle(indicatorIntent, state: &state.standalone.indicator)
             
         case let .updateCornerRadius(radius):
-            state.indicator.indicatorConfig.cornerRadius = radius
+            state.standalone.barConfiguration.cornerRadius = radius
+
+        case let .updateShadow(shadow):
+            state.standalone.barConfiguration.shadow = shadow
+            
+        case let .updateBackground(background):
+            state.standalone.barConfiguration.background = background
+            
+        case let .updateMaterialSelection(materialSelection):
+            state.standalone.materialSelection = materialSelection
+            
+        case let .updateHapticFeedbackEnabled(isEnabled):
+            state.standalone.barConfiguration.hapticFeedback = isEnabled ? .selection : nil
+
+        case let .updateHapticFeedback(feedback):
+            state.standalone.barConfiguration.hapticFeedback = feedback
+            
+        case let .updateRegularItemConfig(config):
+            state.standalone.barConfiguration.itemStyles[.regular] = config
+
+        case let .updateItemContentAxis(axis):
+            state.standalone.barConfiguration.itemContentAxis = axis
+            
+        case let .updateItemAlignment(alignment):
+            state.standalone.barConfiguration.itemAlignment = alignment
+
+        case let .updateItemContentAlignment(alignment):
+            state.standalone.barConfiguration.itemContentAlignment = alignment
+            
+        case .reset:
+            state.standalone = .init()
+        }
+    }
+    
+    func handle(_ intent: IndicatorIntent, state: inout BarIndicatorState) {
+        switch intent {
+        case let .updateColor(color):
+            state.configuration.color = color
+            
+        case let .updateBorderEnabled(isEnabled):
+            state.configuration.border = isEnabled ? .init() : nil
+
+        case let .updateBorderColor(color):
+            state.configuration.border?.color = color
+
+        case let .updateBorderWidth(width):
+            state.configuration.border?.lineWidth = width
+            
+        case let .updateCornerRadius(radius):
+            state.configuration.cornerRadius = radius
             
         case let .updateAnimationParameters(parameters):
-            state.indicator.animationParameters = parameters
-            state.indicator.indicatorConfig.transitionAnimation = parameters.makeAnimation()
+            state.animationParameters = parameters
+            state.configuration.transitionAnimation = parameters.makeAnimation()
         
         case let .updateDragGestureEnabled(isEnabled):
-            state.indicator.indicatorConfig.isDragGestureEnabled = isEnabled
+            state.configuration.isDragGestureEnabled = isEnabled
             
         case let .updateInset(inset):
-            state.indicator.indicatorConfig.inset = inset
+            state.configuration.inset = inset
             
         case let .updateScaleEffectEnabled(isEnabled):
-            state.indicator.indicatorConfig.scaleEffect = isEnabled ? .init() : nil
+            state.configuration.scaleEffect = isEnabled ? .init() : nil
 
         case let .updateScaleEffectX(x):
-            state.indicator.indicatorConfig.scaleEffect?.xScale = x
+            state.configuration.scaleEffect?.xScale = x
 
         case let .updateScaleEffectY(y):
-            state.indicator.indicatorConfig.scaleEffect?.yScale = y
+            state.configuration.scaleEffect?.yScale = y
 
         case let .updateScaleEffectDuration(duration):
-            state.indicator.indicatorConfig.scaleEffect?.duration = duration
+            state.configuration.scaleEffect?.duration = duration
 
         case let .updateScaleAnimationParameters(parameters):
-            state.indicator.scaleAnimationParameters = parameters
-            state.indicator.indicatorConfig.scaleEffect?.animation = parameters.makeAnimation() ?? .linear
+            state.scaleAnimationParameters = parameters
+            state.configuration.scaleEffect?.animation = parameters.makeAnimation() ?? .linear
 
         case let .updateLensDistortion(isEnabled):
             if isEnabled {
-                state.indicator.indicatorConfig.effects.insert(.lensDistortion)
+                state.configuration.effects.insert(.lensDistortion)
             } else {
-                state.indicator.indicatorConfig.effects.remove(.lensDistortion)
+                state.configuration.effects.remove(.lensDistortion)
             }
 
         case let .updateChromaticAberration(isEnabled):
             if isEnabled {
-                state.indicator.indicatorConfig.effects.insert(.chromaticAberration)
+                state.configuration.effects.insert(.chromaticAberration)
             } else {
-                state.indicator.indicatorConfig.effects.remove(.chromaticAberration)
+                state.configuration.effects.remove(.chromaticAberration)
             }
 
         case let .updateRefractionZoneWidth(width):
-            state.indicator.indicatorConfig.refractionZoneWidth = width
+            state.configuration.refractionZoneWidth = width
 
         case let .updateRefractionStrength(strength):
-            state.indicator.indicatorConfig.refractionStrength = strength
+            state.configuration.refractionStrength = strength
 
         case let .updateAberrationZoneWidth(width):
-            state.indicator.indicatorConfig.aberrationZoneWidth = width
+            state.configuration.aberrationZoneWidth = width
 
         case let .updateAberrationStrength(strength):
-            state.indicator.indicatorConfig.aberrationStrength = strength
+            state.configuration.aberrationStrength = strength
             
         case .reset:
-            state.indicator = .init()
-            
+            state = .init()
         }
     }
 }

@@ -10,35 +10,33 @@ import SwiftUI
 
 /// Defines all possible user actions that can modify the Example app state.
 enum ExampleIntent {
- 
     // MARK: - Navigation
- 
+    
     /// Changes the currently selected tab.
     case selectTab(ExampleTabItem)
- 
+    
     // MARK: - Debug
- 
+    
     /// Toggles the visual layout debugging mode.
     case toggleDebugLayout
- 
+    
     // MARK: - Screen Intents
- 
+    
     /// Actions for the Tab Bar screen.
     case tabBar(TabBarIntent)
- 
+    
     /// Actions for the Standalone BarView screen.
     case standalone(StandaloneIntent)
- 
-    /// Actions for the Indicator screen.
-    case indicator(IndicatorIntent)
 }
- 
+
 // MARK: - Sub-Intents
- 
+
 /// Actions available on the Tab Bar screen.
 enum TabBarIntent {
     case floating(FloatingTabBarIntent)
+    
     case pinned(PinnedTabBarIntent)
+    
     /// Switches between floating and pinned mode. Resets all prominent items to regular.
     case switchMode(TabBarMode)
     
@@ -51,25 +49,30 @@ enum TabBarIntent {
     /// Updates the style of a tab item. Pinned mode only.
     case updateTabItemStyle(ExampleTabItem, BarItemStyle)
     
+    /// Updates the arrangement of icon and title within each bar item.
+    case updateItemContentAxis(ItemContentAxis?)
+    
     /// Updates background of tabbar
-    case update(MaterialSelection)
+    case updateMaterialSelection(MaterialSelection)
     
     /// Enables or disables haptic feedback for the tab bar.
     case updateHapticFeedbackEnabled(Bool)
-
+    
     /// Updates the haptic feedback style for the tab bar.
     case updateHapticFeedback(HapticFeedback)
+    
+    /// Actions for the Indicator settings.
+    case indicator(IndicatorIntent)
     
     /// Resets all Tab Bar settings to their default values.
     case reset
 }
- 
+
 /// Actions available on the Floating tab bar.
 enum FloatingTabBarIntent {
-    
     /// Updates the floating tab bar insets for regular height size class.
     case updateInsets(EdgeInsets)
-
+    
     /// Updates the floating tab bar insets for compact height size class (e.g. landscape).
     case updateInsetsCompact(EdgeInsets)
     
@@ -78,30 +81,62 @@ enum FloatingTabBarIntent {
     
     /// The corner radius of the floating bar.
     case updateCornerRadius(CGFloat)
-    
+        
     /// Updates the shadow configuration of the floating tab bar. Pass `nil` to disable shadow.
     case updateShadow(ShadowConfiguration?)
 }
- 
+
 /// Actions available on the Pinned tab bar.
 enum PinnedTabBarIntent {
-    
     /// Updates the background appearance of the pinned tab bar.
     case updateBackground(BarBackground)
 }
- 
+
 /// Actions available on the Standalone BarView screen.
 enum StandaloneIntent {
-    case horizontal(HorizontalBarIntent)
-    case vertical(VerticalBarIntent)
+    /// Selects a standalone bar item.
+    case selectItem(ExampleBarItem)
+    
+    /// Updates the layout axis of the standalone bar.
+    case updateAxis(BarConfiguration.Axis)
+    
+    /// Actions for the Indicator settings.
+    case indicator(IndicatorIntent)
+    
+    /// The corner radius of the floating bar.
+    case updateCornerRadius(CGFloat)
+        
+    /// Updates the shadow configuration of the bar. Pass `nil` to disable shadow.
+    case updateShadow(ShadowConfiguration?)
+    
+    /// Updates the background appearance of the bar.
+    case updateBackground(BarBackground)
+    
+    /// Updates background of the bar
+    case updateMaterialSelection(MaterialSelection)
+    
+    /// Enables or disables haptic feedback for the bar.
+    case updateHapticFeedbackEnabled(Bool)
+    
+    /// Updates the haptic feedback style for the bar.
+    case updateHapticFeedback(HapticFeedback)
+    
+    /// Updates the ItemConfiguration for .regular style.
+    case updateRegularItemConfig(ItemConfiguration)
+    
+    /// Updates the arrangement of icon and title within each bar item.
+    case updateItemContentAxis(ItemContentAxis?)
+    
+    /// Updates the alignment of items along the cross-axis of the bar.
+    case updateItemAlignment(BarItemAlignment)
+
+    /// Updates the alignment of icon and title within each item.
+    case updateItemContentAlignment(BarItemAlignment)
+    
+    /// Resets all settings to their default values.
+    case reset
 }
- 
-/// Actions available on the horizontal BarView.
-enum HorizontalBarIntent {}
- 
-/// Actions available on the vertical BarView.
-enum VerticalBarIntent {}
- 
+
 enum IndicatorIntent {
     
     // MARK: - Color
@@ -113,10 +148,10 @@ enum IndicatorIntent {
     
     /// Enables or disables the border by setting `border` to a default value or `nil`.
     case updateBorderEnabled(Bool)
-
+    
     /// Updates the color of the indicator border.
     case updateBorderColor(Color)
-
+    
     /// Updates the line width of the indicator border.
     case updateBorderWidth(CGFloat)
     
@@ -141,19 +176,19 @@ enum IndicatorIntent {
     case updateInset(EdgeInsets)
     
     // MARK: - Scale Effect
-
+    
     /// Enables or disables the scale effect on the selection indicator.
     case updateScaleEffectEnabled(Bool)
-
+    
     /// Updates the x scale factor of the scale effect.
     case updateScaleEffectX(CGFloat)
-
+    
     /// Updates the y scale factor of the scale effect.
     case updateScaleEffectY(CGFloat)
-
+    
     /// Updates the reset duration of the scale effect.
     case updateScaleEffectDuration(Double)
-
+    
     /// Updates the animation parameters for the scale effect.
     case updateScaleAnimationParameters(AnimationParameters)
     
@@ -183,4 +218,4 @@ enum IndicatorIntent {
     case reset
     
 }
- 
+

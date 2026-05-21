@@ -14,7 +14,7 @@ struct ExampleState {
     // MARK: - Navigation
  
     /// The list of tab items displayed in the bar.
-    var items: [ExampleTabItem] = ExampleTabItem.allItems
+    var tabBarItems: [ExampleTabItem] = ExampleTabItem.allItems
  
     /// The currently active tab.
     var selectedTab: ExampleTabItem
@@ -35,13 +35,10 @@ struct ExampleState {
     /// State for the Standalone BarView screen.
     var standalone: StandaloneState = .init()
  
-    /// State for the Indicator screen.
-    var indicator: IndicatorState = .init()
- 
     // MARK: - Initialization
  
     init() {
-        selectedTab = ExampleTabItem.allItems.first!
+        selectedTab = ExampleTabItem.allItems[0]
     }
 }
  
@@ -59,6 +56,9 @@ struct TabBarState {
     var floatingTabBarMaterialSelection: MaterialSelection = .ultraThin
     
     var pinnedTabBarMaterialSelection: MaterialSelection = .ultraThin
+    
+    /// The selection indicator state for the Tab bar.
+    var indicator: BarIndicatorState = .init()
 }
  
 /// State for the Floating tab bar.
@@ -82,25 +82,36 @@ struct PinnedTabBarState {
  
 /// State for the Standalone BarView screen.
 struct StandaloneState {
-    var horizontal: HorizontalBarState = .init()
-    var vertical: VerticalBarState = .init()
-}
+    
+    /// The list of items displayed in the standalone bar.
+    var items: [ExampleBarItem] = ExampleBarItem.allItems
+
+    /// The currently selected standalone bar item.
+    var selectedItem: ExampleBarItem
+    
+    /// The bar configuration for the standalone bar.
+    var barConfiguration: BarConfiguration = .init()
+    
+    /// The selection indicator state for the standalone bar.
+    var indicator: BarIndicatorState = .init()
+    
+    var materialSelection: MaterialSelection = .ultraThin
+    
+    var insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+    
+    // MARK: - Initialization
  
-/// State for the horizontal BarView.
-struct HorizontalBarState {
-    var barConfig: BarConfiguration = .init()
-    var insets: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
+    init() {
+        selectedItem = ExampleBarItem.allItems[0]
+    }
 }
- 
-/// State for the vertical BarView.
-struct VerticalBarState {
-    var barConfig: BarConfiguration = .init()
-    var insets: EdgeInsets = .init(top: 16, leading: 0, bottom: 16, trailing: 0)
-}
- 
-/// State for the Indicator screen.
-struct IndicatorState {
-    var indicatorConfig: SelectionIndicatorConfiguration = .init()
+
+/// State for the BarView's selection indicator.
+struct BarIndicatorState {
+    
+    var configuration: SelectionIndicatorConfiguration = .init()
+    
     var animationParameters: AnimationParameters = .init()
+    
     var scaleAnimationParameters: AnimationParameters = .init()
 }

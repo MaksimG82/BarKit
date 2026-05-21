@@ -20,14 +20,16 @@ struct TabBarScreen: View {
         List {
             descriptionSection
             tabBarModePickerSection
-            
             if viewModel.state.tabBar.mode == .floating {
                 floatingLayoutLink
             }
-            
             backgroundLink
-            hapticFeedbackLink
             itemSettingsLink
+            
+            if viewModel.state.tabBar.mode == .floating {
+                indicatorLink
+            }
+            hapticFeedbackLink
         }
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
         .toolbar { resetButton }
@@ -65,6 +67,21 @@ private extension TabBarScreen {
               hapticFeedbackSection
             }
     }
+    
+    var indicatorLink: some View {
+        settingsLink("Selection indicator", viewModel: viewModel) {
+            IndicatorSection(
+                viewModel: viewModel,
+                bindings: .init(
+                    viewModel: viewModel,
+                    stateKeyPath: \.tabBar.indicator,
+                    wrapIntent: { .tabBar(.indicator($0)) }
+                ),
+                stateKeyPath: \.tabBar.indicator
+            )
+        }
+    }
+    
 }
 
 
@@ -105,21 +122,18 @@ private extension TabBarScreen {
                 value: bindings.floatingInset(\.leading),
                 range: 0...48
             )
-            .defersSystemGestures(on: .all)
             
             SettingSlider(
                 title: "Trailing",
                 value: bindings.floatingInset(\.trailing),
                 range: 0...48
             )
-            .defersSystemGestures(on: .all)
             
             SettingSlider(
                 title: "Bottom",
                 value: bindings.floatingInset(\.bottom),
                 range: 8...64
             )
-            .defersSystemGestures(on: .all)
         } header: {
             Text("Edge insets")
         } footer: {
@@ -134,21 +148,18 @@ private extension TabBarScreen {
                 value: bindings.floatingInsetCompact(\.leading),
                 range: 0...48
             )
-            .defersSystemGestures(on: .all)
 
             SettingSlider(
                 title: "Trailing",
                 value: bindings.floatingInsetCompact(\.trailing),
                 range: 0...48
             )
-            .defersSystemGestures(on: .all)
 
             SettingSlider(
                 title: "Bottom",
                 value: bindings.floatingInsetCompact(\.bottom),
                 range: 8...64
             )
-            .defersSystemGestures(on: .all)
         } header: {
             Text("Edge insets (Compact)")
         } footer: {
@@ -159,87 +170,30 @@ private extension TabBarScreen {
     // MARK: - Background section
     
     var backgroundSection: some View {
-        Section {
-            Picker("Type", selection: bindings.backgroundType()) {
-                ForEach(BarBackgroundType.allCases, id: \.self) {
-                    Text($0.rawValue).tag($0)
-                }
-            }
-            switch bindings.background().wrappedValue {
-            case .color:
-                ColorPicker("Color", selection: bindings.backgroundColor())
-            case .material(_, _):
-                ColorPicker("Tint", selection: bindings.backgroundColor())
-                
-                Picker("Material", selection: bindings.materialSelection()) {
-                    ForEach(MaterialSelection.allCases, id: \.self) {
-                        Text($0.rawValue).tag($0)
-                    }
-                }
-            case .customBlur(_, _):
-                ColorPicker("Tint", selection: bindings.backgroundColor())
-                Text("Coming soon")
-            }
-            
-        } header: {
-            Text("Background")
-        } footer: {
-            Text("Defines the visual fill of the bar — solid color, system blur, or custom blur.")
-        }
+        BarBackgroundSection(
+            background: bindings.background(),
+            backgroundType: bindings.backgroundType(),
+            backgroundColor: bindings.backgroundColor(),
+            materialSelection: bindings.materialSelection()
+        )
     }
     
     // MARK: - Corner Radius Section
     
     var cornerRadiusSection: some View {
-        Section {
-            SettingSlider(
-                title: "Corner Radius",
-                value: bindings.cornerRadius(),
-                range: 0...40
-            )
-        } header: {
-            Text("Corner radius")
-        } footer: {
-            if viewModel.state.tabBar.mode == .pinned {
-                Text("Corner radius has no effect in Pinned mode.")
-            }
-        }
+        CornerRadiusSection(cornerRadius: bindings.cornerRadius())
     }
     
     // MARK: - Shadow Section
     
     var shadowSection: some View {
-        Section {
-            Toggle("Shadow", isOn: bindings.shadowEnabled())
-            if viewModel.floatingTabBarConfig.shadow != nil {
-                ColorPicker("Color", selection: bindings.shadowColor())
-                SettingSlider(
-                    title: "Radius",
-                    value: bindings.shadow(\.radius),
-                    range: 0...24
-                )
-                SettingSlider(
-                    title: "X",
-                    value: bindings.shadow(\.x),
-                    range: -16...16,
-                    step: 0.01,
-                    format: .fractionalTwo
-                )
-                
-                SettingSlider(
-                    title: "Y",
-                    value: bindings.shadow(\.y),
-                    range: -16...16,
-                    step: 0.01,
-                    format: .fractionalTwo
-                )
-            }
-        } header: {
-            Text("Shadow")
-        } footer: {
-            Text("Shadow has no effect in Pinned mode.")
-                .opacity(viewModel.state.tabBar.mode == .pinned ? 1 : 0)
-        }
+        ShadowSection(
+            shadowEnabled: bindings.shadowEnabled(),
+            shadowColor: bindings.shadowColor(),
+            shadowRadius: bindings.shadow(\.radius),
+            shadowX: bindings.shadow(\.x),
+            shadowY: bindings.shadow(\.y)
+        )
     }
     
     // MARK: - ItemConfigurationSection
@@ -251,52 +205,33 @@ private extension TabBarScreen {
         itemColorsSection
         itemIconSizeSection
         itemTextStyleSection
+        itemContentAxisSection
         if viewModel.state.tabBar.mode == .pinned {
             prominentItemsSection
         }
     }
     
     var itemEdgeInsetsSection: some View {
-        Section {
-            SettingSlider(
-                title: "Top",
-                value: bindings.regularItemConfig(\.edgeInsets.top),
-                range: 0...24
-            )
-            SettingSlider(
-                title: "Bottom",
-                value: bindings.regularItemConfig(\.edgeInsets.bottom),
-                range: 0...24
-            )
-        } header: {
-            Text("Item padding")
-        }
+        ItemEdgeInsetsSection(
+            title: "Item padding",
+            top: bindings.regularItemConfig(\.edgeInsets.top),
+            bottom: bindings.regularItemConfig(\.edgeInsets.bottom)
+        )
     }
 
     var itemEdgeInsetsCompactSection: some View {
-        Section {
-            SettingSlider(
-                title: "Top",
-                value: bindings.regularItemConfig(\.edgeInsetsCompact.top),
-                range: 0...24
-            )
-            SettingSlider(
-                title: "Bottom",
-                value: bindings.regularItemConfig(\.edgeInsetsCompact.bottom),
-                range: 0...24
-            )
-        } header: {
-            Text("Item padding (Compact)")
-        }
+        ItemEdgeInsetsSection(
+            title: "Item padding (Compact)",
+            top: bindings.regularItemConfig(\.edgeInsetsCompact.top),
+            bottom: bindings.regularItemConfig(\.edgeInsetsCompact.bottom)
+        )
     }
     
     var itemColorsSection: some View {
-        Section {
-            ColorPicker("Selected", selection: bindings.regularItemConfig(\.selectedColor))
-            ColorPicker("Unselected", selection: bindings.regularItemConfig(\.unselectedColor))
-        } header: {
-            Text("Item colors")
-        }
+        ItemColorsSection(
+            selectedColor: bindings.regularItemConfig(\.selectedColor),
+            unselectedColor: bindings.regularItemConfig(\.unselectedColor)
+        )
     }
     
     var itemIconSizeSection: some View {
@@ -326,20 +261,16 @@ private extension TabBarScreen {
     }
     
     var itemTextStyleSection: some View {
-        Section {
-            Picker("Text Style", selection: bindings.regularItemConfig(\.textStyle)) {
-                ForEach(Font.TextStyle.allCases, id: \.self) {
-                    Text(String(describing: $0)).tag($0)
-                }
-            }
-        } header: {
-            Text("Text style")
-        }
+        ItemTextStyleSection(textStyle: bindings.regularItemConfig(\.textStyle))
+    }
+    
+    var itemContentAxisSection: some View {
+        ItemContentAxisSection(axis: bindings.itemContentAxis())
     }
     
     var prominentItemsSection: some View {
         Section {
-            ForEach(viewModel.state.items) { item in
+            ForEach(viewModel.state.tabBarItems) { item in
                 Toggle(item.title, isOn: bindings.tabItemStyle(for: item))
             }
             SettingSlider(
@@ -357,22 +288,10 @@ private extension TabBarScreen {
     // MARK: - Haptic Feedback section
 
     var hapticFeedbackSection: some View {
-        Section {
-            Toggle("Haptic Feedback", isOn: bindings.hapticFeedbackEnabled())
-            if viewModel.floatingTabBarConfig.hapticFeedback != nil {
-                Picker("Style", selection: bindings.hapticFeedback()) {
-                    Text("Selection").tag(HapticFeedback.selection)
-                    Text("Impact").tag(HapticFeedback.impact)
-                    Text("Success").tag(HapticFeedback.success)
-                    Text("Warning").tag(HapticFeedback.warning)
-                    Text("Error").tag(HapticFeedback.error)
-                }
-            }
-        } header: {
-            Text("Haptic Feedback")
-        } footer: {
-            Text("Requires iOS 17 or later.")
-        }
+        HapticFeedbackSection(
+            isEnabled: bindings.hapticFeedbackEnabled(),
+            hapticFeedback: bindings.hapticFeedback()
+        )
     }
     
     // MARK: - Toolbar

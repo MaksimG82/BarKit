@@ -1,5 +1,5 @@
 //
-//  IndicatorScreen.swift
+//  IndicatorSection.swift
 //  BarKitExample
 //
 //  Created by Maksim Gaisin on 15.05.26.
@@ -8,63 +8,67 @@
 import SwiftUI
 import BarKit
 
-struct IndicatorScreen: View {
-    
-    @Environment(\.verticalSizeClass) var sizeClass
-    
+/// A reusable set of sections for configuring a selection indicator.
+struct IndicatorSection: View {
+
     let viewModel: ExampleViewModel
-    
     let bindings: IndicatorBindings
+    let preview: AnyView
+    private let stateKeyPath: KeyPath<ExampleState, BarIndicatorState>
+
+    private var indicatorState: BarIndicatorState {
+        viewModel.state[keyPath: stateKeyPath]
+    }
+
+    init(
+        viewModel: ExampleViewModel,
+        bindings: IndicatorBindings,
+        stateKeyPath: KeyPath<ExampleState, BarIndicatorState>,
+        @ViewBuilder preview: @escaping () -> some View = { EmptyView() }
+     ) {
+        self.viewModel = viewModel
+        self.bindings = bindings
+        self.stateKeyPath = stateKeyPath
+        self.preview = AnyView(preview())
+    }
     
     var body: some View {
-        List {
-            descriptionSection
-            if viewModel.state.tabBar.mode == .pinned {
-                unavailableSection
-            } else {
-                
-                dragGestureSection
-                insetSection
-                
-                appearanceLink
-                transitionAnimatrionLink
-                scaleEffectLink
-                lensEffectsLink
-            }
-        }
-        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
-        .toolbar { resetButton }
-        .navigationTitle("Selection indicator")
+        dragGestureSection
+        insetSection
+        appearanceLink
+        transitionAnimationLink
+        scaleEffectLink
+        lensEffectsLink
     }
 }
 
 // MARK: - Navigation links
 
-private extension IndicatorScreen {
+private extension IndicatorSection {
 
     var appearanceLink: some View {
-        settingsLink("Appearance", viewModel: viewModel) {
+        settingsLink("Appearance", viewModel: viewModel, header: { preview }) {
             colorSection
             borderSection
             cornerRadiusSection
         }
     }
 
-    var transitionAnimatrionLink: some View {
-        settingsLink("Transition animation", viewModel: viewModel) {
+    var transitionAnimationLink: some View {
+        settingsLink("Transition animation", viewModel: viewModel, header: { preview }) {
             animationSection
         }
     }
 
     var scaleEffectLink: some View {
-        settingsLink("Scale effect", viewModel: viewModel) {
+        settingsLink("Scale effect", viewModel: viewModel, header: { preview }) {
             scaleEffectSection
-            scaleEffetAnimationSettings
+            scaleEffectAnimationSettings
         }
     }
-    
+
     var lensEffectsLink: some View {
-        settingsLink("Lens effect", viewModel: viewModel) {
+        settingsLink("Lens effect", viewModel: viewModel, header: { preview }) {
             effectsSection
         }
     }
@@ -72,35 +76,10 @@ private extension IndicatorScreen {
 
 // MARK: - View Components
 
-private extension IndicatorScreen {
+private extension IndicatorSection {
 
-    // MARK: - Description
-
-    var descriptionSection: some View {
-        Section {
-            Text("Customize the selection indicator that highlights the active tab.\nAdjust its appearance, shape, animation, and Metal shader effects applied at the indicator boundary.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    // MARK: - Unavailable
-
-    @ViewBuilder
-    var unavailableSection: some View {
-        if viewModel.state.tabBar.mode == .pinned {
-            Section {
-                ContentUnavailableView(
-                    "Indicator not available",
-                    systemImage: "rectangle.slash",
-                    description: Text("Selection indicator is only supported in Floating mode. Switch the Tab Bar to Floating to configure it.")
-                )
-            }
-        }
-    }
-    
     // MARK: - Color
-    
+
     var colorSection: some View {
         Section {
             ColorPicker("Color", selection: bindings.color())
@@ -110,14 +89,13 @@ private extension IndicatorScreen {
             Text("Note: setting the indicator color to fully transparent conflicts with the drag gesture.")
         }
     }
-    
-    
+
     // MARK: - Border
-    
+
     var borderSection: some View {
         Section {
             Toggle("Border", isOn: bindings.borderEnabled())
-            if viewModel.state.indicator.indicatorConfig.border != nil {
+            if indicatorState.configuration.border != nil {
                 ColorPicker("Color", selection: bindings.borderColor())
                 SettingSlider(
                     title: "Width",
@@ -132,35 +110,27 @@ private extension IndicatorScreen {
         }
     }
 
-    
     // MARK: - Corner radius
-    
+
     var cornerRadiusSection: some View {
-        Section {
-            SettingSlider(
-                title: "Corner Radius",
-                value: bindings.cornerRadius(),
-                range: 0...40
-            )
-        } header: {
-            Text("Corner Radius")
-        } footer: {
-            Text("For best results, keep the indicator corner radius close to the bar's corner radius.")
-        }
+        CornerRadiusSection(
+            cornerRadius: bindings.cornerRadius(),
+            footer: "For best results, keep the indicator corner radius close to the bar's corner radius."
+        )
     }
-    
+
     // MARK: - Animation
-    
+
     var animationSection: some View {
-        AnimationSettingsSectionView(
+        AnimationSection(
             parameters: bindings.animationParameters(),
             headerText: "Transition Animation",
             footerText: "Animation applied when the indicator moves between tabs."
         )
     }
-    
+
     // MARK: - Drag gesture
-    
+
     var dragGestureSection: some View {
         Section {
             Toggle("Drag Gesture", isOn: bindings.dragGestureEnabled())
@@ -170,9 +140,9 @@ private extension IndicatorScreen {
             Text("Allows the user to drag the indicator between tabs.")
         }
     }
-    
+
     // MARK: - Inset
-    
+
     var insetSection: some View {
         Section {
             SettingSlider(
@@ -195,13 +165,13 @@ private extension IndicatorScreen {
             Text("Positive values shrink the indicator, negative values expand it beyond the item bounds.")
         }
     }
-    
+
     // MARK: - Scale effect
-    
+
     var scaleEffectSection: some View {
         Section {
             Toggle("Scale Effect", isOn: bindings.scaleEffectEnabled())
-            if viewModel.state.indicator.indicatorConfig.scaleEffect != nil {
+            if indicatorState.configuration.scaleEffect != nil {
                 SettingSlider(
                     title: "X Scale",
                     value: bindings.scaleEffectX(),
@@ -230,24 +200,24 @@ private extension IndicatorScreen {
             Text("Scales the indicator frame during transition. Works in combination with the transition animation.")
         }
     }
-    
+
     @ViewBuilder
-    var scaleEffetAnimationSettings: some View {
-        if viewModel.state.indicator.indicatorConfig.scaleEffect != nil {
-            AnimationSettingsSectionView(
+    var scaleEffectAnimationSettings: some View {
+        if indicatorState.configuration.scaleEffect != nil {
+            AnimationSection(
                 parameters: bindings.scaleAnimationParameters(),
                 headerText: "Scale Animation",
                 footerText: "Animation applied to the scaling phase of the indicator."
             )
         }
     }
-    
-    // MARK: Lens effects
-    
+
+    // MARK: - Lens effects
+
     var effectsSection: some View {
         Section {
             Toggle("Lens Distortion", isOn: bindings.lensDistortionEnabled())
-            if viewModel.state.indicator.indicatorConfig.effects.contains(.lensDistortion) {
+            if indicatorState.configuration.effects.contains(.lensDistortion) {
                 SettingSlider(
                     title: "Zone Width",
                     value: bindings.refractionZoneWidth(),
@@ -264,7 +234,7 @@ private extension IndicatorScreen {
                 )
             }
             Toggle("Chromatic Aberration", isOn: bindings.chromaticAberrationEnabled())
-            if viewModel.state.indicator.indicatorConfig.effects.contains(.chromaticAberration) {
+            if indicatorState.configuration.effects.contains(.chromaticAberration) {
                 SettingSlider(
                     title: "Zone Width",
                     value: bindings.aberrationZoneWidth(),
@@ -286,37 +256,4 @@ private extension IndicatorScreen {
             Text("Metal shader effects applied at the indicator boundary. Available on iOS 17 and later.")
         }
     }
-    
-    // MARK: - Toolbar
-
-    var resetButton: some View {
-        Button("Reset indicator settings") {
-            viewModel.send(.indicator(.reset))
-        }
-    }
 }
-
-#Preview {
-    @Previewable @State var viewModel = ExampleViewModel()
-    @Previewable @Environment(\.verticalSizeClass) var sizeClass
-    
-    ZStack(alignment: .bottom) {
-        NavigationStack {
-            IndicatorScreen(
-                viewModel: viewModel,
-                bindings: .init(viewModel: viewModel)
-            )
-        }
-        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
-        
-        TabBarContainer(viewModel: viewModel)
-    }
-    .ignoresSafeArea(
-        .all,
-        edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
-    )
-    .onAppear {
-        viewModel.send(.selectTab(ExampleTabItem.allItems[1]))
-    }
-}
-

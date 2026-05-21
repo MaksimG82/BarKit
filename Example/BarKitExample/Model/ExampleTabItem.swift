@@ -14,10 +14,10 @@ struct ExampleTabItem: BarItemProtocol {
  
     /// Internal types for the example app tabs.
     enum TabType: String, CaseIterable {
-        case overview   = "Overview"
-        case tabBar     = "Tab Bar"
-        case standalone = "Standalone"
-        case indicator  = "Indicator"
+        case overview       = "Overview"
+        case tabBar         = "Tab Bar"
+        case standalone     = "Standalone"
+        case codegeneration = "Generator"
     }
  
     // MARK: - Properties
@@ -37,10 +37,10 @@ struct ExampleTabItem: BarItemProtocol {
     /// The icon displayed in the tab bar for this tab.
     var icon: BarIcon {
         switch type {
-        case .overview:   .system("info.circle")
-        case .tabBar:     .system("rectangle.roundedtop")
-        case .standalone: .system("rectangle.split.3x1")
-        case .indicator:  .system("circlebadge.fill")
+        case .overview:       .system("sparkles")
+        case .tabBar:         .system("dock.rectangle")
+        case .standalone:     .system("rectangle.inset.filled")
+        case .codegeneration: .system("doc.badge.gearshape")
         }
     }
 }

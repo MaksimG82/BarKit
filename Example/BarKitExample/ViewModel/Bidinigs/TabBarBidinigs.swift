@@ -108,7 +108,7 @@ final class TabBarBindings: BindingProvider {
                 }
             },
             set: { materialSelection in
-                self.viewModel.send(.tabBar(.update(materialSelection)))
+                self.viewModel.send(.tabBar(.updateMaterialSelection(materialSelection)))
                 let tint = self.currentBackgroundColor
                 self.background().wrappedValue = .material(materialSelection.material ?? .ultraThin, tint: tint)
             }
@@ -183,7 +183,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for the full regular `ItemConfiguration`.
     func regularItemConfig() -> Binding<ItemConfiguration> {
         Binding(
-            get: { self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init() },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init()
+                case .pinned: self.viewModel.pinnedTabBarConfig.itemStyles[.regular] ?? .init()
+                }
+            },
             set: { self.viewModel.send(.tabBar(.updateRegularItemConfig($0))) }
         )
     }
@@ -191,7 +196,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for a single property of the regular `ItemConfiguration`.
     func regularItemConfig<T>(_ keyPath: WritableKeyPath<ItemConfiguration, T>) -> Binding<T> {
         binding(
-            get: { self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init() },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemStyles[.regular] ?? .init()
+                case .pinned: self.viewModel.pinnedTabBarConfig.itemStyles[.regular] ?? .init()
+                }
+            },
             keyPath: keyPath,
             send: { .tabBar(.updateRegularItemConfig($0)) }
         )
@@ -214,12 +224,32 @@ final class TabBarBindings: BindingProvider {
         )
     }
     
+    // MARK: - Item Content Axis
+
+    /// Binding for the item content layout axis arrangement based on the current mode.
+    func itemContentAxis() -> Binding<ItemContentAxis?> {
+        Binding(
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.itemContentAxis
+                case .pinned:   self.viewModel.pinnedTabBarConfig.itemContentAxis
+                }
+            },
+            set: { self.viewModel.send(.tabBar(.updateItemContentAxis($0))) }
+        )
+    }
+    
     // MARK: - Haptic Feedback
 
     /// Binding for the haptic feedback enabled toggle.
     func hapticFeedbackEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.viewModel.floatingTabBarConfig.hapticFeedback != nil },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.hapticFeedback != nil
+                case .pinned:   self.viewModel.pinnedTabBarConfig.hapticFeedback != nil
+                }
+            },
             set: { self.viewModel.send(.tabBar(.updateHapticFeedbackEnabled($0))) }
         )
     }
@@ -227,7 +257,12 @@ final class TabBarBindings: BindingProvider {
     /// Binding for the haptic feedback style picker.
     func hapticFeedback() -> Binding<HapticFeedback> {
         Binding(
-            get: { self.viewModel.floatingTabBarConfig.hapticFeedback ?? .selection },
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfig.hapticFeedback ?? .selection
+                case .pinned:   self.viewModel.pinnedTabBarConfig.hapticFeedback ?? .selection
+                }
+            },
             set: { self.viewModel.send(.tabBar(.updateHapticFeedback($0))) }
         )
     }

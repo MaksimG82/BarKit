@@ -30,6 +30,16 @@ struct BarItemView<Item: BarItemProtocol>: View {
 
     /// Returns true if the item should adapt to a space-constrained horizontal layout.
     let isVerticalCompact: Bool
+    
+    /// The layout axis of the parent bar, used to determine item sizing behaviour.
+    let axis: BarConfiguration.Axis
+    
+    /// The icon-title arrangement inherited from `BarConfiguration`.
+    /// `nil` defers resolution to `resolvedContentAxis`.
+    let itemContentAxis: ItemContentAxis?
+    
+    /// The alignment of icon and title within the item along the cross-axis of the content stack.
+    let itemContentAlignment: BarItemAlignment
 
     // MARK: - Visual Style
 
@@ -53,11 +63,17 @@ struct BarItemView<Item: BarItemProtocol>: View {
     /// The distance between the icon and the title.
     let iconTitleSpacing: CGFloat
 
-    /// The inset applied to the top of the element.
-    let topPadding: CGFloat
-
-    /// The inset applied to the bottom of the element.
-    let bottomPadding: CGFloat
+    /// The insets applied inside the item view.
+    let edgeInsets: EdgeInsets
+    
+    // MARK: - Computed Properties
+    
+    /// Resolves the effective icon-title arrangement, using the explicit config value
+    /// or inferring from bar axis and size class when `itemContentAxis` is `nil`.
+    var resolvedContentAxis: ItemContentAxis {
+        itemContentAxis ?? (isVerticalCompact ? .horizontal :
+            axis == .vertical ? .horizontal : .vertical)
+    }
 
     // MARK: - Init
 
@@ -79,6 +95,9 @@ struct BarItemView<Item: BarItemProtocol>: View {
         self.item = item
         self.isSelected = isSelected
         self.isVerticalCompact = isVerticalCompact
+        axis = config.axis
+        itemContentAxis = config.itemContentAxis
+        itemContentAlignment = config.itemContentAlignment
         self.action = action
 
         let itemConfig = config.itemStyles[item.style] ?? config.itemStyles[.regular] ?? ItemConfiguration()
@@ -91,24 +110,22 @@ struct BarItemView<Item: BarItemProtocol>: View {
         let side = itemConfig.iconSideLength * (isVerticalCompact ? itemConfig.compactIconScale : 1.0)
         iconSize = CGSize(width: side, height: side)
 
-        let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
-        topPadding = insets.top
-        bottomPadding = insets.bottom
+        edgeInsets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
     }
 
     // MARK: - Body
 
     var body: some View {
         Group {
-            if isVerticalCompact {
-                HStack(spacing: iconTitleSpacing) { content }
+            if resolvedContentAxis == .horizontal {
+                HStack(alignment: itemContentAlignment.vertical, spacing: iconTitleSpacing) { content }
             } else {
-                VStack(spacing: iconTitleSpacing) { content }
+                VStack(alignment: itemContentAlignment.horizontal, spacing: iconTitleSpacing) { content }
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, topPadding)
-        .padding(.bottom, bottomPadding)
+        .frame(maxWidth: axis == .vertical ? nil : .infinity)
+        .frame(maxHeight: axis == .vertical ? .infinity : nil)
+        .padding(edgeInsets)
         .contentShape(Rectangle())
         .applyDebugVisuals(color: .blue)
         .onTapGesture(perform: action)
