@@ -17,27 +17,12 @@ final class ExampleViewModel {
  
     /// The single source of truth for the view.
     private(set) var state = ExampleState()
-    
-    /// The bar configuration for the floating tab bar.
-    private(set) var floatingTabBarConfig: BarConfiguration {
-        get { state.tabBar.floatingTabBarState.barConfig }
-        set { state.tabBar.floatingTabBarState.barConfig = newValue }
-    }
-
-    /// The bar configuration for the pinned tab bar.
-    private(set) var pinnedTabBarConfig: BarConfiguration {
-        get { state.tabBar.pinnedTabBarState.barConfig }
-        set { state.tabBar.pinnedTabBarState.barConfig = newValue }
-    }
  
     // MARK: - Intent Handling
  
     /// Entry point for all user actions.
     func send(_ intent: ExampleIntent) {
         switch intent {
- 
-        case let .selectTab(item):
-            state.selectedTab = item
  
         case .toggleDebugLayout:
             state.isDebugLayoutEnabled.toggle()
@@ -49,26 +34,24 @@ final class ExampleViewModel {
             handle(standaloneIntent)
         }
     }
-    
-    /// The bottom padding that content should apply to avoid being obscured by the floating bar.
-    /// - Parameters:
-    ///   - isCompact: Pass `true` when the vertical size class is compact (e.g. landscape).
-    func contentOffset(_ isCompact: Bool) -> CGFloat {
-        let itemConfig = floatingTabBarConfig.itemStyles[.regular] ?? ItemConfiguration()
-        let insets = isCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
-        return itemConfig.itemContentHeight(isVerticalCompact: isCompact)
-            + insets.top
-            + insets.bottom
-            + state.tabBar.floatingTabBarState.insets.bottom
-    }
 }
  
-// MARK: - Private
- 
 private extension ExampleViewModel {
- 
+    
+    // MARK: - TabBar
+    
     func handle(_ intent: TabBarIntent) {
         switch intent {
+            
+        case let .floating(floatingIntent):
+            handle(floatingIntent)
+            
+        case let .pinned(pinnedIntent):
+            handle(pinnedIntent)
+            
+        case let .selectTab(item):
+            state.selectedTab = item
+            
         case let .switchMode(mode):
             if mode != state.tabBar.mode {
                 state.instanceID = UUID()
@@ -78,72 +61,44 @@ private extension ExampleViewModel {
             }
             state.tabBar.mode = mode
             
-        case let .updateMaterialSelection(materilaSelection):
+        case let .updateBackground(background):
             switch state.tabBar.mode {
             case .floating:
-                state.tabBar.floatingTabBarMaterialSelection = materilaSelection
+                floatingTabBarConfig.background = background
             case .pinned:
-                state.tabBar.pinnedTabBarMaterialSelection = materilaSelection
+                pinnedTabBarConfig.background = background
+            }
+            
+        case let .updateRegularItemConfig(configuration):
+            switch state.tabBar.mode {
+            case .floating:
+                floatingTabBarConfig.itemStyles[.regular] = configuration
+            case .pinned:
+                pinnedTabBarConfig.itemStyles[.regular] = configuration
+            }
+            
+        case let .updateItemContentAxis(axis):
+            switch state.tabBar.mode {
+            case .floating:
+                floatingTabBarConfig.itemContentAxis = axis
+            case .pinned:
+                pinnedTabBarConfig.itemContentAxis = axis
             }
             
         case let .updateHapticFeedbackEnabled(isEnabled):
             switch state.tabBar.mode {
-            case .floating: floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
-            case .pinned:   pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            case .floating:
+                floatingTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
+            case .pinned:
+                pinnedTabBarConfig.hapticFeedback = isEnabled ? .selection : nil
             }
-
+            
         case let .updateHapticFeedback(feedback):
             switch state.tabBar.mode {
-            case .floating: floatingTabBarConfig.hapticFeedback = feedback
-            case .pinned:   pinnedTabBarConfig.hapticFeedback = feedback
-            }
-            
-        case let .indicator(indicatorIntent):
-            handle(indicatorIntent, state: &state.tabBar.indicator)
-            
-        case let .floating(floatingIntent):
-            switch floatingIntent {
-            case let .updateInsets(insets):
-                state.tabBar.floatingTabBarState.insets = insets
-                
-            case let .updateInsetsCompact(insets):
-                state.tabBar.floatingTabBarState.insetsCompact = insets
-                
-            case let .updateBackground(background):
-                floatingTabBarConfig.background = background
-            
-            case let .updateCornerRadius(cornerRadius):
-                floatingTabBarConfig.cornerRadius = cornerRadius
-            
-            case let .updateShadow(shadow):
-                floatingTabBarConfig.shadow = shadow
-            }
-            
-        case let .pinned(pinnedIntent):
-            switch pinnedIntent {
-            case let .updateBackground(background):
-                pinnedTabBarConfig.background = background
-            }
-            
-        case let .updateRegularItemConfig(config):
-            switch state.tabBar.mode {
             case .floating:
-                state.tabBar.floatingTabBarState.barConfig.itemStyles[.regular] = config
+                floatingTabBarConfig.hapticFeedback = feedback
             case .pinned:
-                state.tabBar.pinnedTabBarState.barConfig.itemStyles[.regular] = config
-            }
-
-        case let .updateProminentItemConfig(config):
-            state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
-            
-        case let .updateTabItemStyle(item, style):
-            guard let index = state.tabBarItems.firstIndex(where: { $0.id == item.id }) else { return }
-            state.tabBarItems[index].style = style
-        
-        case let .updateItemContentAxis(axis):
-            switch state.tabBar.mode {
-            case .floating: floatingTabBarConfig.itemContentAxis = axis
-            case .pinned: pinnedTabBarConfig.itemContentAxis = axis
+                pinnedTabBarConfig.hapticFeedback = feedback
             }
             
         case .reset:
@@ -151,6 +106,45 @@ private extension ExampleViewModel {
             state.instanceID = UUID()
         }
     }
+    
+    
+    // MARK: - FloatingTabBar
+    
+    func handle(_ intent: FloatingTabBarIntent) {
+        switch intent {
+        case let .updateInsets(insets):
+            state.tabBar.floatingTabBarState.insets = insets
+            
+        case let .updateInsetsCompact(insets):
+            state.tabBar.floatingTabBarState.insetsCompact = insets
+            
+        case let .updateCornerRadius(cornerRadius):
+            floatingTabBarConfig.cornerRadius = cornerRadius
+            
+        case let .updateShadow(shadow):
+            floatingTabBarConfig.shadow = shadow
+            
+        case let .indicator(indicatorIntent):
+            var indicator = floatingTabBarConfig.indicator ?? .init()
+            handle(indicatorIntent, configuration: &indicator)
+            floatingTabBarConfig.indicator = indicator
+        }
+    }
+    // MARK: - PinnnedTabBar
+    
+    
+    func handle(_ intent: PinnedTabBarIntent) {
+        switch intent {
+        case let .updateProminentItemConfig(config):
+            state.tabBar.pinnedTabBarState.barConfig.itemStyles[.prominent] = config
+            
+        case let .updateTabItemStyle(item, style):
+            guard let index = state.tabBarItems.firstIndex(where: { $0.id == item.id }) else { return }
+            state.tabBarItems[index].style = style
+        }
+    }
+    
+    // MARK: - Standalone
     
     func handle(_ intent: StandaloneIntent) {
         switch intent {
@@ -161,114 +155,155 @@ private extension ExampleViewModel {
             state.standalone.barConfiguration.axis = axis
             
         case let .indicator(indicatorIntent):
-            handle(indicatorIntent, state: &state.standalone.indicator)
+            var indicator = standaloneBarConfig.indicator ?? .init()
+            handle(indicatorIntent, configuration: &indicator)
+            standaloneBarConfig.indicator = indicator
             
         case let .updateCornerRadius(radius):
-            state.standalone.barConfiguration.cornerRadius = radius
-
+            standaloneBarConfig.cornerRadius = radius
+            
         case let .updateShadow(shadow):
-            state.standalone.barConfiguration.shadow = shadow
+            standaloneBarConfig.shadow = shadow
             
         case let .updateBackground(background):
-            state.standalone.barConfiguration.background = background
-            
-        case let .updateMaterialSelection(materialSelection):
-            state.standalone.materialSelection = materialSelection
+            standaloneBarConfig.background = background
             
         case let .updateHapticFeedbackEnabled(isEnabled):
-            state.standalone.barConfiguration.hapticFeedback = isEnabled ? .selection : nil
-
-        case let .updateHapticFeedback(feedback):
-            state.standalone.barConfiguration.hapticFeedback = feedback
+            standaloneBarConfig.hapticFeedback = isEnabled ? .selection : nil
             
-        case let .updateRegularItemConfig(config):
-            state.standalone.barConfiguration.itemStyles[.regular] = config
-
+        case let .updateHapticFeedback(feedback):
+            standaloneBarConfig.hapticFeedback = feedback
+            
+        case let .updateRegularItemConfig(configuration):
+            standaloneBarConfig.itemStyles[.regular] = configuration
+            
         case let .updateItemContentAxis(axis):
-            state.standalone.barConfiguration.itemContentAxis = axis
+            standaloneBarConfig.itemContentAxis = axis
             
         case let .updateItemAlignment(alignment):
-            state.standalone.barConfiguration.itemAlignment = alignment
-
+            standaloneBarConfig.itemAlignment = alignment
+            
         case let .updateItemContentAlignment(alignment):
-            state.standalone.barConfiguration.itemContentAlignment = alignment
+            standaloneBarConfig.itemContentAlignment = alignment
             
         case .reset:
             state.standalone = .init()
         }
     }
     
-    func handle(_ intent: IndicatorIntent, state: inout BarIndicatorState) {
+    // MARK: - Indicator
+    
+    func handle(
+        _ intent: IndicatorIntent,
+        configuration: inout SelectionIndicatorConfiguration
+    ) {
         switch intent {
         case let .updateColor(color):
-            state.configuration.color = color
+            configuration.color = color
             
         case let .updateBorderEnabled(isEnabled):
-            state.configuration.border = isEnabled ? .init() : nil
-
+            configuration.border = isEnabled ? .init() : nil
+            
         case let .updateBorderColor(color):
-            state.configuration.border?.color = color
-
+            configuration.border?.color = color
+            
         case let .updateBorderWidth(width):
-            state.configuration.border?.lineWidth = width
+            configuration.border?.lineWidth = width
             
         case let .updateCornerRadius(radius):
-            state.configuration.cornerRadius = radius
+            configuration.cornerRadius = radius
             
         case let .updateAnimationParameters(parameters):
-            state.animationParameters = parameters
-            state.configuration.transitionAnimation = parameters.makeAnimation()
-        
+            configuration.transitionAnimation = .parameters(parameters)
+            
         case let .updateDragGestureEnabled(isEnabled):
-            state.configuration.isDragGestureEnabled = isEnabled
+            configuration.isDragGestureEnabled = isEnabled
             
         case let .updateInset(inset):
-            state.configuration.inset = inset
+            configuration.inset = inset
             
         case let .updateScaleEffectEnabled(isEnabled):
-            state.configuration.scaleEffect = isEnabled ? .init() : nil
-
+            configuration.scaleEffect = isEnabled ? .init() : nil
+            
         case let .updateScaleEffectX(x):
-            state.configuration.scaleEffect?.xScale = x
-
+            configuration.scaleEffect?.xScale = x
+            
         case let .updateScaleEffectY(y):
-            state.configuration.scaleEffect?.yScale = y
-
+            configuration.scaleEffect?.yScale = y
+            
         case let .updateScaleEffectDuration(duration):
-            state.configuration.scaleEffect?.duration = duration
-
+            configuration.scaleEffect?.duration = duration
+            
         case let .updateScaleAnimationParameters(parameters):
-            state.scaleAnimationParameters = parameters
-            state.configuration.scaleEffect?.animation = parameters.makeAnimation() ?? .linear
-
+            configuration.scaleEffect?.scalingAnimation = .parameters(parameters)
+            
         case let .updateLensDistortion(isEnabled):
             if isEnabled {
-                state.configuration.effects.insert(.lensDistortion)
+                configuration.effects.insert(.lensDistortion)
             } else {
-                state.configuration.effects.remove(.lensDistortion)
+                configuration.effects.remove(.lensDistortion)
             }
-
+            
         case let .updateChromaticAberration(isEnabled):
             if isEnabled {
-                state.configuration.effects.insert(.chromaticAberration)
+                configuration.effects.insert(.chromaticAberration)
             } else {
-                state.configuration.effects.remove(.chromaticAberration)
+                configuration.effects.remove(.chromaticAberration)
             }
-
+            
         case let .updateRefractionZoneWidth(width):
-            state.configuration.refractionZoneWidth = width
-
+            configuration.refractionZoneWidth = width
+            
         case let .updateRefractionStrength(strength):
-            state.configuration.refractionStrength = strength
-
+            configuration.refractionStrength = strength
+            
         case let .updateAberrationZoneWidth(width):
-            state.configuration.aberrationZoneWidth = width
-
+            configuration.aberrationZoneWidth = width
+            
         case let .updateAberrationStrength(strength):
-            state.configuration.aberrationStrength = strength
+            configuration.aberrationStrength = strength
             
         case .reset:
-            state = .init()
+            configuration = .init()
         }
+    }
+}
+    // MARK: - Helpers
+
+extension ExampleViewModel {
+    
+    /// The bottom padding that content should apply to avoid being obscured by the floating bar.
+    /// - Parameters:
+    ///   - isCompact: Pass `true` when the vertical size class is compact (e.g. landscape).
+    func contentOffset(_ isCompact: Bool) -> CGFloat {
+        let itemConfig = floatingTabBarConfig.itemStyles[.regular] ?? ItemConfiguration()
+        let insets = isCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
+        return itemConfig.itemContentHeight(isVerticalCompact: isCompact)
+        + insets.top
+        + insets.bottom
+        + state.tabBar.floatingTabBarState.insets.bottom
+    }
+}
+
+// MARK: - Configurations
+
+extension ExampleViewModel {
+
+    /// The bar configuration for the floating tab bar.
+    private(set) var floatingTabBarConfig: BarConfiguration {
+        get { state.tabBar.floatingTabBarState.barConfig }
+        set { state.tabBar.floatingTabBarState.barConfig = newValue }
+    }
+
+    /// The bar configuration for the pinned tab bar.
+    private(set) var pinnedTabBarConfig: BarConfiguration {
+        get { state.tabBar.pinnedTabBarState.barConfig }
+        set { state.tabBar.pinnedTabBarState.barConfig = newValue }
+    }
+
+    /// The bar configuration for the standalone bar.
+    private(set) var standaloneBarConfig: BarConfiguration {
+        get { state.standalone.barConfiguration }
+        set { state.standalone.barConfiguration = newValue }
     }
 }

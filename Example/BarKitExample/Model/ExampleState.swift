@@ -52,9 +52,6 @@ struct TabBarState {
     var floatingTabBarState: FloatingTabBarState = .init()
     
     var pinnedTabBarState: PinnedTabBarState = .init()
-    
-    /// The selection indicator state for the Tab bar.
-    var indicator: BarIndicatorState = .init()
 }
  
 /// State for the Floating tab bar.
@@ -88,9 +85,6 @@ struct StandaloneState {
     /// The bar configuration for the standalone bar.
     var barConfiguration: BarConfiguration = .init()
     
-    /// The selection indicator state for the standalone bar.
-    var indicator: BarIndicatorState = .init()
-    
     var insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     
     // MARK: - Initialization
@@ -100,9 +94,3 @@ struct StandaloneState {
     }
 }
 
-/// State for the BarView's selection indicator.
-struct BarIndicatorState {
-    
-    var configuration: SelectionIndicatorConfiguration = .init()
-
-}
