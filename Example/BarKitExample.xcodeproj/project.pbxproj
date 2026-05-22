@@ -10,11 +10,27 @@
 		D7C65FD82FA22ACE00F11C32 /* BarKit in Frameworks */ = {isa = PBXBuildFile; productRef = D7C65FD72FA22ACE00F11C32 /* BarKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D72AA7A32FC10CB30018324B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D746DFAA2F159711001443C0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D746DFB12F159711001443C0;
+			remoteInfo = BarKitExample;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		D72AA79F2FC10CB30018324B /* BarKitExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarKitExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D746DFB22F159711001443C0 /* BarKitExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BarKitExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D72AA7A02FC10CB30018324B /* BarKitExampleTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BarKitExampleTests;
+			sourceTree = "<group>";
+		};
 		D746DFB42F159711001443C0 /* BarKitExample */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = BarKitExample;
@@ -23,6 +39,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D72AA79C2FC10CB30018324B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D746DFAF2F159711001443C0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -38,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				D746DFB42F159711001443C0 /* BarKitExample */,
+				D72AA7A02FC10CB30018324B /* BarKitExampleTests */,
 				D746DFB32F159711001443C0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				D746DFB22F159711001443C0 /* BarKitExample.app */,
+				D72AA79F2FC10CB30018324B /* BarKitExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,6 +78,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D72AA79E2FC10CB30018324B /* BarKitExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D72AA7A52FC10CB30018324B /* Build configuration list for PBXNativeTarget "BarKitExampleTests" */;
+			buildPhases = (
+				D72AA79B2FC10CB30018324B /* Sources */,
+				D72AA79C2FC10CB30018324B /* Frameworks */,
+				D72AA79D2FC10CB30018324B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D72AA7A42FC10CB30018324B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D72AA7A02FC10CB30018324B /* BarKitExampleTests */,
+			);
+			name = BarKitExampleTests;
+			packageProductDependencies = (
+			);
+			productName = BarKitExampleTests;
+			productReference = D72AA79F2FC10CB30018324B /* BarKitExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D746DFB12F159711001443C0 /* BarKitExample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D746DFBD2F159712001443C0 /* Build configuration list for PBXNativeTarget "BarKitExample" */;
@@ -83,9 +131,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					D72AA79E2FC10CB30018324B = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = D746DFB12F159711001443C0;
+					};
 					D746DFB12F159711001443C0 = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -109,11 +161,19 @@
 			projectRoot = "";
 			targets = (
 				D746DFB12F159711001443C0 /* BarKitExample */,
+				D72AA79E2FC10CB30018324B /* BarKitExampleTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D72AA79D2FC10CB30018324B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D746DFB02F159711001443C0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,6 +184,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D72AA79B2FC10CB30018324B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D746DFAE2F159711001443C0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -133,7 +200,62 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D72AA7A42FC10CB30018324B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D746DFB12F159711001443C0 /* BarKitExample */;
+			targetProxy = D72AA7A32FC10CB30018324B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		D72AA7A62FC10CB30018324B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4KW3U8NUUP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = maksim.gaisin.BarKitExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BarKitExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BarKitExample";
+			};
+			name = Debug;
+		};
+		D72AA7A72FC10CB30018324B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4KW3U8NUUP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = maksim.gaisin.BarKitExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BarKitExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BarKitExample";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		D746DFBB2F159712001443C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -347,6 +469,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D72AA7A52FC10CB30018324B /* Build configuration list for PBXNativeTarget "BarKitExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D72AA7A62FC10CB30018324B /* Debug */,
+				D72AA7A72FC10CB30018324B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D746DFAD2F159711001443C0 /* Build configuration list for PBXProject "BarKitExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

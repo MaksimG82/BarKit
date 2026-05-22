@@ -12,12 +12,16 @@ extension Color: InitStringConvertible {
     
     /// A Swift source string representing this color as an initializer.
     var initString: String {
-        let uiColor = UIColor(self)
+    #if canImport(UIKit)
+        let platformColor = UIColor(self)
+    #elseif canImport(AppKit)
+        let platformColor = NSColor(self).usingColorSpace(.sRGB)!
+    #endif
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        platformColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
         let r = (red   * 100).rounded() / 100
         let g = (green * 100).rounded() / 100

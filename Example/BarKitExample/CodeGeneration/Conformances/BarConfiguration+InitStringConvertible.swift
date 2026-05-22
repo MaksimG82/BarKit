@@ -70,7 +70,7 @@ extension BarConfiguration: InitStringConvertible, DefaultRepresentable {
             params.append("itemStateAnimation: \(itemStateAnimation?.initString ?? "nil")")
         }
         if baselineStyle != Self.default.baselineStyle {
-            params.append("baselineStyle: \(baselineStyle.map { ".\($0)" } ?? "nil")")
+            params.append("baselineStyle: \(baselineStyle.map { $0.initString } ?? "nil")")
         }
         if indicator?.initString != Self.default.indicator?.initString {
             params.append("indicator: \(indicator?.initString ?? "nil")")
