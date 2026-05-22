@@ -59,7 +59,7 @@ private extension ExampleContentView {
     var selectedItem: Binding<ExampleTabItem> {
         Binding(
             get: { viewModel.state.selectedTab },
-            set: { viewModel.send(.selectTab($0)) }
+            set: { viewModel.send(.tabBar(.selectTab($0))) }
         )
     }
 }

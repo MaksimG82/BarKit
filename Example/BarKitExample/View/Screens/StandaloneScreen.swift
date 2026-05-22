@@ -108,8 +108,7 @@ extension StandaloneScreen {
         BarView(
             items: viewModel.state.standalone.items,
             selected: bindings.selectedItem(),
-            config: viewModel.state.standalone.barConfiguration,
-            indicatorConfig: viewModel.state.standalone.indicator.configuration
+            config: viewModel.state.standalone.barConfiguration
         )
     }
 
@@ -168,10 +167,10 @@ extension StandaloneScreen {
             viewModel: viewModel,
             bindings: .init(
                 viewModel: viewModel,
-                stateKeyPath: \.standalone.indicator,
+                stateKeyPath: \.standalone.barConfiguration.indicator,
                 wrapIntent: { .standalone(.indicator($0)) }
             ),
-            stateKeyPath: \.standalone.indicator,
+            stateKeyPath: \.standalone.barConfiguration.indicator,
             preview: { barPreview }
         )
     }

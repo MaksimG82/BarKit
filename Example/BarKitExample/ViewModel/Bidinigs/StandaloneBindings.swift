@@ -149,11 +149,15 @@ final class StandaloneBindings: BindingProvider {
     /// Binding for the material selection.
     func materialSelection() -> Binding<BarMaterial> {
         Binding(
-            get: { self.viewModel.state.standalone.materialSelection },
+            get: {
+                if case let .material(barMaterial, _) = self.viewModel.standaloneBarConfig.background {
+                    return barMaterial
+                }
+                return .ultraThin
+            },
             set: { barMaterial in
-                self.viewModel.send(.standalone(.updateMaterialSelection(barMaterial)))
                 let tint = self.currentBackgroundColor
-                self.background().wrappedValue = .material(barMaterial, tint: tint)
+                self.viewModel.send(.standalone(.updateBackground(.material(barMaterial, tint: tint))))
             }
         )
     }

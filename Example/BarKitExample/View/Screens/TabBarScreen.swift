@@ -74,10 +74,10 @@ private extension TabBarScreen {
                 viewModel: viewModel,
                 bindings: .init(
                     viewModel: viewModel,
-                    stateKeyPath: \.tabBar.indicator,
-                    wrapIntent: { .tabBar(.indicator($0)) }
+                    stateKeyPath: \.tabBar.floatingTabBarState.barConfig.indicator,
+                    wrapIntent: { .tabBar(.floating(.indicator($0))) }
                 ),
-                stateKeyPath: \.tabBar.indicator
+                stateKeyPath: \.tabBar.floatingTabBarState.barConfig.indicator
             )
         }
     }
@@ -325,6 +325,6 @@ private extension TabBarScreen {
         edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
     )
     .onAppear {
-        viewModel.send(.selectTab(ExampleTabItem.allItems[1]))
+        viewModel.send(.tabBar(.selectTab(ExampleTabItem.allItems[1])))
     }
 }

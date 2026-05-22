@@ -16,7 +16,7 @@ final class IndicatorBindings: BindingProvider {
     let viewModel: ExampleViewModel
 
     /// Key path to the `BarIndicatorState` this binding scope reads from.
-    private let stateKeyPath: KeyPath<ExampleState, BarIndicatorState>
+    private let stateKeyPath: KeyPath<ExampleState, SelectionIndicatorConfiguration?>
 
     /// Wraps an `IndicatorIntent` into the correct `ExampleIntent` for this scope.
     private let wrapIntent: (IndicatorIntent) -> ExampleIntent
@@ -25,7 +25,7 @@ final class IndicatorBindings: BindingProvider {
 
     init(
         viewModel: ExampleViewModel,
-        stateKeyPath: KeyPath<ExampleState, BarIndicatorState>,
+        stateKeyPath: KeyPath<ExampleState, SelectionIndicatorConfiguration?>,
         wrapIntent: @escaping (IndicatorIntent) -> ExampleIntent
     ) {
         self.viewModel = viewModel
@@ -35,8 +35,8 @@ final class IndicatorBindings: BindingProvider {
 
     // MARK: - Convenience
 
-    private var indicatorState: BarIndicatorState {
-        viewModel.state[keyPath: stateKeyPath]
+    private var configuration: SelectionIndicatorConfiguration {
+        viewModel.state[keyPath: stateKeyPath] ?? .init()
     }
 
     private func send(_ intent: IndicatorIntent) {
@@ -48,7 +48,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the indicator color.
     func color() -> Binding<Color> {
         Binding(
-            get: { self.indicatorState.configuration.color },
+            get: { self.configuration.color },
             set: { self.send(.updateColor($0)) }
         )
     }
@@ -58,7 +58,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the border visibility toggle.
     func borderEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.indicatorState.configuration.border != nil },
+            get: { self.configuration.border != nil },
             set: { self.send(.updateBorderEnabled($0)) }
         )
     }
@@ -66,7 +66,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the border color.
     func borderColor() -> Binding<Color> {
         Binding(
-            get: { self.indicatorState.configuration.border?.color ?? .white.opacity(0.3) },
+            get: { self.configuration.border?.color ?? .white.opacity(0.3) },
             set: { self.send(.updateBorderColor($0)) }
         )
     }
@@ -74,7 +74,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the border line width.
     func borderWidth() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.border?.lineWidth ?? 1 },
+            get: { self.configuration.border?.lineWidth ?? 1 },
             set: { self.send(.updateBorderWidth($0)) }
         )
     }
@@ -82,17 +82,22 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the indicator corner radius.
     func cornerRadius() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.cornerRadius },
+            get: { self.configuration.cornerRadius },
             set: { self.send(.updateCornerRadius($0)) }
         )
     }
 
     // MARK: - Animation
 
-    /// Binding for the full animation parameters.
+    /// Binding for the transition animation parameters.
     func animationParameters() -> Binding<AnimationParameters> {
         Binding(
-            get: { self.indicatorState.animationParameters },
+            get: {
+                if case let .parameters(params) = self.configuration.transitionAnimation {
+                    return params
+                }
+                return .init()
+            },
             set: { self.send(.updateAnimationParameters($0)) }
         )
     }
@@ -102,7 +107,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the drag gesture toggle.
     func dragGestureEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.indicatorState.configuration.isDragGestureEnabled },
+            get: { self.configuration.isDragGestureEnabled },
             set: { self.send(.updateDragGestureEnabled($0)) }
         )
     }
@@ -112,9 +117,9 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the horizontal inset (leading and trailing).
     func indicatorHorizontalInset() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.inset.leading },
+            get: { self.configuration.inset.leading },
             set: {
-                var inset = self.indicatorState.configuration.inset
+                var inset = self.configuration.inset
                 inset.leading = $0
                 inset.trailing = $0
                 self.send(.updateInset(inset))
@@ -125,9 +130,9 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the vertical inset (top and bottom).
     func indicatorVerticalInset() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.inset.top },
+            get: { self.configuration.inset.top },
             set: {
-                var inset = self.indicatorState.configuration.inset
+                var inset = self.configuration.inset
                 inset.top = $0
                 inset.bottom = $0
                 self.send(.updateInset(inset))
@@ -140,7 +145,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the scale effect toggle.
     func scaleEffectEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.indicatorState.configuration.scaleEffect != nil },
+            get: { self.configuration.scaleEffect != nil },
             set: { self.send(.updateScaleEffectEnabled($0)) }
         )
     }
@@ -148,7 +153,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the horizontal scale factor.
     func scaleEffectX() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.scaleEffect?.xScale ?? 1.2 },
+            get: { self.configuration.scaleEffect?.xScale ?? 1.2 },
             set: { self.send(.updateScaleEffectX($0)) }
         )
     }
@@ -156,7 +161,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the vertical scale factor.
     func scaleEffectY() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.scaleEffect?.yScale ?? 1.2 },
+            get: { self.configuration.scaleEffect?.yScale ?? 1.2 },
             set: { self.send(.updateScaleEffectY($0)) }
         )
     }
@@ -164,7 +169,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the scale effect reset duration.
     func scaleEffectDuration() -> Binding<Double> {
         Binding(
-            get: { self.indicatorState.configuration.scaleEffect?.duration ?? 0.2 },
+            get: { self.configuration.scaleEffect?.duration ?? 0.2 },
             set: { self.send(.updateScaleEffectDuration($0)) }
         )
     }
@@ -172,7 +177,12 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the scale effect animation parameters.
     func scaleAnimationParameters() -> Binding<AnimationParameters> {
         Binding(
-            get: { self.indicatorState.scaleAnimationParameters },
+            get: {
+                if case let .parameters(params) = self.configuration.scaleEffect?.scalingAnimation {
+                    return params
+                }
+                return .init()
+            },
             set: { self.send(.updateScaleAnimationParameters($0)) }
         )
     }
@@ -182,7 +192,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the lens distortion toggle.
     func lensDistortionEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.indicatorState.configuration.effects.contains(.lensDistortion) },
+            get: { self.configuration.effects.contains(.lensDistortion) },
             set: { self.send(.updateLensDistortion($0)) }
         )
     }
@@ -190,7 +200,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the chromatic aberration toggle.
     func chromaticAberrationEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.indicatorState.configuration.effects.contains(.chromaticAberration) },
+            get: { self.configuration.effects.contains(.chromaticAberration) },
             set: { self.send(.updateChromaticAberration($0)) }
         )
     }
@@ -198,7 +208,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the refraction zone width.
     func refractionZoneWidth() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.refractionZoneWidth },
+            get: { self.configuration.refractionZoneWidth },
             set: { self.send(.updateRefractionZoneWidth($0)) }
         )
     }
@@ -206,7 +216,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the refraction strength.
     func refractionStrength() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.refractionStrength },
+            get: { self.configuration.refractionStrength },
             set: { self.send(.updateRefractionStrength($0)) }
         )
     }
@@ -214,7 +224,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the aberration zone width.
     func aberrationZoneWidth() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.aberrationZoneWidth },
+            get: { self.configuration.aberrationZoneWidth },
             set: { self.send(.updateAberrationZoneWidth($0)) }
         )
     }
@@ -222,7 +232,7 @@ final class IndicatorBindings: BindingProvider {
     /// Binding for the aberration strength.
     func aberrationStrength() -> Binding<CGFloat> {
         Binding(
-            get: { self.indicatorState.configuration.aberrationStrength },
+            get: { self.configuration.aberrationStrength },
             set: { self.send(.updateAberrationStrength($0)) }
         )
     }

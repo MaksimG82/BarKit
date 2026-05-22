@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import BarKit
 
 extension AnimationParameters: InitStringConvertible, DefaultRepresentable {
     
