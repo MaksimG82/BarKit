@@ -42,16 +42,22 @@ private extension ExampleContentView {
     @ViewBuilder
     var contentRouter: some View {
         switch viewModel.state.selectedTab.type {
-        case .overview:   Text("Overview")
-        case .tabBar:     TabBarScreen(
+        case .overview:
+            OverviewView()
+        case .tabBar:
+            TabBarScreen(
             viewModel: viewModel,
-            bindings: .init(viewModel: viewModel)
+            bindings: .init(viewModel: viewModel
+                           )
         )
-        case .standalone: StandaloneScreen(
+        case .standalone:
+            StandaloneScreen(
             viewModel: viewModel,
-            bindings: .init(viewModel: viewModel)
+            bindings: .init(viewModel: viewModel
+                           )
         )
-        case .codegeneration: CodeGenerationScreen(viewModel: viewModel)
+        case .codegeneration:
+            CodeGenerationScreen(viewModel: viewModel)
         }
     }
  
