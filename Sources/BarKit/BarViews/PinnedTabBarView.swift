@@ -52,7 +52,8 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             background: .color(.clear),
             itemStyles: config.itemStyles,
             itemAlignment: .end,
-            baselineStyle: .regular
+            baselineStyle: .regular,
+            indicator: nil
         )
     }
 
@@ -84,7 +85,6 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: pinnedConfig,
-            indicatorConfig: nil,
             action: action
         )
         .frame(maxWidth: .infinity)

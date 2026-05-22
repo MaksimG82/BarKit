@@ -68,6 +68,12 @@ public struct BarConfiguration {
     /// allowing prominent items to overflow upward. Set to `nil` if no prominent items are used.
     public var baselineStyle: BarItemStyle? = .regular
     
+    // MARK: - Selection indicator
+    
+    /// Appearance and behavior configuration for the selection indicator.
+    /// Pass `nil` to disable the indicator entirely.
+    public var indicator: SelectionIndicatorConfiguration?
+    
     // MARK: - Accessibility
 
     /// Accessibility label for the entire bar.
@@ -98,6 +104,7 @@ public struct BarConfiguration {
     ///   - itemSpacing: Spacing between items in the stack.
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
+    ///   - indicator: SelectionIndicatorConfiguration? = .init(),
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
     ///   - hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
     ///   - accessibilitySortPriority: Sort priority relative to other elements in the same container. Pass a lower value (e.g. `-1`) to ensure VoiceOver reaches content before the bar.
@@ -113,6 +120,7 @@ public struct BarConfiguration {
         itemSpacing: CGFloat = 0,
         itemStateAnimation: BarAnimation? = .parameters(.init(type: .easeInOut, duration: 0.2)),
         baselineStyle: BarItemStyle? = nil,
+        indicator: SelectionIndicatorConfiguration? = .init(),
         barAccessibilityLabel: String = "Tab Bar",
         hapticFeedback: HapticFeedback? = .selection,
         accessibilitySortPriority: Double = 0
@@ -128,6 +136,7 @@ public struct BarConfiguration {
         self.itemSpacing = itemSpacing
         self.itemStateAnimation = itemStateAnimation
         self.baselineStyle = baselineStyle
+        self.indicator = indicator
         self.barAccessibilityLabel = barAccessibilityLabel
         self.hapticFeedback = hapticFeedback
         self.accessibilitySortPriority = accessibilitySortPriority

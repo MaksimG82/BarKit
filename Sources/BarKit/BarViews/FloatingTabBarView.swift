@@ -38,9 +38,6 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     /// Visual style, layout, and behavior configuration for the bar.
     private let config: BarConfiguration
 
-    /// Appearance and behavior configuration for the selection indicator.
-    private let indicatorConfig: SelectionIndicatorConfiguration
-
     /// Insets that position the capsule relative to the screen edges in regular size class.
     /// - `leading` / `trailing`: horizontal distance from screen edges.
     /// - `bottom`: distance above the home indicator / safe area edge.
@@ -69,7 +66,6 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - config: Visual and layout configuration for the bar.
-    ///   - indicatorConfig: Configuration for the selection indicator.
     ///   - floatingInsets: Insets that position the capsule relative to screen edges.
     ///   - floatingInsetsCompact:Insets for compact height size class (e.g. landscape).
     ///   - action: An optional closure executed when an item is tapped.
@@ -77,7 +73,6 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         config: BarConfiguration,
-        indicatorConfig: SelectionIndicatorConfiguration = .init(),
         floatingInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16),
         floatingInsetsCompact: EdgeInsets? = nil,
         action: ((Item) -> Void)? = nil
@@ -85,7 +80,6 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         self.items = items
         _selected = selected
         self.config = config
-        self.indicatorConfig = indicatorConfig
         self.floatingInsets = floatingInsets
         self.floatingInsetsCompact = floatingInsetsCompact
         self.action = action
@@ -98,7 +92,6 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: config,
-            indicatorConfig: indicatorConfig,
             action: action
         )
         .padding(.leading, activeInsets.leading)
