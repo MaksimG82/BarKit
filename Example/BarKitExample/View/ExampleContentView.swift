@@ -51,7 +51,7 @@ private extension ExampleContentView {
             viewModel: viewModel,
             bindings: .init(viewModel: viewModel)
         )
-        case .codegeneration: Text("Under construction")
+        case .codegeneration: CodeGenerationScreen(viewModel: viewModel)
         }
     }
  

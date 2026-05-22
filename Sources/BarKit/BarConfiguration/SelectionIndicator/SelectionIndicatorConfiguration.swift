@@ -68,8 +68,7 @@ public struct SelectionIndicatorConfiguration {
     ///   - cornerRadius: Corner radius of the indicator shape.
     ///   - transitionAnimation: Animation for moving the indicator between items.
     ///     Pass `nil` for an instant snap.
-    ///   - scaleEffect: Scaling effect applied to the indicator during transition.
-    ///     Pass `nil` to keep the indicator size constant.
+    ///   - scaleEffect: Scaling effect applied to the indicator during transition. Pass `nil` to keep the indicator size constant.
     ///   - isDragGestureEnabled: Whether the user can drag the indicator between items.
     ///   - effects: The set of active visual effects applied at the indicator boundary.
     ///   - refractionZoneWidth: Width of the lens distortion zone at the indicator boundary. Typical range 2.0–12.0.
