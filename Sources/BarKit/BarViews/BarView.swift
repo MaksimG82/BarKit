@@ -47,9 +47,6 @@ public struct BarView<Item: BarItemProtocol>: View {
     /// The configuration object defining the visual style, layout, and behavior of the bar.
     private let config: BarConfiguration
 
-    /// The configuration object defining the appearance and behavior of the selection indicator.
-    private let indicatorConfig: SelectionIndicatorConfiguration?
-
     /// An optional closure executed when an item is tapped, even if already selected.
     private let action: ((Item) -> Void)?
 
@@ -77,19 +74,16 @@ public struct BarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - config: A configuration object defining the visual style of the bar.
-    ///   - indicatorConfig: A configuration object defining the selection indicator appearance.
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],
         selected: Binding<Item>,
         config: BarConfiguration,
-        indicatorConfig: SelectionIndicatorConfiguration? = .init(),
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items
         _selected = selected
         self.config = config
-        self.indicatorConfig = indicatorConfig
         self.action = action
     }
 
@@ -98,9 +92,11 @@ public struct BarView<Item: BarItemProtocol>: View {
     public var body: some View {
         let indicatorFrame = indicatorFrame()
         ZStack(alignment: config.axis == .horizontal ? .leading : .top) {
-            itemsStack.indicatorLens(indicatorConfig, frame: indicatorFrame)
+            itemsStack
+                .indicatorLens(config.indicator, frame: indicatorFrame)
             
-            overlayItemsStack(indicatorFrame: indicatorFrame).indicatorLens(indicatorConfig, frame: indicatorFrame)
+            overlayItemsStack(indicatorFrame: indicatorFrame)
+                .indicatorLens(config.indicator, frame: indicatorFrame)
         }
         .frame(
             height: barHeight(),
@@ -157,7 +153,7 @@ private extension BarView {
                 .barShadow(config.shadow)
         case let .material(material, tint):
             RoundedRectangle(cornerRadius: config.cornerRadius)
-                .fill(material)
+                .fill(material.resolved)
                 .overlay { RoundedRectangle(cornerRadius: config.cornerRadius).fill(tint) }
                 .barShadow(config.shadow)
         case let .customBlur(_, tint):
@@ -173,7 +169,7 @@ private extension BarView {
     /// Rendered only when `indicatorConfig` is provided.
     @ViewBuilder
     func overlayItemsStack(indicatorFrame: CGRect) -> some View {
-        if let indicatorConfig {
+        if let indicatorConfiguration = config.indicator {
             itemStack { item in
                 BarItemOverlayView(
                     item: item,
@@ -185,7 +181,7 @@ private extension BarView {
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
             .accessibilityHidden(true)
             .mask(alignment: config.axis == .horizontal ? .leading : .top) {
-                RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
+                RoundedRectangle(cornerRadius: indicatorConfiguration.cornerRadius)
                     .frame(
                         width: max(0, indicatorFrame.width),
                         height: max(0, indicatorFrame.height)
@@ -202,12 +198,12 @@ private extension BarView {
     /// Rendered only when `indicatorConfig` is provided.
     @ViewBuilder
     func selectionIndicator(frame: CGRect) -> some View {
-        if let indicatorConfig {
-            RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
-                .fill(indicatorConfig.color)
+        if let indicatorConfiguration = config.indicator {
+            RoundedRectangle(cornerRadius: indicatorConfiguration.cornerRadius)
+                .fill(indicatorConfiguration.color)
                 .overlay {
-                    if let border = indicatorConfig.border {
-                        RoundedRectangle(cornerRadius: indicatorConfig.cornerRadius)
+                    if let border = indicatorConfiguration.border {
+                        RoundedRectangle(cornerRadius: indicatorConfiguration.cornerRadius)
                             .strokeBorder(border.color, lineWidth: border.lineWidth)
                     }
                 }
@@ -216,15 +212,15 @@ private extension BarView {
                     height: max(0, frame.height)
                 )
                 .scaleEffect(
-                    x: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.xScale ?? 1.0 : 1.0,
-                    y: isSelectionIndicatorScaling ? indicatorConfig.scaleEffect?.yScale ?? 1.0 : 1.0,
+                    x: isSelectionIndicatorScaling ? indicatorConfiguration.scaleEffect?.xScale ?? 1.0 : 1.0,
+                    y: isSelectionIndicatorScaling ? indicatorConfiguration.scaleEffect?.yScale ?? 1.0 : 1.0,
                     anchor: .center
                 )
                 .offset(
                     x: config.axis == .horizontal ? frame.minX : 0,
                     y: config.axis == .vertical ? frame.minY : 0
                 )
-                .gesture(indicatorConfig.isDragGestureEnabled ? dragGesture : nil)
+                .gesture(indicatorConfiguration.isDragGestureEnabled ? dragGesture : nil)
         }
     }
 
@@ -273,14 +269,14 @@ private extension BarView {
 
     /// Updates the selected item and triggers indicator transition and scale animations.
     func handleSelection(_ item: Item) {
-        guard let indicatorConfig else {
+        guard let indicatorConfiguration = config.indicator else {
             selected = item
             action?(item)
             return
         }
         
-        let transitionAnimation = indicatorConfig.transitionAnimation
-        let scaleEffect = indicatorConfig.scaleEffect
+        let transitionAnimation = indicatorConfiguration.resolvedTransitionAnimation
+        let scaleEffect = indicatorConfiguration.scaleEffect
 
         let performSelection = {
             selected = item
@@ -288,26 +284,26 @@ private extension BarView {
         }
 
         switch (transitionAnimation, scaleEffect) {
-        case let (transition?, scale?):
+        case let (transition?, scaleEffect?):
             isSelectionIndicatorScaling = true
             withAnimation(transition) { performSelection() }
             Task {
-                try? await Task.sleep(for: .seconds(scale.duration))
+                try? await Task.sleep(for: .seconds(scaleEffect.duration))
                 await MainActor.run {
-                    withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
                 }
             }
 
         case (let transition?, nil):
             withAnimation(transition) { performSelection() }
 
-        case (nil, let scale?):
+        case (nil, let scaleEffect?):
             isSelectionIndicatorScaling = true
             performSelection()
             Task {
-                try? await Task.sleep(for: .seconds(scale.duration))
+                try? await Task.sleep(for: .seconds(scaleEffect.duration))
                 await MainActor.run {
-                    withAnimation(scale.animation) { isSelectionIndicatorScaling = false }
+                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
                 }
             }
 
@@ -323,9 +319,9 @@ private extension BarView {
     
     /// Computes the current offset of the selection indicator, accounting for drag position and layout axis.
     func indicatorOffset() -> CGPoint {
-        guard let indicatorConfig else { return .zero }
+        guard let indicatorConfiguration = config.indicator else { return .zero }
 
-        let inset = indicatorConfig.inset
+        let inset = indicatorConfiguration.inset
 
         switch config.axis {
         case .horizontal:
@@ -357,9 +353,9 @@ private extension BarView {
 
     /// Computes the current frame of the selection indicator.
     func indicatorFrame() -> CGRect {
-        guard let indicatorConfig else { return .zero }
+        guard let indicatorConfiguration = config.indicator else { return .zero }
 
-        let inset = indicatorConfig.inset
+        let inset = indicatorConfiguration.inset
         let offset = indicatorOffset()
 
         let width: CGFloat
@@ -427,10 +423,10 @@ private extension BarView {
             axis: .horizontal,
             cornerRadius: 28,
             shadow: .init(),
-            background: .material(.ultraThinMaterial),
+            background: .material(.ultraThin),
             itemStyles: [.regular: .init()],
             itemSpacing: 0,
-            itemStateAnimation: .easeInOut(duration: 0.2),
+            itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
             barAccessibilityLabel: "Bar"
         ))
         .padding(.horizontal, 16)

@@ -28,7 +28,8 @@ public struct SelectionIndicatorConfiguration {
     // MARK: - Animation
 
     /// Animation for moving the indicator between items.
-    public var transitionAnimation: Animation?
+    /// Pass `nil` for an instant snap.
+    public var transitionAnimation: BarAnimation?
 
     /// Scaling effect applied to the indicator during transition.
     public var scaleEffect: SelectionScaleEffect?
@@ -67,8 +68,7 @@ public struct SelectionIndicatorConfiguration {
     ///   - cornerRadius: Corner radius of the indicator shape.
     ///   - transitionAnimation: Animation for moving the indicator between items.
     ///     Pass `nil` for an instant snap.
-    ///   - scaleEffect: Scaling effect applied to the indicator during transition.
-    ///     Pass `nil` to keep the indicator size constant.
+    ///   - scaleEffect: Scaling effect applied to the indicator during transition. Pass `nil` to keep the indicator size constant.
     ///   - isDragGestureEnabled: Whether the user can drag the indicator between items.
     ///   - effects: The set of active visual effects applied at the indicator boundary.
     ///   - refractionZoneWidth: Width of the lens distortion zone at the indicator boundary. Typical range 2.0–12.0.
@@ -80,7 +80,7 @@ public struct SelectionIndicatorConfiguration {
         border: BorderConfiguration? = nil,
         inset: EdgeInsets = .init(top: 2, leading: 2, bottom: 2, trailing: 2),
         cornerRadius: CGFloat = 24,
-        transitionAnimation: Animation? = .spring(response: 0.3, dampingFraction: 0.7),
+        transitionAnimation: BarAnimation? = .parameters(.init()),
         scaleEffect: SelectionScaleEffect? = nil,
         isDragGestureEnabled: Bool = true,
         effects: IndicatorEffect = [],
@@ -101,5 +101,15 @@ public struct SelectionIndicatorConfiguration {
         self.refractionStrength = refractionStrength
         self.aberrationZoneWidth = aberrationZoneWidth
         self.aberrationStrength = aberrationStrength
+    }
+}
+
+// MARK: - Helpers
+
+public extension SelectionIndicatorConfiguration {
+ 
+    /// Resolves the transition animation for use in view modifiers.
+    var resolvedTransitionAnimation: Animation? {
+        transitionAnimation?.animation
     }
 }

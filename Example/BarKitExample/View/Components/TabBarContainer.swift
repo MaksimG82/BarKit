@@ -19,7 +19,6 @@ struct TabBarContainer: View {
                 items: viewModel.state.tabBarItems,
                 selected: selectedItem,
                 config: viewModel.floatingTabBarConfig,
-                indicatorConfig: viewModel.state.tabBar.indicator.configuration,
                 floatingInsets: viewModel.state.tabBar.floatingTabBarState.insets,
                 floatingInsetsCompact: viewModel.state.tabBar.floatingTabBarState.insetsCompact
             )
@@ -38,7 +37,7 @@ extension TabBarContainer {
     var selectedItem: Binding<ExampleTabItem> {
         Binding(
             get: { viewModel.state.selectedTab },
-            set: { viewModel.send(.selectTab($0)) }
+            set: { viewModel.send(.tabBar(.selectTab($0))) }
         )
     }
 }

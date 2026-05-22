@@ -14,16 +14,16 @@ struct IndicatorSection: View {
     let viewModel: ExampleViewModel
     let bindings: IndicatorBindings
     let preview: AnyView
-    private let stateKeyPath: KeyPath<ExampleState, BarIndicatorState>
+    private let stateKeyPath: KeyPath<ExampleState, SelectionIndicatorConfiguration?>
 
-    private var indicatorState: BarIndicatorState {
-        viewModel.state[keyPath: stateKeyPath]
+    private var configuration: SelectionIndicatorConfiguration {
+        viewModel.state[keyPath: stateKeyPath] ?? .init()
     }
 
     init(
         viewModel: ExampleViewModel,
         bindings: IndicatorBindings,
-        stateKeyPath: KeyPath<ExampleState, BarIndicatorState>,
+        stateKeyPath: KeyPath<ExampleState, SelectionIndicatorConfiguration?>,
         @ViewBuilder preview: @escaping () -> some View = { EmptyView() }
      ) {
         self.viewModel = viewModel
@@ -86,7 +86,7 @@ private extension IndicatorSection {
         } header: {
             Text("Color")
         } footer: {
-            Text("Note: setting the indicator color to fully transparent conflicts with the drag gesture.")
+            Text("Notes: setting the indicator color to fully transparent conflicts with the drag gesture.\nColors are stored as fixed RGB values and won't adapt to light/dark mode.\nSystem color names like .red won't be preserved in generated code.")
         }
     }
 
@@ -95,7 +95,7 @@ private extension IndicatorSection {
     var borderSection: some View {
         Section {
             Toggle("Border", isOn: bindings.borderEnabled())
-            if indicatorState.configuration.border != nil {
+            if configuration.border != nil {
                 ColorPicker("Color", selection: bindings.borderColor())
                 SettingSlider(
                     title: "Width",
@@ -171,7 +171,7 @@ private extension IndicatorSection {
     var scaleEffectSection: some View {
         Section {
             Toggle("Scale Effect", isOn: bindings.scaleEffectEnabled())
-            if indicatorState.configuration.scaleEffect != nil {
+            if configuration.scaleEffect != nil {
                 SettingSlider(
                     title: "X Scale",
                     value: bindings.scaleEffectX(),
@@ -203,7 +203,7 @@ private extension IndicatorSection {
 
     @ViewBuilder
     var scaleEffectAnimationSettings: some View {
-        if indicatorState.configuration.scaleEffect != nil {
+        if configuration.scaleEffect != nil {
             AnimationSection(
                 parameters: bindings.scaleAnimationParameters(),
                 headerText: "Scale Animation",
@@ -217,7 +217,7 @@ private extension IndicatorSection {
     var effectsSection: some View {
         Section {
             Toggle("Lens Distortion", isOn: bindings.lensDistortionEnabled())
-            if indicatorState.configuration.effects.contains(.lensDistortion) {
+            if configuration.effects.contains(.lensDistortion) {
                 SettingSlider(
                     title: "Zone Width",
                     value: bindings.refractionZoneWidth(),
@@ -234,7 +234,7 @@ private extension IndicatorSection {
                 )
             }
             Toggle("Chromatic Aberration", isOn: bindings.chromaticAberrationEnabled())
-            if indicatorState.configuration.effects.contains(.chromaticAberration) {
+            if configuration.effects.contains(.chromaticAberration) {
                 SettingSlider(
                     title: "Zone Width",
                     value: bindings.aberrationZoneWidth(),

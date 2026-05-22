@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Defines the visual appearance of a single bar item in isolation.
-public struct ItemConfiguration {
+public struct ItemConfiguration: Equatable {
 
     /// The color applied to the icon and title of a selected item.
     public var selectedColor: Color

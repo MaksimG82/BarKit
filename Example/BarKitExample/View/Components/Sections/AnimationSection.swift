@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import BarKit
 
 typealias AnimationType = AnimationParameters.AnimationType
 
@@ -34,8 +35,6 @@ struct AnimationSection: View {
         Section("Parameters") {
             parametersSection()
         }
-
-        scaleSection
     }
 }
 
@@ -76,35 +75,6 @@ private extension AnimationSection {
             bounceSlider
         }
     }
-    
-    @ViewBuilder
-    var scaleSection: some View {
-        if parameters.scaleSettings != nil && parameters.type != .none {
-            Section(header: Text("Scale Settings")) {
-                SettingSlider(
-                    title: "X Scale",
-                    value: Binding(
-                        get: { parameters.scaleSettings?.xScale ?? 1.0 },
-                        set: { parameters.scaleSettings?.xScale = $0 }
-                    ),
-                    range: 1.1...1.5,
-                    step: 0.01,
-                    format: .fractionalTwo
-                )
-                
-                SettingSlider(
-                    title: "Y Scale",
-                    value: Binding(
-                        get: { parameters.scaleSettings?.yScale ?? 1.0 },
-                        set: { parameters.scaleSettings?.yScale = $0 }
-                    ),
-                    range: 1.1...1.5,
-                    step: 0.01,
-                    format: .fractionalTwo
-                )
-            }
-        }
-    }
 }
 
 #Preview("Section without scale effect settings") {
@@ -114,28 +84,6 @@ private extension AnimationSection {
             parameters: $parameters,
             headerText: "Tab item animation",
             footerText: "The animation applied to internal elements (icon and title) during selection changes."
-        )
-    }
-}
-
-#Preview("Section with scale effect settings") {
-    @Previewable @State var parameters: AnimationParameters = .init()
-    @Previewable @State var parametersWithScaleEffects = AnimationParameters(
-        type: .spring,
-        scaleSettings: AnimationParameters.ScaleSettings()
-    )
-    
-    Form {
-        AnimationSection(
-            parameters: $parameters,
-            headerText: "Tab item animation",
-            footerText: "The animation applied to internal elements (icon and title) during selection changes."
-        )
-        
-        AnimationSection(
-            parameters: $parametersWithScaleEffects,
-            headerText: "Indicator Scale Effect",
-            footerText: "Animation for scaling the indicator during transitions."
         )
     }
 }

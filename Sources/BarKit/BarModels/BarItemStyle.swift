@@ -17,5 +17,11 @@ public struct BarItemStyle: Hashable, Sendable {
     /// Visually emphasized tab bar item.
     /// May use a larger icon or extended layout.
     public static let prominent = BarItemStyle(identifier: "prominent")
+    
+    /// Creates a new `BarItemStyle` with the given identifier.
+    /// - Parameter identifier: The unique identifier of the style.
+    public init(identifier: String) {
+        self.identifier = identifier
+    }
 }
 

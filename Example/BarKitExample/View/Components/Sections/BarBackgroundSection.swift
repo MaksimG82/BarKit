@@ -21,7 +21,7 @@ struct BarBackgroundSection: View {
     @Binding var backgroundColor: Color
 
     /// Binding for the material selection picker.
-    @Binding var materialSelection: MaterialSelection
+    @Binding var materialSelection: BarMaterial
 
     var body: some View {
         Section {
@@ -36,7 +36,7 @@ struct BarBackgroundSection: View {
             case .material:
                 ColorPicker("Tint", selection: $backgroundColor)
                 Picker("Material", selection: $materialSelection) {
-                    ForEach(MaterialSelection.allCases, id: \.self) {
+                    ForEach(BarMaterial.allCases, id: \.self) {
                         Text($0.rawValue).tag($0)
                     }
                 }
@@ -47,7 +47,7 @@ struct BarBackgroundSection: View {
         } header: {
             Text("Background")
         } footer: {
-            Text("Defines the visual fill of the bar — solid color, system blur, or custom blur.")
+            Text("Defines the visual fill of the bar — solid color, system blur, or custom blur.\nNotes: Colors are stored as fixed RGB values and won't adapt to light/dark mode.\nSystem color names like .red won't be preserved in generated code.")
         }
     }
 }

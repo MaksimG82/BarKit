@@ -53,10 +53,7 @@ final class TabBarBindings: BindingProvider {
                 }
             },
             set: {
-                switch self.viewModel.state.tabBar.mode {
-                case .floating: self.viewModel.send(.tabBar(.floating(.updateBackground($0))))
-                case .pinned:   self.viewModel.send(.tabBar(.pinned(.updateBackground($0))))
-                }
+                self.viewModel.send(.tabBar(.updateBackground($0)))
             }
         )
     }
@@ -74,7 +71,7 @@ final class TabBarBindings: BindingProvider {
             set: { newType in
                 switch newType {
                 case .color:      self.background().wrappedValue = .color(self.currentBackgroundColor)
-                case .material:   self.background().wrappedValue = .material(.ultraThinMaterial, tint: self.currentBackgroundColor)
+                case .material:   self.background().wrappedValue = .material(.ultraThin, tint: self.currentBackgroundColor)
                 case .customBlur: self.background().wrappedValue = .customBlur(.init(), tint: self.currentBackgroundColor)
                 }
             }
@@ -99,18 +96,25 @@ final class TabBarBindings: BindingProvider {
     }
 
     /// Binding for the material selection, updating both the material state and the background configuration.
-    func materialSelection() -> Binding<MaterialSelection> {
+    func materialSelection() -> Binding<BarMaterial> {
         Binding(
             get: {
                 switch self.viewModel.state.tabBar.mode {
-                case .floating: self.viewModel.state.tabBar.floatingTabBarMaterialSelection
-                case .pinned:   self.viewModel.state.tabBar.pinnedTabBarMaterialSelection
+                case .floating:
+                    if case let .material(barMaterial, _) = self.viewModel.floatingTabBarConfig.background {
+                        return barMaterial
+                    }
+                    return .ultraThin
+                case .pinned:
+                    if case let .material(barMaterial, _) = self.viewModel.pinnedTabBarConfig.background {
+                        return barMaterial
+                    }
+                    return .ultraThin
                 }
             },
-            set: { materialSelection in
-                self.viewModel.send(.tabBar(.updateMaterialSelection(materialSelection)))
+            set: { barMaterial in
                 let tint = self.currentBackgroundColor
-                self.background().wrappedValue = .material(materialSelection.material ?? .ultraThin, tint: tint)
+                self.background().wrappedValue = .material(barMaterial, tint: tint)
             }
         )
     }
@@ -212,7 +216,7 @@ final class TabBarBindings: BindingProvider {
         binding(
             get: { self.viewModel.pinnedTabBarConfig.itemStyles[.prominent] ?? .init() },
             keyPath: keyPath,
-            send: { .tabBar(.updateProminentItemConfig($0)) }
+            send: { .tabBar(.pinned(.updateProminentItemConfig($0))) }
         )
     }
     
@@ -220,7 +224,10 @@ final class TabBarBindings: BindingProvider {
     func tabItemStyle(for item: ExampleTabItem) -> Binding<Bool> {
         Binding(
             get: { item.style == .prominent },
-            set: { self.viewModel.send(.tabBar(.updateTabItemStyle(item, $0 ? .prominent : .regular))) }
+            set: {
+                let style: BarItemStyle = $0 ? .prominent : .regular
+                self.viewModel.send(.tabBar(.pinned(.updateTabItemStyle(item, style))))
+            }
         )
     }
     
