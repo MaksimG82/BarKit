@@ -19,29 +19,18 @@
 /// }
 /// ```
 public protocol BarItemProtocol: Hashable, Identifiable {
-    // MARK: - Id
-
-    var id: AnyHashable { get }
-
-    // MARK: - Content
 
     /// Icon to display in the item view.
     var icon: BarIcon { get }
 
-    /// Title to display in the item view .
+    /// Title to display in the item view.
     var title: String { get }
-
-    // MARK: - Appearance
 
     /// Visual style of the item view.
     var style: BarItemStyle { get set }
 
-    // MARK: - Accessibility
-
     /// Custom accessibility label (defaults to title if nil).
     var accessibilityLabel: String? { get }
-
-    // MARK: - Transformation
 
     /// Returns a copy of the item with a different style.
     func withStyle(_ newStyle: BarItemStyle) -> Self

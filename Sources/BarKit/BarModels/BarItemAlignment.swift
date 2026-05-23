@@ -7,10 +7,8 @@
 
 import SwiftUI
 
-/// Defines the alignment of items along the cross-axis of the bar.
-/// For a horizontal bar, this controls vertical alignment.
-/// For a vertical bar, this controls horizontal alignment.
-public enum BarItemAlignment {
+/// Defines the alignment of content along an axis — either items within the bar or icon and title within an item.
+public enum BarItemAlignment: Sendable {
     case start
     case center
     case end
