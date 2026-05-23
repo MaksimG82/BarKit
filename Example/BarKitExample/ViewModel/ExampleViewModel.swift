@@ -239,29 +239,27 @@ private extension ExampleViewModel {
             
         case let .updateLensDistortion(isEnabled):
             if isEnabled {
-                configuration.effects.insert(.lensDistortion)
+                configuration.effects.append(.lensDistortion())
             } else {
-                configuration.effects.remove(.lensDistortion)
+                configuration.effects.removeAll { if case .lensDistortion = $0 { return true }; return false }
             }
-            
+
+        case let .updateLensDistortionConfig(config):
+            if let index = configuration.effects.firstIndex(where: { if case .lensDistortion = $0 { return true }; return false }) {
+                configuration.effects[index] = .lensDistortion(config)
+            }
+
         case let .updateChromaticAberration(isEnabled):
             if isEnabled {
-                configuration.effects.insert(.chromaticAberration)
+                configuration.effects.append(.chromaticAberration())
             } else {
-                configuration.effects.remove(.chromaticAberration)
+                configuration.effects.removeAll { if case .chromaticAberration = $0 { return true }; return false }
             }
-            
-        case let .updateRefractionZoneWidth(width):
-            configuration.refractionZoneWidth = width
-            
-        case let .updateRefractionStrength(strength):
-            configuration.refractionStrength = strength
-            
-        case let .updateAberrationZoneWidth(width):
-            configuration.aberrationZoneWidth = width
-            
-        case let .updateAberrationStrength(strength):
-            configuration.aberrationStrength = strength
+
+        case let .updateChromaticAberrationConfig(config):
+            if let index = configuration.effects.firstIndex(where: { if case .chromaticAberration = $0 { return true }; return false }) {
+                configuration.effects[index] = .chromaticAberration(config)
+            }
             
         case .reset:
             configuration = .init()

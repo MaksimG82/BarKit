@@ -187,23 +187,19 @@ enum IndicatorIntent {
     
     // MARK: - Lens effects
     
+    // MARK: - Lens effects
+
     /// Enables or disables the lens distortion effect.
     case updateLensDistortion(Bool)
-    
+
+    /// Updates the lens distortion configuration.
+    case updateLensDistortionConfig(LensDistortionConfiguration)
+
     /// Enables or disables the chromatic aberration effect.
     case updateChromaticAberration(Bool)
-    
-    /// Updates the refraction zone width.
-    case updateRefractionZoneWidth(CGFloat)
-    
-    /// Updates the refraction strength.
-    case updateRefractionStrength(CGFloat)
-    
-    /// Updates the aberration zone width.
-    case updateAberrationZoneWidth(CGFloat)
-    
-    /// Updates the aberration strength.
-    case updateAberrationStrength(CGFloat)
+
+    /// Updates the chromatic aberration configuration.
+    case updateChromaticAberrationConfig(ChromaticAberrationConfiguration)
     
     // MARK: - Reset
     

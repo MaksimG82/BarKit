@@ -26,7 +26,7 @@ struct AnimationSection: View {
         ) {
             Picker("Animation Type", selection: $parameters.type) {
                 ForEach(AnimationType.allCases, id: \.self) {
-                    Text($0.rawValue).tag($0)
+                    Text($0.displayName).tag($0)
                 }
             }
             .pickerStyle(.menu)

@@ -95,17 +95,15 @@ struct BarConfigurationInitStringTests {
                     duration: 0.3
                 ),
                 isDragGestureEnabled: false,
-                effects: .all,
-                refractionZoneWidth: 8,
-                refractionStrength: 3,
-                aberrationZoneWidth: 6,
-                aberrationStrength: 2
+                effects: [
+                    .lensDistortion(.init(zoneWidth: 8, strength: 3)),
+                    .chromaticAberration(.init(zoneWidth: 6, strength: 2))
+                ]
             ),
             barAccessibilityLabel: "Custom Bar",
             hapticFeedback: .impact,
             accessibilitySortPriority: -1
         )
 
-        #expect(config.initString == ".init(axis: .vertical, cornerRadius: 16.0, shadow: .init(color: Color(red: 0.0, green: 0.0, blue: 0.0), radius: 4.0, x: 2.0, y: 2.0), background: .color(Color(red: 0.0, green: 0.0, blue: 0.0)), itemStyles: [BarItemStyle(identifier: \"custom\"): .init(selectedColor: Color(red: 1.0, green: 0.0, blue: 0.0), unselectedColor: Color(red: 0.0, green: 1.0, blue: 0.0), textStyle: .headline, iconSideLength: 32.0, selectedIconScale: 1.3, compactIconScale: 0.9, iconTitleSpacing: 8.0, edgeInsets: .init(top: 12.0, leading: 12.0, bottom: 12.0, trailing: 12.0), edgeInsetsCompact: .init(top: 6.0, leading: 6.0, bottom: 6.0, trailing: 6.0))], itemContentAxis: .horizontal, itemContentAlignment: .start, itemAlignment: .start, itemSpacing: 8.0, itemStateAnimation: .parameters(.linear(duration: 0.3)), baselineStyle: .prominent, indicator: .init(color: Color(red: 1.0, green: 0.0, blue: 0.0, opacity: 0.5), border: .init(color: Color(red: 1.0, green: 1.0, blue: 0.0), lineWidth: 2.0), inset: .init(top: 4.0, leading: 4.0, bottom: 4.0, trailing: 4.0), cornerRadius: 12.0, transitionAnimation: .spring(duration: 0.4, bounce: 0.2), scaleEffect: .init(scalingAnimation: .easeOut(duration: 0.2), xScale: 1.4, yScale: 1.3, duration: 0.3), isDragGestureEnabled: false, effects: .all, refractionZoneWidth: 8.0, refractionStrength: 3.0, aberrationZoneWidth: 6.0, aberrationStrength: 2.0), barAccessibilityLabel: \"Custom Bar\", hapticFeedback: .impact, accessibilitySortPriority: -1.0)")
-    }
+        #expect(config.initString == ".init(axis: .vertical, cornerRadius: 16.0, shadow: .init(color: Color(red: 0.0, green: 0.0, blue: 0.0), radius: 4.0, x: 2.0, y: 2.0), background: .color(Color(red: 0.0, green: 0.0, blue: 0.0)), itemStyles: [BarItemStyle(identifier: \"custom\"): .init(selectedColor: Color(red: 1.0, green: 0.0, blue: 0.0), unselectedColor: Color(red: 0.0, green: 1.0, blue: 0.0), textStyle: .headline, iconSideLength: 32.0, selectedIconScale: 1.3, compactIconScale: 0.9, iconTitleSpacing: 8.0, edgeInsets: .init(top: 12.0, leading: 12.0, bottom: 12.0, trailing: 12.0), edgeInsetsCompact: .init(top: 6.0, leading: 6.0, bottom: 6.0, trailing: 6.0))], itemContentAxis: .horizontal, itemContentAlignment: .start, itemAlignment: .start, itemSpacing: 8.0, itemStateAnimation: .parameters(.linear(duration: 0.3)), baselineStyle: .prominent, indicator: .init(color: Color(red: 1.0, green: 0.0, blue: 0.0, opacity: 0.5), border: .init(color: Color(red: 1.0, green: 1.0, blue: 0.0), lineWidth: 2.0), inset: .init(top: 4.0, leading: 4.0, bottom: 4.0, trailing: 4.0), cornerRadius: 12.0, transitionAnimation: .spring(duration: 0.4, bounce: 0.2), scaleEffect: .init(scalingAnimation: .easeOut(duration: 0.2), xScale: 1.4, yScale: 1.3, duration: 0.3), isDragGestureEnabled: false, effects: [.lensDistortion(.init(zoneWidth: 8.0, strength: 3.0)), .chromaticAberration(.init(zoneWidth: 6.0, strength: 2.0))]), barAccessibilityLabel: \"Custom Bar\", hapticFeedback: .impact, accessibilitySortPriority: -1.0)")    }
 }

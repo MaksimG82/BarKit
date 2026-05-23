@@ -5,7 +5,6 @@
 //  Created by Maksim Gaisin on 22.05.26.
 //
 
-
 import BarKit
 import SwiftUI
 
@@ -27,11 +26,7 @@ extension SelectionIndicatorConfiguration: InitStringConvertible, DefaultReprese
     ///     transitionAnimation: .spring(duration: 0.5, bounce: 0.0),
     ///     scaleEffect: .init(xScale: 1.2, yScale: 1.2, duration: 0.2),
     ///     isDragGestureEnabled: false,
-    ///     effects: [.lensDistortion],
-    ///     refractionZoneWidth: 8.0,
-    ///     refractionStrength: 3.0,
-    ///     aberrationZoneWidth: 6.0,
-    ///     aberrationStrength: 2.0
+    ///     effects: [.lensDistortion(.init()), .chromaticAberration(.init(zoneWidth: 6.0))]
     /// )
     /// ```
     var initString: String {
@@ -62,19 +57,8 @@ extension SelectionIndicatorConfiguration: InitStringConvertible, DefaultReprese
             params.append("isDragGestureEnabled: \(isDragGestureEnabled)")
         }
         if !effects.isEmpty {
-            params.append("effects: \(effects.initString)")
-        }
-        if refractionZoneWidth != Self.default.refractionZoneWidth {
-            params.append("refractionZoneWidth: \(refractionZoneWidth)")
-        }
-        if refractionStrength != Self.default.refractionStrength {
-            params.append("refractionStrength: \(refractionStrength)")
-        }
-        if aberrationZoneWidth != Self.default.aberrationZoneWidth {
-            params.append("aberrationZoneWidth: \(aberrationZoneWidth)")
-        }
-        if aberrationStrength != Self.default.aberrationStrength {
-            params.append("aberrationStrength: \(aberrationStrength)")
+            let effectsString = effects.map(\.initString).joined(separator: ", ")
+            params.append("effects: [\(effectsString)]")
         }
 
         return params.isEmpty
