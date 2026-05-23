@@ -8,10 +8,10 @@
 import SwiftUI
 
 extension View {
-    /// Applies lens effect if indicator configuration is provided.
+    /// Applies lens effect if indicator configuration is provided and the indicator is in motion.
     @ViewBuilder
-    func indicatorLens(_ config: SelectionIndicatorConfiguration?, frame: CGRect) -> some View {
-        if let config, !config.effects.isEmpty {
+    func indicatorLens(_ config: SelectionIndicatorConfiguration?, frame: CGRect, isActive: Bool) -> some View {
+        if let config, isActive, !config.effects.isEmpty {
             indicatorLensEffect(
                 frame: frame,
                 cornerRadius: config.cornerRadius,

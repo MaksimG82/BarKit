@@ -26,6 +26,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// Flag indicating whether the indicator is currently in its scaling animation state.
     @State private var isSelectionIndicatorScaling = false
+    
+    /// Indicates whether the indicator is currently in motion (drag or animated transition).
+    @State private var isIndicatorMoving: Bool = false
 
     /// A dictionary mapping each item's unique identifier to its frame in the local coordinate space.
     @State private var itemFrames: [AnyHashable: CGRect] = [:]
@@ -93,10 +96,10 @@ public struct BarView<Item: BarItemProtocol>: View {
         let indicatorFrame = indicatorFrame()
         ZStack(alignment: config.axis == .horizontal ? .leading : .top) {
             itemsStack
-                .indicatorLens(config.indicator, frame: indicatorFrame)
+                .indicatorLens(config.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
             
             overlayItemsStack(indicatorFrame: indicatorFrame)
-                .indicatorLens(config.indicator, frame: indicatorFrame)
+                .indicatorLens(config.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
         }
         .frame(
             height: barHeight(),
@@ -245,12 +248,13 @@ private extension BarView {
 // MARK: - Gesture
 
 private extension BarView {
-
+    
     /// A gesture that tracks finger movement to reposition the selection indicator.
     var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .named(coordinateSpaceName))
             .onChanged { value in
                 isSelectionIndicatorScaling = true
+                isIndicatorMoving = true
                 isDragging = true
                 gestureLocation = value.location
             }
@@ -283,27 +287,40 @@ private extension BarView {
             action?(item)
         }
 
+        let stopMoving = {
+            withAnimation(nil) { isIndicatorMoving = false }
+        }
+
         switch (transitionAnimation, scaleEffect) {
         case let (transition?, scaleEffect?):
             isSelectionIndicatorScaling = true
+            isIndicatorMoving = true
             withAnimation(transition) { performSelection() }
             Task {
                 try? await Task.sleep(for: .seconds(scaleEffect.duration))
                 await MainActor.run {
                     withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
+                    stopMoving()
                 }
             }
 
         case (let transition?, nil):
+            isIndicatorMoving = true
             withAnimation(transition) { performSelection() }
+            Task {
+                try? await Task.sleep(for: .seconds(indicatorConfiguration.transitionAnimation?.duration ?? 0.5))
+                await MainActor.run { isIndicatorMoving = false }
+            }
 
         case (nil, let scaleEffect?):
             isSelectionIndicatorScaling = true
+            isIndicatorMoving = true
             performSelection()
             Task {
                 try? await Task.sleep(for: .seconds(scaleEffect.duration))
                 await MainActor.run {
                     withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
+                    stopMoving()
                 }
             }
 
