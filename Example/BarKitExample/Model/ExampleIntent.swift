@@ -53,7 +53,7 @@ enum TabBarIntent {
     case updateHapticFeedbackEnabled(Bool)
     
     /// Updates the haptic feedback style for the tab bar.
-    case updateHapticFeedback(HapticFeedback)
+    case updateHapticFeedback(HapticFeedbackConfiguration)
     
     /// Resets all Tab Bar settings to their default values.
     case reset
@@ -94,7 +94,7 @@ enum StandaloneIntent {
     case selectItem(ExampleBarItem)
     
     /// Updates the layout axis of the standalone bar.
-    case updateAxis(BarConfiguration.Axis)
+    case updateAxis(BarLayoutAxis)
     
     /// Actions for the Indicator settings.
     case indicator(IndicatorIntent)
@@ -112,7 +112,7 @@ enum StandaloneIntent {
     case updateHapticFeedbackEnabled(Bool)
     
     /// Updates the haptic feedback style for the bar.
-    case updateHapticFeedback(HapticFeedback)
+    case updateHapticFeedback(HapticFeedbackConfiguration)
     
     /// Updates the ItemConfiguration for .regular style.
     case updateRegularItemConfig(ItemConfiguration)

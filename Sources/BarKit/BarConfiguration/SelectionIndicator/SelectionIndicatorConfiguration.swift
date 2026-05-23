@@ -41,7 +41,8 @@ public struct SelectionIndicatorConfiguration {
 
     // MARK: - Visual Effects
 
-    /// Active visual effects applied at the indicator boundary.
+    /// Active visual effects at the indicator boundary.
+    /// Duplicate effects are ignored — only the first occurrence of each effect type is applied.
     public var effects: [IndicatorEffect]
 
     // MARK: - Init
@@ -56,7 +57,7 @@ public struct SelectionIndicatorConfiguration {
     ///   - transitionAnimation: Animation for moving the indicator between items. Pass `nil` for an instant snap.
     ///   - scaleEffect: Scaling effect applied during transition. Pass `nil` to keep size constant.
     ///   - isDragGestureEnabled: Whether the user can drag the indicator between items.
-    ///   - effects: Active visual effects at the indicator boundary.
+    ///   - effects: Active visual effects at the indicator boundary. Duplicate effects are ignored — only the first occurrence of each effect type is applied.
     public init(
         color: Color = .secondary.opacity(0.2),
         border: BorderConfiguration? = nil,

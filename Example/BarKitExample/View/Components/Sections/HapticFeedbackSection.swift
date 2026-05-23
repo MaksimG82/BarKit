@@ -15,18 +15,18 @@ struct HapticFeedbackSection: View {
     @Binding var isEnabled: Bool
 
     /// Binding for the haptic feedback style picker.
-    @Binding var hapticFeedback: HapticFeedback
+    @Binding var hapticFeedback: HapticFeedbackConfiguration
 
     var body: some View {
         Section {
             Toggle("Haptic Feedback", isOn: $isEnabled)
             if isEnabled {
                 Picker("Style", selection: $hapticFeedback) {
-                    Text("Selection").tag(HapticFeedback.selection)
-                    Text("Impact").tag(HapticFeedback.impact)
-                    Text("Success").tag(HapticFeedback.success)
-                    Text("Warning").tag(HapticFeedback.warning)
-                    Text("Error").tag(HapticFeedback.error)
+                    Text("Selection").tag(HapticFeedbackConfiguration.selection)
+                    Text("Impact").tag(HapticFeedbackConfiguration.impact)
+                    Text("Success").tag(HapticFeedbackConfiguration.success)
+                    Text("Warning").tag(HapticFeedbackConfiguration.warning)
+                    Text("Error").tag(HapticFeedbackConfiguration.error)
                 }
             }
         } header: {

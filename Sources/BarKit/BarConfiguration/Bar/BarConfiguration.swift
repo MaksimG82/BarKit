@@ -9,21 +9,11 @@ import SwiftUI
 
 /// A configuration object that defines the visual style, layout, and behavior of `BarView`.
 public struct BarConfiguration {
-
-    // MARK: - Axis
-
-    /// Defines the layout direction of items within the bar.
-    public enum Axis {
-        /// Items are arranged in a horizontal row.
-        case horizontal
-        /// Items are arranged in a vertical column.
-        case vertical
-    }
-
-    /// The layout axis of the bar.
-    public var axis: Axis
     
-    // MARK: - Shape
+    // MARK: - Layout
+    
+    /// The layout axis of the bar.
+    public var axis: BarLayoutAxis
 
     /// Corner radius of the bar capsule.
     public var cornerRadius: CGFloat
@@ -66,12 +56,11 @@ public struct BarConfiguration {
     /// The item style used as the baseline for bar height calculation.
     /// When non-nil, `BarView` fixes its height to match this style's metrics,
     /// allowing prominent items to overflow upward. Set to `nil` if no prominent items are used.
-    public var baselineStyle: BarItemStyle? = .regular
+    public var baselineStyle: BarItemStyle?
     
     // MARK: - Selection indicator
     
     /// Appearance and behavior configuration for the selection indicator.
-    /// Pass `nil` to disable the indicator entirely.
     public var indicator: SelectionIndicatorConfiguration?
     
     // MARK: - Accessibility
@@ -88,7 +77,7 @@ public struct BarConfiguration {
     
     /// The haptic feedback style triggered when the selected item changes.
     /// Requires iOS 17 or later. Pass `nil` to disable haptic feedback.
-    public var hapticFeedback: HapticFeedback?
+    public var hapticFeedback: HapticFeedbackConfiguration?
     
     /// Creates a new `BarConfiguration`.
     ///
@@ -104,12 +93,12 @@ public struct BarConfiguration {
     ///   - itemSpacing: Spacing between items in the stack.
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
-    ///   - indicator: SelectionIndicatorConfiguration? = .init(),
+    ///   - indicator: Appearance and behavior configuration for the selection indicator.
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
     ///   - hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
     ///   - accessibilitySortPriority: Sort priority relative to other elements in the same container. Pass a lower value (e.g. `-1`) to ensure VoiceOver reaches content before the bar.
     public init(
-        axis: Axis = .horizontal,
+        axis: BarLayoutAxis = .horizontal,
         cornerRadius: CGFloat = 28,
         shadow: ShadowConfiguration? = .init(),
         background: BarBackground = .material(.ultraThin),
@@ -122,7 +111,7 @@ public struct BarConfiguration {
         baselineStyle: BarItemStyle? = nil,
         indicator: SelectionIndicatorConfiguration? = .init(),
         barAccessibilityLabel: String = "Tab Bar",
-        hapticFeedback: HapticFeedback? = .selection,
+        hapticFeedback: HapticFeedbackConfiguration? = .selection,
         accessibilitySortPriority: Double = 0
     ) {
         self.axis = axis
@@ -141,14 +130,9 @@ public struct BarConfiguration {
         self.hapticFeedback = hapticFeedback
         self.accessibilitySortPriority = accessibilitySortPriority
     }
-}
-
-// MARK: - Helpers
-
-public extension BarConfiguration {
     
     /// Resolves the item state animation for use in view modifiers.
-    var resolvedItemStateAnimation: Animation? {
+    public var resolvedItemStateAnimation: Animation? {
         itemStateAnimation?.animation
     }
     

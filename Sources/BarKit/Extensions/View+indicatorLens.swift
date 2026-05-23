@@ -16,9 +16,9 @@ extension View {
                 frame: frame,
                 cornerRadius: config.cornerRadius,
                 refractionZoneWidth: config.effects.refractionZoneWidth,
-                aberrationZoneWidth: config.effects.refractionStrength,
-                aberrationStrength: config.effects.aberrationZoneWidth,
-                refractionStrength: config.effects.aberrationStrength
+                aberrationZoneWidth: config.effects.aberrationZoneWidth,
+                aberrationStrength: config.effects.aberrationStrength,
+                refractionStrength: config.effects.refractionStrength
             )
         } else {
             self

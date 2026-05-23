@@ -16,7 +16,7 @@ extension View {
     ///   - trigger: The value whose change triggers the feedback.
     @ViewBuilder
     func hapticFeedback<T: Equatable>(
-        _ feedback: HapticFeedback?,
+        _ feedback: HapticFeedbackConfiguration?,
         trigger: T
     ) -> some View {
         if #available(iOS 17.0, *), let feedback {

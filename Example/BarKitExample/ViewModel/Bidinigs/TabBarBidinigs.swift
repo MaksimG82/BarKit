@@ -262,7 +262,7 @@ final class TabBarBindings: BindingProvider {
     }
 
     /// Binding for the haptic feedback style picker.
-    func hapticFeedback() -> Binding<HapticFeedback> {
+    func hapticFeedback() -> Binding<HapticFeedbackConfiguration> {
         Binding(
             get: {
                 switch self.viewModel.state.tabBar.mode {

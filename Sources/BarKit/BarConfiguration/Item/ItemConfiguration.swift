@@ -58,7 +58,7 @@ public struct ItemConfiguration: Equatable {
         compactIconScale: CGFloat = 0.8,
         iconTitleSpacing: CGFloat = 4,
         edgeInsets: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8),
-        edgeInsetsCompact: EdgeInsets = .init(top: 4, leading: 4, bottom: 4, trailing: 4),
+        edgeInsetsCompact: EdgeInsets = .init(top: 4, leading: 4, bottom: 4, trailing: 4)
     ) {
         self.selectedColor = selectedColor
         self.unselectedColor = unselectedColor
@@ -70,14 +70,11 @@ public struct ItemConfiguration: Equatable {
         self.edgeInsets = edgeInsets
         self.edgeInsetsCompact = edgeInsetsCompact
     }
-}
-
-public extension ItemConfiguration {
 
     /// Calculates the content height of an item excluding edge insets.
     /// In compact mode, icon and title are arranged horizontally — height is the max of the two.
     /// In regular mode, icon and title are stacked vertically — height is the sum plus spacing.
-    func itemContentHeight(isVerticalCompact: Bool) -> CGFloat {
+    public func itemContentHeight(isVerticalCompact: Bool) -> CGFloat {
         let scale = isVerticalCompact ? compactIconScale : 1.0
         let iconHeight = iconSideLength * scale
         let fontHeight = UIFont.preferredFont(forTextStyle: textStyle.uiTextStyle).lineHeight

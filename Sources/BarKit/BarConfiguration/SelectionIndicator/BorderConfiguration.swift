@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-/// Defines the optional border drawn around the view.
-public struct BorderConfiguration {
+/// Defines the optional border drawn around the selection indicator.
+public struct BorderConfiguration: Equatable, Sendable {
     /// The color of the border.
     public var color: Color
     /// The thickness of the border in points.

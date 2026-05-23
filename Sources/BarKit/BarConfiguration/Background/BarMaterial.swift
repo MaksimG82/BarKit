@@ -8,16 +8,13 @@
 import SwiftUI
 
 /// The available system material styles for a bar background.
-public enum BarMaterial: String, CaseIterable {
-    case bar = "bar"
-    case ultraThin = "Ultra Thin"
-    case thin = "Thin"
-    case regular = "Regular"
-    case thick = "Thick"
-}
-
-public extension BarMaterial {
-
+public enum BarMaterial {
+    case bar
+    case ultraThin
+    case thin
+    case regular
+    case thick
+    
     /// The corresponding SwiftUI `Material` value.
     var resolved: Material {
         switch self {
