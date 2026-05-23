@@ -12,12 +12,18 @@ extension ShaderLibrary {
     /// The precompiled Metal shader library for the indicator lens effect,
     /// selected based on the current runtime environment.
     static let indicatorLibrary: ShaderLibrary = {
-        #if targetEnvironment(simulator)
+#if targetEnvironment(simulator)
         let name = "IndicatorEffects-iphonesimulator"
-        #else
+#else
         let name = "IndicatorEffects-iphoneos"
-        #endif
-        let url = Bundle.module.url(forResource: name, withExtension: "metallib")!
+#endif
+        guard
+            let url = Bundle.module.url(
+                forResource: name,
+                withExtension: "metallib")
+        else {
+            fatalError("BarKit: missing Metal library '\(name).metallib' in bundle.")
+        }
         return ShaderLibrary(url: url)
     }()
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 extension EnvironmentValues {
 #if DEBUG
     /// Toggles supplementary visual guides and outlines to assist with layout debugging.

@@ -15,8 +15,8 @@ extension View {
             indicatorLensEffect(
                 frame: frame,
                 cornerRadius: config.cornerRadius,
-                refractionZoneWidth: config.effects.refractionZoneWidth,
                 aberrationZoneWidth: config.effects.aberrationZoneWidth,
+                refractionZoneWidth: config.effects.refractionZoneWidth,
                 aberrationStrength: config.effects.aberrationStrength,
                 refractionStrength: config.effects.refractionStrength
             )

@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Font.TextStyle {
-    /// UIKit text style for calculating tab title height
+    /// UIKit text style for calculating tab title height.
     var uiTextStyle: UIFont.TextStyle {
         switch self {
         case .largeTitle, .title: return .title1
