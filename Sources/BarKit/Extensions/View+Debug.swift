@@ -24,7 +24,7 @@ import SwiftUI
         /// - Parameter enabled: The state of the debug mode. Defaults to `true`.
         /// - Returns: A view with the updated environment value for debugging.
         func debugLayout(_ enabled: Bool = true) -> some View {
-            environment(\.debugLayoutEnabled, enabled)
+            environment(\.bkDebugLayoutEnabled, enabled)
         }
     }
 #endif

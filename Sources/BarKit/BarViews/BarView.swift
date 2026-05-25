@@ -139,7 +139,7 @@ private extension BarView {
             }
         }
         .adaptiveCoordinateSpace(name: coordinateSpaceName)
-        .environment(\.barSpaceName, coordinateSpaceName)
+        .environment(\.bkBarSpaceName, coordinateSpaceName)
         .onPreferenceChange(BarItemFrameKey.self) { frames in
             itemFrames = frames
         }

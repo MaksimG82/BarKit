@@ -13,7 +13,7 @@ struct BarItemView<Item: BarItemProtocol>: View {
     // MARK: - Environment
 
     /// The unique coordinate space name passed from the parent layout.
-    @Environment(\.barSpaceName) private var coordinateSpaceName
+    @Environment(\.bkBarSpaceName) private var coordinateSpaceName
 
     // MARK: - Properties
 

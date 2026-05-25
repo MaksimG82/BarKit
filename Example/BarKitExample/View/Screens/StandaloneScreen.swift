@@ -11,7 +11,7 @@ import BarKit
 struct StandaloneScreen: View {
     
     @Environment(\.verticalSizeClass) var sizeClass
-
+    
     
     let viewModel: ExampleViewModel
     
@@ -32,7 +32,8 @@ struct StandaloneScreen: View {
         .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
         .toolbar { resetButton }
         .navigationTitle("Standalone")
-    }}
+    }
+}
 
 
 // MARK: - View Components

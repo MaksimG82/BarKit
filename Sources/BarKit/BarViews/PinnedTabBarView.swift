@@ -142,7 +142,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             config: .init(itemStyles: [.regular: .init()],
             )
         )
-        .environment(\.debugLayoutEnabled, false)
+        .environment(\.bkDebugLayoutEnabled, false)
     }
 }
 
@@ -177,7 +177,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
                 barAccessibilityLabel: "Tab Bar"
             )
         )
-        .environment(\.debugLayoutEnabled, false)
+        .environment(\.bkDebugLayoutEnabled, false)
     }
 }
 

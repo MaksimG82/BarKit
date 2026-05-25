@@ -12,7 +12,7 @@ import SwiftUI
 /// Only active when `debugLayoutEnabled` is `true` in the environment.
 struct DebugVisualsModifier: ViewModifier {
     /// Current debug layout state from the environment.
-    @Environment(\.debugLayoutEnabled) var isDebugEnabled
+    @Environment(\.bkDebugLayoutEnabled) var isDebugEnabled
     /// The color used for the border and background tint.
     let color: Color
 
