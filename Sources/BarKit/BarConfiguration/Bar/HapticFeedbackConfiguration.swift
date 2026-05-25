@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  HapticFeedbackConfiguration.swift
 //  BarKit
 //
 //  Created by Maksim Gaisin on 18.05.26.
@@ -9,7 +9,7 @@ import SwiftUI
 
 /// Defines the haptic feedback style triggered when the selected bar item changes.
 /// Requires iOS 17 or later; has no effect on earlier versions.
-public enum HapticFeedback {
+public enum HapticFeedbackConfiguration {
 
     /// A feedback style that indicates a change in selection.
     case selection

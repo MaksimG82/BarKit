@@ -53,7 +53,7 @@ enum TabBarIntent {
     case updateHapticFeedbackEnabled(Bool)
     
     /// Updates the haptic feedback style for the tab bar.
-    case updateHapticFeedback(HapticFeedback)
+    case updateHapticFeedback(HapticFeedbackConfiguration)
     
     /// Resets all Tab Bar settings to their default values.
     case reset
@@ -94,7 +94,7 @@ enum StandaloneIntent {
     case selectItem(ExampleBarItem)
     
     /// Updates the layout axis of the standalone bar.
-    case updateAxis(BarConfiguration.Axis)
+    case updateAxis(BarLayoutAxis)
     
     /// Actions for the Indicator settings.
     case indicator(IndicatorIntent)
@@ -112,7 +112,7 @@ enum StandaloneIntent {
     case updateHapticFeedbackEnabled(Bool)
     
     /// Updates the haptic feedback style for the bar.
-    case updateHapticFeedback(HapticFeedback)
+    case updateHapticFeedback(HapticFeedbackConfiguration)
     
     /// Updates the ItemConfiguration for .regular style.
     case updateRegularItemConfig(ItemConfiguration)
@@ -187,23 +187,19 @@ enum IndicatorIntent {
     
     // MARK: - Lens effects
     
+    // MARK: - Lens effects
+
     /// Enables or disables the lens distortion effect.
     case updateLensDistortion(Bool)
-    
+
+    /// Updates the lens distortion configuration.
+    case updateLensDistortionConfig(LensDistortionConfiguration)
+
     /// Enables or disables the chromatic aberration effect.
     case updateChromaticAberration(Bool)
-    
-    /// Updates the refraction zone width.
-    case updateRefractionZoneWidth(CGFloat)
-    
-    /// Updates the refraction strength.
-    case updateRefractionStrength(CGFloat)
-    
-    /// Updates the aberration zone width.
-    case updateAberrationZoneWidth(CGFloat)
-    
-    /// Updates the aberration strength.
-    case updateAberrationStrength(CGFloat)
+
+    /// Updates the chromatic aberration configuration.
+    case updateChromaticAberrationConfig(ChromaticAberrationConfiguration)
     
     // MARK: - Reset
     

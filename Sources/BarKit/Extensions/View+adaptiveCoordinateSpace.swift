@@ -1,5 +1,5 @@
 //
-//  View+AdaptiveCoordinateSpace.swift
+//  View+adaptiveCoordinateSpace.swift
 //  BarKit
 //
 //  Created by Maksim Gaisin on 14.04.26.

@@ -26,6 +26,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// Flag indicating whether the indicator is currently in its scaling animation state.
     @State private var isSelectionIndicatorScaling = false
+    
+    /// Indicates whether the indicator is currently in motion (drag or animated transition).
+    @State private var isIndicatorMoving: Bool = false
 
     /// A dictionary mapping each item's unique identifier to its frame in the local coordinate space.
     @State private var itemFrames: [AnyHashable: CGRect] = [:]
@@ -93,10 +96,10 @@ public struct BarView<Item: BarItemProtocol>: View {
         let indicatorFrame = indicatorFrame()
         ZStack(alignment: config.axis == .horizontal ? .leading : .top) {
             itemsStack
-                .indicatorLens(config.indicator, frame: indicatorFrame)
+                .indicatorLens(config.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
             
             overlayItemsStack(indicatorFrame: indicatorFrame)
-                .indicatorLens(config.indicator, frame: indicatorFrame)
+                .indicatorLens(config.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
         }
         .frame(
             height: barHeight(),
@@ -245,17 +248,17 @@ private extension BarView {
 // MARK: - Gesture
 
 private extension BarView {
-
+    
     /// A gesture that tracks finger movement to reposition the selection indicator.
     var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .named(coordinateSpaceName))
             .onChanged { value in
                 isSelectionIndicatorScaling = true
+                isIndicatorMoving = true
                 isDragging = true
                 gestureLocation = value.location
             }
             .onEnded { _ in
-                isSelectionIndicatorScaling = true
                 handleSelection(nearestItem(to: indicatorFrame()))
                 isDragging = false
                 gestureLocation = nil
@@ -283,30 +286,40 @@ private extension BarView {
             action?(item)
         }
 
+        let stopMoving = {
+            withAnimation(nil) { isIndicatorMoving = false }
+        }
+
         switch (transitionAnimation, scaleEffect) {
         case let (transition?, scaleEffect?):
             isSelectionIndicatorScaling = true
+            isIndicatorMoving = true
             withAnimation(transition) { performSelection() }
-            Task {
-                try? await Task.sleep(for: .seconds(scaleEffect.duration))
-                await MainActor.run {
-                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
-                }
-            }
+            scheduleIndicatorReset(
+                after: scaleEffect.duration,
+                scaleEffect: scaleEffect
+            )
 
         case (let transition?, nil):
+            isIndicatorMoving = true
             withAnimation(transition) { performSelection() }
-
+            let duration: Double
+            if case .parameters(let params) = indicatorConfiguration.transitionAnimation {
+                duration = params.duration
+            } else {
+                duration = 0
+            }
+            scheduleIndicatorReset(after: duration, scaleEffect: nil)
+        
         case (nil, let scaleEffect?):
             isSelectionIndicatorScaling = true
+            isIndicatorMoving = true
             performSelection()
-            Task {
-                try? await Task.sleep(for: .seconds(scaleEffect.duration))
-                await MainActor.run {
-                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
-                }
-            }
-
+            scheduleIndicatorReset(
+                after: scaleEffect.duration,
+                scaleEffect: scaleEffect
+            )
+            
         default:
             performSelection()
         }
@@ -334,7 +347,7 @@ private extension BarView {
             } else {
                 minX = selectedItemFrame.minX + inset.leading
             }
-            return CGPoint(x: minX, y: selectedItemFrame.minY + inset.top)
+            return CGPoint(x: minX, y: 0)
 
         case .vertical:
             let minY: CGFloat
@@ -346,8 +359,7 @@ private extension BarView {
             } else {
                 minY = selectedItemFrame.minY + inset.top
             }
-            let minX = itemFrames.values.map(\.minX).min() ?? selectedItemFrame.minX + inset.leading
-            return CGPoint(x: minX, y: minY)
+            return CGPoint(x: 0, y: minY)
         }
     }
 
@@ -403,6 +415,22 @@ private extension BarView {
         let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
         return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.top + insets.bottom
     }
+    
+    /// Schedules a reset of indicator animation states after a given duration.
+    private func scheduleIndicatorReset(
+        after duration: Double,
+        scaleEffect: SelectionScaleEffect?
+    ) {
+        Task {
+            try? await Task.sleep(for: .seconds(duration))
+            await MainActor.run {
+                if let scaleEffect {
+                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
+                }
+                withAnimation(nil) { isIndicatorMoving = false }
+            }
+        }
+    }
 }
 
 #if DEBUG
@@ -438,7 +466,7 @@ private struct PreviewBarItem: BarItemProtocol {
     let title: String
     let icon: BarIcon
     var style: BarItemStyle = .regular
-    var id: AnyHashable { title }
+    var id: String { title }
 }
 
 #endif

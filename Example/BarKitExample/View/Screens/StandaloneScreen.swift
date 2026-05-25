@@ -134,8 +134,8 @@ extension StandaloneScreen {
     var axisSection: some View {
         Section {
             Picker("Axis", selection: bindings.axis()) {
-                Text("Horizontal").tag(BarConfiguration.Axis.horizontal)
-                Text("Vertical").tag(BarConfiguration.Axis.vertical)
+                Text("Horizontal").tag(BarLayoutAxis.horizontal)
+                Text("Vertical").tag(BarLayoutAxis.vertical)
             }
             .pickerStyle(.segmented)
         } header: {

@@ -37,7 +37,7 @@ struct BarBackgroundSection: View {
                 ColorPicker("Tint", selection: $backgroundColor)
                 Picker("Material", selection: $materialSelection) {
                     ForEach(BarMaterial.allCases, id: \.self) {
-                        Text($0.rawValue).tag($0)
+                        Text($0.displayName).tag($0)
                     }
                 }
             case .customBlur:

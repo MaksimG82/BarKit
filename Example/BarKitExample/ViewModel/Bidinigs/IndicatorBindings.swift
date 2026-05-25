@@ -186,54 +186,45 @@ final class IndicatorBindings: BindingProvider {
             set: { self.send(.updateScaleAnimationParameters($0)) }
         )
     }
-
     // MARK: - Lens effects
 
     /// Binding for the lens distortion toggle.
     func lensDistortionEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.configuration.effects.contains(.lensDistortion) },
+            get: { self.configuration.effects.contains(where: { if case .lensDistortion = $0 { return true }; return false }) },
             set: { self.send(.updateLensDistortion($0)) }
+        )
+    }
+
+    /// Binding for the lens distortion configuration.
+    func lensDistortionConfig() -> Binding<LensDistortionConfiguration> {
+        Binding(
+            get: {
+                guard case .lensDistortion(let config) = self.configuration.effects.first(where: { if case .lensDistortion = $0 { return true }; return false })
+                else { return .init() }
+                return config
+            },
+            set: { self.send(.updateLensDistortionConfig($0)) }
         )
     }
 
     /// Binding for the chromatic aberration toggle.
     func chromaticAberrationEnabled() -> Binding<Bool> {
         Binding(
-            get: { self.configuration.effects.contains(.chromaticAberration) },
+            get: { self.configuration.effects.contains(where: { if case .chromaticAberration = $0 { return true }; return false }) },
             set: { self.send(.updateChromaticAberration($0)) }
         )
     }
 
-    /// Binding for the refraction zone width.
-    func refractionZoneWidth() -> Binding<CGFloat> {
+    /// Binding for the chromatic aberration configuration.
+    func chromaticAberrationConfig() -> Binding<ChromaticAberrationConfiguration> {
         Binding(
-            get: { self.configuration.refractionZoneWidth },
-            set: { self.send(.updateRefractionZoneWidth($0)) }
-        )
-    }
-
-    /// Binding for the refraction strength.
-    func refractionStrength() -> Binding<CGFloat> {
-        Binding(
-            get: { self.configuration.refractionStrength },
-            set: { self.send(.updateRefractionStrength($0)) }
-        )
-    }
-
-    /// Binding for the aberration zone width.
-    func aberrationZoneWidth() -> Binding<CGFloat> {
-        Binding(
-            get: { self.configuration.aberrationZoneWidth },
-            set: { self.send(.updateAberrationZoneWidth($0)) }
-        )
-    }
-
-    /// Binding for the aberration strength.
-    func aberrationStrength() -> Binding<CGFloat> {
-        Binding(
-            get: { self.configuration.aberrationStrength },
-            set: { self.send(.updateAberrationStrength($0)) }
+            get: {
+                guard case .chromaticAberration(let config) = self.configuration.effects.first(where: { if case .chromaticAberration = $0 { return true }; return false })
+                else { return .init() }
+                return config
+            },
+            set: { self.send(.updateChromaticAberrationConfig($0)) }
         )
     }
 }

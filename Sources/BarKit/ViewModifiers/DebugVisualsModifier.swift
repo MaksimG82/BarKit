@@ -8,9 +8,13 @@
 import SwiftUI
 
 #if DEBUG
-    struct DebugVisualsModifier: ViewModifier {
-        @Environment(\.debugLayoutEnabled) var isDebugEnabled
-        let color: Color
+/// Overlays a colored border and background tint to visualize the view's frame.
+/// Only active when `debugLayoutEnabled` is `true` in the environment.
+struct DebugVisualsModifier: ViewModifier {
+    /// Current debug layout state from the environment.
+    @Environment(\.debugLayoutEnabled) var isDebugEnabled
+    /// The color used for the border and background tint.
+    let color: Color
 
         func body(content: Content) -> some View {
             if isDebugEnabled {

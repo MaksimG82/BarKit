@@ -41,20 +41,9 @@ public struct SelectionIndicatorConfiguration {
 
     // MARK: - Visual Effects
 
-    /// The set of active visual effects applied at the indicator boundary.
-    public var effects: IndicatorEffect
-
-    /// Width of the lens distortion zone at the indicator boundary. Typical range 2.0–12.0.
-    public var refractionZoneWidth: CGFloat
-
-    /// Maximum pixel displacement at the indicator boundary. Typical range 1.5–5.0.
-    public var refractionStrength: CGFloat
-
-    /// Width of the chromatic aberration zone at the indicator boundary. Typical range 1.0–6.0.
-    public var aberrationZoneWidth: CGFloat
-
-    /// RGB channel separation in pixels at the indicator boundary. Typical range 1.0–4.0.
-    public var aberrationStrength: CGFloat
+    /// Active visual effects at the indicator boundary.
+    /// Duplicate effects are ignored — only the first occurrence of each effect type is applied.
+    public var effects: [IndicatorEffect]
 
     // MARK: - Init
 
@@ -64,17 +53,11 @@ public struct SelectionIndicatorConfiguration {
     ///   - color: The fill color of the indicator.
     ///   - border: Optional border drawn around the indicator. Pass `nil` for no border.
     ///   - inset: Inset between the indicator and the item frame.
-    ///     Positive values shrink the indicator, negative values expand it beyond the item bounds.
     ///   - cornerRadius: Corner radius of the indicator shape.
-    ///   - transitionAnimation: Animation for moving the indicator between items.
-    ///     Pass `nil` for an instant snap.
-    ///   - scaleEffect: Scaling effect applied to the indicator during transition. Pass `nil` to keep the indicator size constant.
+    ///   - transitionAnimation: Animation for moving the indicator between items. Pass `nil` for an instant snap.
+    ///   - scaleEffect: Scaling effect applied during transition. Pass `nil` to keep size constant.
     ///   - isDragGestureEnabled: Whether the user can drag the indicator between items.
-    ///   - effects: The set of active visual effects applied at the indicator boundary.
-    ///   - refractionZoneWidth: Width of the lens distortion zone at the indicator boundary. Typical range 2.0–12.0.
-    ///   - refractionStrength: Maximum pixel displacement at the indicator boundary. Typical range 1.5–5.0.
-    ///   - aberrationZoneWidth: Width of the chromatic aberration zone at the indicator boundary. Typical range 1.0–6.0.
-    ///   - aberrationStrength: RGB channel separation in pixels at the indicator boundary. Typical range 1.0–4.0.
+    ///   - effects: Active visual effects at the indicator boundary. Duplicate effects are ignored — only the first occurrence of each effect type is applied.
     public init(
         color: Color = .secondary.opacity(0.2),
         border: BorderConfiguration? = nil,
@@ -83,11 +66,7 @@ public struct SelectionIndicatorConfiguration {
         transitionAnimation: BarAnimation? = .parameters(.init()),
         scaleEffect: SelectionScaleEffect? = nil,
         isDragGestureEnabled: Bool = true,
-        effects: IndicatorEffect = [],
-        refractionZoneWidth: CGFloat = 12.0,
-        refractionStrength: CGFloat = 2.0,
-        aberrationZoneWidth: CGFloat = 8.0,
-        aberrationStrength: CGFloat = 4.0
+        effects: [IndicatorEffect] = []
     ) {
         self.color = color
         self.border = border
@@ -97,19 +76,12 @@ public struct SelectionIndicatorConfiguration {
         self.scaleEffect = scaleEffect
         self.isDragGestureEnabled = isDragGestureEnabled
         self.effects = effects
-        self.refractionZoneWidth = refractionZoneWidth
-        self.refractionStrength = refractionStrength
-        self.aberrationZoneWidth = aberrationZoneWidth
-        self.aberrationStrength = aberrationStrength
     }
-}
 
-// MARK: - Helpers
+    // MARK: - Helpers
 
-public extension SelectionIndicatorConfiguration {
- 
     /// Resolves the transition animation for use in view modifiers.
-    var resolvedTransitionAnimation: Animation? {
+    public var resolvedTransitionAnimation: Animation? {
         transitionAnimation?.animation
     }
 }

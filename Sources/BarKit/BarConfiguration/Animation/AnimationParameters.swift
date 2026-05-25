@@ -9,24 +9,20 @@ import SwiftUI
 
 /// Defines the timing curve and duration of an animation.
 /// Used as a serializable alternative to `SwiftUI.Animation`.
-public struct AnimationParameters: Equatable {
-    
-    // MARK: - Nested Types
+public struct AnimationParameters: Equatable, Sendable {
     
     /// Supported animation timing curves.
-    public enum AnimationType: String, CaseIterable {
-        case none     = "None"
-        case easeIn   = "Ease In"
-        case easeOut  = "Ease Out"
-        case easeInOut = "Ease In Out"
-        case spring   = "Spring"
-        case bouncy   = "Bouncy"
-        case snappy   = "Snappy"
-        case smooth   = "Smooth"
-        case linear   = "Linear"
+    public enum AnimationType: Sendable {
+        case none
+        case easeIn
+        case easeOut
+        case easeInOut
+        case spring
+        case bouncy
+        case snappy
+        case smooth
+        case linear
     }
-    
-    // MARK: - Properties
     
     /// The timing curve of the animation.
     public var type: AnimationType
@@ -54,6 +50,8 @@ public struct AnimationParameters: Equatable {
         self.bounce = bounce
     }
 }
+
+// MARK: - SwiftUI Conversion
 
 public extension AnimationParameters {
     

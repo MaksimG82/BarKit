@@ -1,13 +1,8 @@
 //
-//  IndicatorShader.swift
+//  View+indicatorLensEffect.swift
 //  BarKit
 //
 //  Created by Maksim Gaisin on 21.04.26.
-//
-
-//
-//  IndicatorShader.swift
-//  BarKit
 //
 
 import SwiftUI
@@ -21,16 +16,17 @@ extension View {
     /// - Parameters:
     ///   - frame: The current frame of the selection indicator in the view's coordinate space.
     ///   - cornerRadius: The corner radius of the indicator shape.
-    ///   - refractionZoneWidth: Width in points of the zone near the boundary where lens distortion is applied. Typical range 2.0–12.0.
     ///   - aberrationZoneWidth: Width in points of the zone near the boundary where chromatic aberration is applied. Typical range 1.0–6.0.
-    ///   - refractionStrength: Maximum pixel displacement at the indicator boundary. Typical range 1.5–5.0.
+    ///   - refractionZoneWidth: Width in points of the zone near the boundary where lens distortion is applied. Typical range 2.0–12.0.
     ///   - aberrationStrength: RGB channel separation in pixels at the indicator boundary. Typical range 1.0–4.0.
+    ///   - refractionStrength: Maximum pixel displacement at the indicator boundary. Typical range 1.5–5.0.
+    
     @ViewBuilder
     func indicatorLensEffect(
         frame: CGRect,
         cornerRadius: CGFloat,
-        refractionZoneWidth: CGFloat,
         aberrationZoneWidth: CGFloat,
+        refractionZoneWidth: CGFloat,
         aberrationStrength: CGFloat,
         refractionStrength: CGFloat
     ) -> some View {

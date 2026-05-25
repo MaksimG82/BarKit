@@ -30,6 +30,9 @@ import SwiftUI
 #endif
 
 extension View {
+    /// Applies a colored border overlay for layout debugging when in DEBUG builds.
+    /// Has no effect in release builds.
+    /// - Parameter color: The border color used to highlight the view's frame.
     @ViewBuilder
     func applyDebugVisuals(color: Color) -> some View {
         #if DEBUG

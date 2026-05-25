@@ -1,6 +1,6 @@
 //
 //  View+barShadow.swift
-//  BarKitExample
+//  BarKit
 //
 //  Created by Maksim Gaisin on 13.05.26.
 //

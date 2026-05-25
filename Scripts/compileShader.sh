@@ -30,9 +30,11 @@ METAL_SRC="$PACKAGE_ROOT/Shaders/${SHADER_NAME}.metal"
 ## Output directory
 OUTPUT_DIR="$PACKAGE_ROOT/Sources/BarKit/Metal"
 
-## Temporary .air intermediate files
 TMP_AIR_DEVICE="/tmp/${SHADER_NAME}-iphoneos.air"
 TMP_AIR_SIM="/tmp/${SHADER_NAME}-iphonesimulator.air"
+
+# ── Cleanup on exit ───────────────────────────────────────────────────────────
+trap 'rm -f "$TMP_AIR_DEVICE" "$TMP_AIR_SIM"' EXIT
 
 # ── Validate source ────────────────────────────────────────────────────────────
 if [ ! -f "$METAL_SRC" ]; then

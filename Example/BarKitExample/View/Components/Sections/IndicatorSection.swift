@@ -217,34 +217,34 @@ private extension IndicatorSection {
     var effectsSection: some View {
         Section {
             Toggle("Lens Distortion", isOn: bindings.lensDistortionEnabled())
-            if configuration.effects.contains(.lensDistortion) {
+            if configuration.effects.contains(where: { if case .lensDistortion = $0 { return true }; return false }) {
                 SettingSlider(
                     title: "Zone Width",
-                    value: bindings.refractionZoneWidth(),
+                    value: bindings.lensDistortionConfig().zoneWidth,
                     range: 2.0...12.0,
                     step: 0.5,
                     format: .fractionalOne
                 )
                 SettingSlider(
                     title: "Strength",
-                    value: bindings.refractionStrength(),
+                    value: bindings.lensDistortionConfig().strength,
                     range: 1.5...5.0,
                     step: 0.1,
                     format: .fractionalOne
                 )
             }
             Toggle("Chromatic Aberration", isOn: bindings.chromaticAberrationEnabled())
-            if configuration.effects.contains(.chromaticAberration) {
+            if configuration.effects.contains(where: { if case .chromaticAberration = $0 { return true }; return false }) {
                 SettingSlider(
                     title: "Zone Width",
-                    value: bindings.aberrationZoneWidth(),
+                    value: bindings.chromaticAberrationConfig().zoneWidth,
                     range: 1.0...6.0,
                     step: 0.5,
                     format: .fractionalOne
                 )
                 SettingSlider(
                     title: "Strength",
-                    value: bindings.aberrationStrength(),
+                    value: bindings.chromaticAberrationConfig().strength,
                     range: 1.0...4.0,
                     step: 0.1,
                     format: .fractionalOne

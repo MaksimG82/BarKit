@@ -3,11 +3,12 @@
 //  BarKit
 //
 //  Created by Maksim Gaisin on 29.04.26.
+//
 
 import SwiftUI
 
 /// Defines the shadow appearance of the bar capsule.
-public struct ShadowConfiguration {
+public struct ShadowConfiguration: Equatable, Sendable {
     /// The shadow color.
     public var color: Color
     /// The shadow blur radius.

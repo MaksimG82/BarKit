@@ -25,7 +25,7 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
     let isVerticalCompact: Bool
     
     /// The layout axis of the parent bar, used to determine item sizing behaviour.
-    let axis: BarConfiguration.Axis
+    let axis: BarLayoutAxis
     
     /// The icon-title arrangement inherited from `BarConfiguration`.
     /// `nil` defers resolution to `resolvedContentAxis`.
@@ -63,7 +63,7 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
     
     /// Resolves the effective icon-title arrangement, using the explicit config value
     /// or inferring from bar axis and size class when `itemContentAxis` is `nil`.
-    var resolvedContentAxis: ItemContentAxis {
+    private var resolvedContentAxis: ItemContentAxis {
         itemContentAxis ?? (isVerticalCompact ? .horizontal :
             axis == .vertical ? .horizontal : .vertical)
     }

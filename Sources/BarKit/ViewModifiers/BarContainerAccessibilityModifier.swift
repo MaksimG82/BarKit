@@ -1,5 +1,5 @@
 //
-//  BarAccecibilityModifier.swift
+//  BarContainerAccessibilityModifier.swift
 //  BarKit
 //
 //  Created by Maksim Gaisin on 18.05.26.

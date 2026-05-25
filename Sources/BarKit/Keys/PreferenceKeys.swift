@@ -10,11 +10,10 @@ import SwiftUI
 /// A dictionary mapping item identifiers to their frames.
 typealias BarItemFrames = [AnyHashable: CGRect]
 
-
 /// A preference key for collecting and merging item frames.
 struct BarItemFrameKey: PreferenceKey {
     
-    /// Initial value containing item IDs and their frame.
+    /// An empty dictionary; populated as item frames are reported by child views.
     nonisolated(unsafe) static let defaultValue: BarItemFrames = [:]
     
     /// Merges coordinates from child views into a single dictionary.

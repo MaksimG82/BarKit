@@ -11,7 +11,7 @@
 /// BarIcon.system("heart.fill")
 /// BarIcon.custom("myCustomIcon")
 /// ```
-public enum BarIcon: Hashable {
+public enum BarIcon: Hashable, Sendable {
     /// Custom image asset name.
     case custom(String)
 

@@ -34,7 +34,7 @@ final class StandaloneBindings: BindingProvider {
     // MARK: - Axis
 
     /// Binding for the bar layout axis.
-    func axis() -> Binding<BarConfiguration.Axis> {
+    func axis() -> Binding<BarLayoutAxis> {
         binding(
             get: { self.viewModel.state.standalone.barConfiguration },
             keyPath: \.axis,
@@ -173,7 +173,7 @@ final class StandaloneBindings: BindingProvider {
     }
 
     /// Binding for the haptic feedback style picker.
-    func hapticFeedback() -> Binding<HapticFeedback> {
+    func hapticFeedback() -> Binding<HapticFeedbackConfiguration> {
         Binding(
             get: { self.viewModel.state.standalone.barConfiguration.hapticFeedback ?? .selection },
             set: { self.viewModel.send(.standalone(.updateHapticFeedback($0))) }

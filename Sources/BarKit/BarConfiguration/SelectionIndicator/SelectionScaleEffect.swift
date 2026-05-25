@@ -11,16 +11,16 @@ import SwiftUI
 public struct SelectionScaleEffect {
 
     /// Animation applied specifically to the scaling effect.
-    public var scalingAnimation: BarAnimation? = .parameters(.init(type: .easeInOut, duration: 0.15))
+    public var scalingAnimation: BarAnimation?
 
     /// Horizontal scale factor during the transition.
-    public var xScale: CGFloat = 1.2
+    public var xScale: CGFloat
 
     /// Vertical scale factor during the transition.
-    public var yScale: CGFloat = 1.2
+    public var yScale: CGFloat
 
-    /// The time to wait before resetting the animation state.
-    public var duration: Double = 0.2
+    /// Total duration of the scale cycle in seconds — scale up and reset combined.
+    public var duration: Double
 
     public init(
         scalingAnimation: BarAnimation = .parameters(.init(type: .easeInOut, duration: 0.15)),
@@ -33,14 +33,9 @@ public struct SelectionScaleEffect {
         self.yScale = yScale
         self.duration = duration
     }
-}
 
-// MARK: - Helpers
-
-public extension SelectionScaleEffect {
- 
     /// Resolves the animation for use in view modifiers.
-    var resolvedAnimation: Animation? {
+    public var resolvedAnimation: Animation? {
         scalingAnimation?.animation
     }
 }
