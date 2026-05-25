@@ -70,7 +70,7 @@ struct BarItemView<Item: BarItemProtocol>: View {
     
     /// Resolves the effective icon-title arrangement, using the explicit config value
     /// or inferring from bar axis and size class when `itemContentAxis` is `nil`.
-    var resolvedContentAxis: ItemContentAxis {
+    private var resolvedContentAxis: ItemContentAxis {
         itemContentAxis ?? (isVerticalCompact ? .horizontal :
             axis == .vertical ? .horizontal : .vertical)
     }
@@ -132,8 +132,7 @@ struct BarItemView<Item: BarItemProtocol>: View {
         .capturePreference(
             key: BarItemFrameKey.self,
             in: .named(coordinateSpaceName)
-        ) { proxy in
-            [item.id: proxy.frame(in: .named(coordinateSpaceName))]
+        ) { [item.id: $0.frame(in: .named(coordinateSpaceName))]
         }
         .modifier(BarItemAccessibilityModifier(item: item, isSelected: isSelected))
     }

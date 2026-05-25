@@ -259,7 +259,6 @@ private extension BarView {
                 gestureLocation = value.location
             }
             .onEnded { _ in
-                isSelectionIndicatorScaling = true
                 handleSelection(nearestItem(to: indicatorFrame()))
                 isDragging = false
                 gestureLocation = nil
@@ -296,34 +295,31 @@ private extension BarView {
             isSelectionIndicatorScaling = true
             isIndicatorMoving = true
             withAnimation(transition) { performSelection() }
-            Task {
-                try? await Task.sleep(for: .seconds(scaleEffect.duration))
-                await MainActor.run {
-                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
-                    stopMoving()
-                }
-            }
+            scheduleIndicatorReset(
+                after: scaleEffect.duration,
+                scaleEffect: scaleEffect
+            )
 
         case (let transition?, nil):
             isIndicatorMoving = true
             withAnimation(transition) { performSelection() }
-            Task {
-                try? await Task.sleep(for: .seconds(indicatorConfiguration.transitionAnimation?.duration ?? 0.5))
-                await MainActor.run { isIndicatorMoving = false }
+            let duration: Double
+            if case .parameters(let params) = indicatorConfiguration.transitionAnimation {
+                duration = params.duration
+            } else {
+                duration = 0
             }
-
+            scheduleIndicatorReset(after: duration, scaleEffect: nil)
+        
         case (nil, let scaleEffect?):
             isSelectionIndicatorScaling = true
             isIndicatorMoving = true
             performSelection()
-            Task {
-                try? await Task.sleep(for: .seconds(scaleEffect.duration))
-                await MainActor.run {
-                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
-                    stopMoving()
-                }
-            }
-
+            scheduleIndicatorReset(
+                after: scaleEffect.duration,
+                scaleEffect: scaleEffect
+            )
+            
         default:
             performSelection()
         }
@@ -351,7 +347,7 @@ private extension BarView {
             } else {
                 minX = selectedItemFrame.minX + inset.leading
             }
-            return CGPoint(x: minX, y: selectedItemFrame.minY + inset.top)
+            return CGPoint(x: minX, y: 0)
 
         case .vertical:
             let minY: CGFloat
@@ -363,8 +359,7 @@ private extension BarView {
             } else {
                 minY = selectedItemFrame.minY + inset.top
             }
-            let minX = itemFrames.values.map(\.minX).min() ?? selectedItemFrame.minX + inset.leading
-            return CGPoint(x: minX, y: minY)
+            return CGPoint(x: 0, y: minY)
         }
     }
 
@@ -420,6 +415,22 @@ private extension BarView {
         let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
         return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.top + insets.bottom
     }
+    
+    /// Schedules a reset of indicator animation states after a given duration.
+    private func scheduleIndicatorReset(
+        after duration: Double,
+        scaleEffect: SelectionScaleEffect?
+    ) {
+        Task {
+            try? await Task.sleep(for: .seconds(duration))
+            await MainActor.run {
+                if let scaleEffect {
+                    withAnimation(scaleEffect.resolvedAnimation) { isSelectionIndicatorScaling = false }
+                }
+                withAnimation(nil) { isIndicatorMoving = false }
+            }
+        }
+    }
 }
 
 #if DEBUG
@@ -455,7 +466,7 @@ private struct PreviewBarItem: BarItemProtocol {
     let title: String
     let icon: BarIcon
     var style: BarItemStyle = .regular
-    var id: AnyHashable { title }
+    var id: String { title }
 }
 
 #endif

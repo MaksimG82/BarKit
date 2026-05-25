@@ -63,7 +63,7 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
     
     /// Resolves the effective icon-title arrangement, using the explicit config value
     /// or inferring from bar axis and size class when `itemContentAxis` is `nil`.
-    var resolvedContentAxis: ItemContentAxis {
+    private var resolvedContentAxis: ItemContentAxis {
         itemContentAxis ?? (isVerticalCompact ? .horizontal :
             axis == .vertical ? .horizontal : .vertical)
     }
