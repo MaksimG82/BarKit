@@ -73,7 +73,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     public init(
         items: [Item],
         selected: Binding<Item>,
-        configuration: BarConfiguration,
+        configuration: BarConfiguration = .init(),
         id: String? = "tabBar",
         action: ((Item) -> Void)? = nil
     ) {
