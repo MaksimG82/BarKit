@@ -25,7 +25,10 @@ struct ExampleContentView: View {
             NavigationStack {
                 contentRouter
             }
-            .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+            .floatingTabBarOffset(
+                viewModel.contentOffset(sizeClass == .compact),
+                barID: "tabBar"
+            )
             
             if barVisibility["tabBar"] != .hidden {
                 TabBarContainer(viewModel: viewModel)
@@ -53,14 +56,12 @@ private extension ExampleContentView {
         case .tabBar:
             TabBarScreen(
             viewModel: viewModel,
-            bindings: .init(viewModel: viewModel
-                           )
+            bindings: .init(viewModel: viewModel)
         )
         case .standalone:
             StandaloneScreen(
             viewModel: viewModel,
-            bindings: .init(viewModel: viewModel
-                           )
+            bindings: .init(viewModel: viewModel)
         )
         case .codegeneration:
             CodeGenerationScreen(viewModel: viewModel)

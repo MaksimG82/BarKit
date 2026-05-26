@@ -29,7 +29,10 @@ struct StandaloneScreen: View {
                 hapticFeedbackLink
             }
         }
-        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        .floatingTabBarOffset(
+            viewModel.contentOffset(sizeClass == .compact),
+            barID: "tabBar"
+        )
         .toolbar { resetButton }
         .navigationTitle("Standalone")
     }

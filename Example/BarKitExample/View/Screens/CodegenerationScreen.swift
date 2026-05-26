@@ -20,7 +20,10 @@ struct CodeGenerationScreen: View {
             descriptionSection
             generationSection
         }
-        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        .floatingTabBarOffset(
+            viewModel.contentOffset(sizeClass == .compact),
+            barID: "tabBar"
+        )
         .navigationTitle("Generator")
     }
 }
