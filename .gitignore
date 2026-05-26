@@ -1,0 +1,6 @@
+gitignore
+.DS_Store
+.build/
+.swiftpm/
+.githooks/
+xcuserdata

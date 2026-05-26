@@ -1,0 +1,19 @@
+name: Build and run test on push or pull request
+
+on:
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build (iOS)
+      run: |
+            xcodebuild \
+            -scheme BarKit \
+            -destination 'generic/platform=iOS' \
+            build
