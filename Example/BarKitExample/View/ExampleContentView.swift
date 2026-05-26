@@ -15,6 +15,8 @@ struct ExampleContentView: View {
     // MARK: - Property Wrappers
  
     @State private var viewModel = ExampleViewModel()
+    
+    @State private var barVisibility: [String: Visibility] = [:]
  
     // MARK: - Body
  
@@ -24,9 +26,13 @@ struct ExampleContentView: View {
                 contentRouter
             }
             .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
-            TabBarContainer(viewModel: viewModel)
-                .id(viewModel.state.instanceID)
+            
+            if barVisibility["tabBar"] != .hidden {
+                TabBarContainer(viewModel: viewModel)
+                    .id(viewModel.state.instanceID)
+            }
         }
+        .registerBarVisibility($barVisibility)
         .ignoresSafeArea(
             .all,
             edges: viewModel.state.tabBar.mode == .floating ? .bottom : []

@@ -43,33 +43,33 @@ struct StandaloneScreen: View {
 private extension StandaloneScreen {
     
     var appearanceLink: some View {
-        settingsLink("Appearance", viewModel: viewModel, header: { barPreview }) {
+        settingsLink("Appearance", viewModel: viewModel, hideTabBar: true, header: { barPreview }) {
             cornerRadiusSection
             shadowSection
         }
     }
     
     var indicatorLink: some View {
-        settingsLink("Selection indicator", viewModel: viewModel, header: { barPreview }){
+        settingsLink("Selection indicator", viewModel: viewModel, hideTabBar: true, header: { barPreview }){
             indicatorSection
         }
     }
 
     var backgroundLink: some View {
-        settingsLink("Background", viewModel: viewModel, header: { barPreview }) {
+        settingsLink("Background", viewModel: viewModel, hideTabBar: true, header: { barPreview }) {
             backgroundSection
         }
     }
 
     
     var hapticFeedbackLink: some View {
-        settingsLink("Haptic feedback", viewModel: viewModel) {
+        settingsLink("Haptic feedback", viewModel: viewModel, hideTabBar: true) {
               hapticFeedbackSection
             }
     }
     
     var itemSettingsLink: some View {
-        settingsLink("Bar item", viewModel: viewModel, header: { barPreview }) {
+        settingsLink("Bar item", viewModel: viewModel, hideTabBar: true, header: { barPreview }) {
             itemConfigurationSection
         }
     }

@@ -50,6 +50,9 @@ public struct BarView<Item: BarItemProtocol>: View {
     /// The configuration object defining the visual style, layout, and behavior of the bar.
     private let config: BarConfiguration
 
+    /// An optional identifier used as a key in the bar visibility dictionary.
+    private let id: String?
+    
     /// An optional closure executed when an item is tapped, even if already selected.
     private let action: ((Item) -> Void)?
 
@@ -77,16 +80,20 @@ public struct BarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - config: A configuration object defining the visual style of the bar.
+    ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
+
     public init(
         items: [Item],
         selected: Binding<Item>,
         config: BarConfiguration,
-        action: ((Item) -> Void)? = nil
+        id: String? = nil,
+        action: ((Item) -> Void)? = nil,
     ) {
         self.items = items
         _selected = selected
         self.config = config
+        self.id = id
         self.action = action
     }
 
