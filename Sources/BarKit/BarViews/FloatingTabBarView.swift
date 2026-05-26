@@ -76,7 +76,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     public init(
         items: [Item],
         selected: Binding<Item>,
-        configuration: BarConfiguration,
+        configuration: BarConfiguration = .init(),
         id: String? = "tabBar",
         floatingInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16),
         floatingInsetsCompact: EdgeInsets? = nil,

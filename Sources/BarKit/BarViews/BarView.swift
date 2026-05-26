@@ -86,7 +86,7 @@ public struct BarView<Item: BarItemProtocol>: View {
     public init(
         items: [Item],
         selected: Binding<Item>,
-        configuration: BarConfiguration,
+        configuration: BarConfiguration = .init(),
         id: String? = nil,
         action: ((Item) -> Void)? = nil,
     ) {
