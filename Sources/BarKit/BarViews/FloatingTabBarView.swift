@@ -37,6 +37,9 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
 
     /// Visual style, layout, and behavior configuration for the bar.
     private let config: BarConfiguration
+    
+    /// An optional identifier used as a key in the bar visibility dictionary.
+    private let id: String?
 
     /// Insets that position the capsule relative to the screen edges in regular size class.
     /// - `leading` / `trailing`: horizontal distance from screen edges.
@@ -66,6 +69,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - config: Visual and layout configuration for the bar.
+    ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - floatingInsets: Insets that position the capsule relative to screen edges.
     ///   - floatingInsetsCompact:Insets for compact height size class (e.g. landscape).
     ///   - action: An optional closure executed when an item is tapped.
@@ -73,6 +77,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         config: BarConfiguration,
+        id: String? = "tabBar",
         floatingInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16),
         floatingInsetsCompact: EdgeInsets? = nil,
         action: ((Item) -> Void)? = nil
@@ -80,6 +85,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         self.items = items
         _selected = selected
         self.config = config
+        self.id = id
         self.floatingInsets = floatingInsets
         self.floatingInsetsCompact = floatingInsetsCompact
         self.action = action
@@ -92,6 +98,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: config,
+            id: id,
             action: action
         )
         .padding(.leading, activeInsets.leading)

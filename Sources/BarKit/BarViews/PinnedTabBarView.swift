@@ -37,6 +37,9 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     /// Visual style and behavior configuration for the bar.
     /// - Note: `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
     private let config: BarConfiguration
+    
+    /// An optional identifier used as a key in the bar visibility dictionary.
+    private let id: String?
 
     /// An optional closure executed when an item is tapped, even if already selected.
     private let action: ((Item) -> Void)?
@@ -65,16 +68,19 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - config: Visual and behavior configuration. `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
+    ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],
         selected: Binding<Item>,
         config: BarConfiguration,
+        id: String? = "tabBar",
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items
         _selected = selected
         self.config = config
+        self.id = id
         self.action = action
     }
 
@@ -85,6 +91,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             config: pinnedConfig,
+            id: id,
             action: action
         )
         .frame(maxWidth: .infinity)
