@@ -6,7 +6,9 @@ Customizable SwiftUI bar with selectable items.
 ![Swift](https://img.shields.io/badge/Swift-6.0-orange)
 ![iOS](https://img.shields.io/badge/iOS-16%2B-blue)
 ![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen)
+![Documentation](https://img.shields.io/badge/Documentation-DocC-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+
 
 ![BarKit Banner](Assets/banner.png)
 ## Features
@@ -106,3 +108,7 @@ VStack(spacing: 0) {
 ```
 
 ![Tab Bar](Assets/tabbar.gif)
+
+## Documentation
+
+Full documentation is available at [maksimg82.github.io/BarKit](https://maksimg82.github.io/BarKit/documentation/barkit)
