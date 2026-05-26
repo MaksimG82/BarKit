@@ -20,7 +20,10 @@ struct CodeGenerationScreen: View {
             descriptionSection
             generationSection
         }
-        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        .floatingTabBarOffset(
+            viewModel.contentOffset(sizeClass == .compact),
+            barID: "tabBar"
+        )
         .navigationTitle("Generator")
     }
 }
@@ -51,7 +54,7 @@ private extension CodeGenerationScreen {
 
     var floatingBarButton: some View {
         ShareLink(
-            item: viewModel.floatingTabBarConfig.initString,
+            item: viewModel.floatingTabBarConfiguration.initString,
             subject: Text("FloatingTabBarView configuration"),
             message: Text("Generated BarKit configuration")
         ) {
@@ -61,7 +64,7 @@ private extension CodeGenerationScreen {
 
     var pinnedBarButton: some View {
         ShareLink(
-            item: viewModel.pinnedTabBarConfig.initString,
+            item: viewModel.pinnedTabBarConfiguration.initString,
             subject: Text("PinnedTabBarView configuration"),
             message: Text("Generated BarKit configuration")
         ) {
@@ -71,7 +74,7 @@ private extension CodeGenerationScreen {
 
     var standaloneBarButton: some View {
         ShareLink(
-            item: viewModel.standaloneBarConfig.initString,
+            item: viewModel.standaloneBarConfiguration.initString,
             subject: Text("BarView configuration"),
             message: Text("Generated BarKit configuration")
         ) {

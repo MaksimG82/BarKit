@@ -31,7 +31,11 @@ struct TabBarScreen: View {
             }
             hapticFeedbackLink
         }
-        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+        .floatingTabBarOffset(
+            viewModel.contentOffset(sizeClass == .compact),
+            barID: "tabBar"
+        )
+
         .toolbar { resetButton }
         .navigationTitle("Tab bar")
     }
@@ -74,10 +78,10 @@ private extension TabBarScreen {
                 viewModel: viewModel,
                 bindings: .init(
                     viewModel: viewModel,
-                    stateKeyPath: \.tabBar.floatingTabBarState.barConfig.indicator,
+                    stateKeyPath: \.tabBar.floatingTabBarState.barConfiguration.indicator,
                     wrapIntent: { .tabBar(.floating(.indicator($0))) }
                 ),
-                stateKeyPath: \.tabBar.floatingTabBarState.barConfig.indicator
+                stateKeyPath: \.tabBar.floatingTabBarState.barConfiguration.indicator
             )
         }
     }
@@ -214,23 +218,23 @@ private extension TabBarScreen {
     var itemEdgeInsetsSection: some View {
         ItemEdgeInsetsSection(
             title: "Item padding",
-            top: bindings.regularItemConfig(\.edgeInsets.top),
-            bottom: bindings.regularItemConfig(\.edgeInsets.bottom)
+            top: bindings.regularItemConfiguration(\.edgeInsets.top),
+            bottom: bindings.regularItemConfiguration(\.edgeInsets.bottom)
         )
     }
 
     var itemEdgeInsetsCompactSection: some View {
         ItemEdgeInsetsSection(
             title: "Item padding (Compact)",
-            top: bindings.regularItemConfig(\.edgeInsetsCompact.top),
-            bottom: bindings.regularItemConfig(\.edgeInsetsCompact.bottom)
+            top: bindings.regularItemConfiguration(\.edgeInsetsCompact.top),
+            bottom: bindings.regularItemConfiguration(\.edgeInsetsCompact.bottom)
         )
     }
     
     var itemColorsSection: some View {
         ItemColorsSection(
-            selectedColor: bindings.regularItemConfig(\.selectedColor),
-            unselectedColor: bindings.regularItemConfig(\.unselectedColor)
+            selectedColor: bindings.regularItemConfiguration(\.selectedColor),
+            unselectedColor: bindings.regularItemConfiguration(\.unselectedColor)
         )
     }
     
@@ -238,19 +242,19 @@ private extension TabBarScreen {
         Section {
             SettingSlider(
                 title: "Icon Size",
-                value: bindings.regularItemConfig(\.iconSideLength),
+                value: bindings.regularItemConfiguration(\.iconSideLength),
                 range: 16...48
             )
             SettingSlider(
                 title: "Selected Scale",
-                value: bindings.regularItemConfig(\.selectedIconScale),
+                value: bindings.regularItemConfiguration(\.selectedIconScale),
                 range: 1.0...1.5,
                 step: 0.01,
                 format: .fractionalTwo
             )
             SettingSlider(
                 title: "Compact Scale",
-                value: bindings.regularItemConfig(\.compactIconScale),
+                value: bindings.regularItemConfiguration(\.compactIconScale),
                 range: 0.5...1.0,
                 step: 0.01,
                 format: .fractionalTwo
@@ -261,7 +265,7 @@ private extension TabBarScreen {
     }
     
     var itemTextStyleSection: some View {
-        ItemTextStyleSection(textStyle: bindings.regularItemConfig(\.textStyle))
+        ItemTextStyleSection(textStyle: bindings.regularItemConfiguration(\.textStyle))
     }
     
     var itemContentAxisSection: some View {
@@ -275,7 +279,7 @@ private extension TabBarScreen {
             }
             SettingSlider(
                 title: "Icon Size",
-                value: bindings.prominentItemConfig(\.iconSideLength),
+                value: bindings.prominentItemConfiguration(\.iconSideLength),
                 range: 24...56
             )
         } header: {

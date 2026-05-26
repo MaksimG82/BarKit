@@ -14,7 +14,7 @@ import SwiftUI
 /// ```swift
 /// ZStack(alignment: .bottom) {
 ///     ContentView()
-///     FloatingTabBarView(items: items, selected: $selected, config: config)
+///     FloatingTabBarView(items: items, selected: $selected, configuration: configuration)
 /// }
 /// .ignoresSafeArea(.all, edges: .bottom)
 /// ```
@@ -36,7 +36,10 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     private let items: [Item]
 
     /// Visual style, layout, and behavior configuration for the bar.
-    private let config: BarConfiguration
+    private let configuration: BarConfiguration
+    
+    /// An optional identifier used as a key in the bar visibility dictionary.
+    private let id: String?
 
     /// Insets that position the capsule relative to the screen edges in regular size class.
     /// - `leading` / `trailing`: horizontal distance from screen edges.
@@ -65,21 +68,24 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     /// - Parameters:
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
-    ///   - config: Visual and layout configuration for the bar.
+    ///   - configuration: Visual and layout configuration for the bar.
+    ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - floatingInsets: Insets that position the capsule relative to screen edges.
     ///   - floatingInsetsCompact:Insets for compact height size class (e.g. landscape).
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],
         selected: Binding<Item>,
-        config: BarConfiguration,
+        configuration: BarConfiguration,
+        id: String? = "tabBar",
         floatingInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16),
         floatingInsetsCompact: EdgeInsets? = nil,
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items
         _selected = selected
-        self.config = config
+        self.configuration = configuration
+        self.id = id
         self.floatingInsets = floatingInsets
         self.floatingInsetsCompact = floatingInsetsCompact
         self.action = action
@@ -91,7 +97,8 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         BarView(
             items: items,
             selected: $selected,
-            config: config,
+            configuration: configuration,
+            id: id,
             action: action
         )
         .padding(.leading, activeInsets.leading)
@@ -122,7 +129,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         FloatingTabBarView(
             items: items,
             selected: $selected,
-            config: .init(itemStyles: [.regular: .init()]),
+            configuration: .init(itemStyles: [.regular: .init()]),
             floatingInsets: .init(top: 0, leading: 16, bottom: 20, trailing: 16)
         )
     }

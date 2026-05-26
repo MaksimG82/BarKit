@@ -44,7 +44,7 @@ enum TabBarIntent {
     case updateBackground(BarBackground)
     
     //// Updates the ItemConfiguration for .regular style.
-    case updateRegularItemConfig(ItemConfiguration)
+    case updateRegularItemConfiguration(ItemConfiguration)
     
     /// Updates the arrangement of icon and title within each bar item.
     case updateItemContentAxis(ItemContentAxis?)
@@ -80,7 +80,7 @@ enum FloatingTabBarIntent {
 /// Actions available on the Pinned tab bar.
 enum PinnedTabBarIntent {
     /// Updates the ItemConfiguration for .prominent style. Pinned mode only.
-    case updateProminentItemConfig(ItemConfiguration)
+    case updateProminentItemConfiguration(ItemConfiguration)
         
     /// Updates the style of a tab item.
     /// Note: Pinned mode only.
@@ -115,7 +115,7 @@ enum StandaloneIntent {
     case updateHapticFeedback(HapticFeedbackConfiguration)
     
     /// Updates the ItemConfiguration for .regular style.
-    case updateRegularItemConfig(ItemConfiguration)
+    case updateRegularItemConfiguration(ItemConfiguration)
     
     /// Updates the arrangement of icon and title within each bar item.
     case updateItemContentAxis(ItemContentAxis?)
@@ -193,13 +193,13 @@ enum IndicatorIntent {
     case updateLensDistortion(Bool)
 
     /// Updates the lens distortion configuration.
-    case updateLensDistortionConfig(LensDistortionConfiguration)
+    case updateLensDistortionConfiguration(LensDistortionConfiguration)
 
     /// Enables or disables the chromatic aberration effect.
     case updateChromaticAberration(Bool)
 
     /// Updates the chromatic aberration configuration.
-    case updateChromaticAberrationConfig(ChromaticAberrationConfiguration)
+    case updateChromaticAberrationConfiguration(ChromaticAberrationConfiguration)
     
     // MARK: - Reset
     

@@ -220,14 +220,14 @@ private extension IndicatorSection {
             if configuration.effects.contains(where: { if case .lensDistortion = $0 { return true }; return false }) {
                 SettingSlider(
                     title: "Zone Width",
-                    value: bindings.lensDistortionConfig().zoneWidth,
+                    value: bindings.lensDistortionConfiguration().zoneWidth,
                     range: 2.0...12.0,
                     step: 0.5,
                     format: .fractionalOne
                 )
                 SettingSlider(
                     title: "Strength",
-                    value: bindings.lensDistortionConfig().strength,
+                    value: bindings.lensDistortionConfiguration().strength,
                     range: 1.5...5.0,
                     step: 0.1,
                     format: .fractionalOne
@@ -237,14 +237,14 @@ private extension IndicatorSection {
             if configuration.effects.contains(where: { if case .chromaticAberration = $0 { return true }; return false }) {
                 SettingSlider(
                     title: "Zone Width",
-                    value: bindings.chromaticAberrationConfig().zoneWidth,
+                    value: bindings.chromaticAberrationConfiguration().zoneWidth,
                     range: 1.0...6.0,
                     step: 0.5,
                     format: .fractionalOne
                 )
                 SettingSlider(
                     title: "Strength",
-                    value: bindings.chromaticAberrationConfig().strength,
+                    value: bindings.chromaticAberrationConfiguration().strength,
                     range: 1.0...4.0,
                     step: 0.1,
                     format: .fractionalOne

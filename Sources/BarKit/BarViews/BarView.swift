@@ -48,8 +48,11 @@ public struct BarView<Item: BarItemProtocol>: View {
     private let items: [Item]
 
     /// The configuration object defining the visual style, layout, and behavior of the bar.
-    private let config: BarConfiguration
+    private let configuration: BarConfiguration
 
+    /// An optional identifier used as a key in the bar visibility dictionary.
+    private let id: String?
+    
     /// An optional closure executed when an item is tapped, even if already selected.
     private let action: ((Item) -> Void)?
 
@@ -76,17 +79,21 @@ public struct BarView<Item: BarItemProtocol>: View {
     /// - Parameters:
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
-    ///   - config: A configuration object defining the visual style of the bar.
+    ///   - configuration: A configuration object defining the visual style of the bar.
+    ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
+
     public init(
         items: [Item],
         selected: Binding<Item>,
-        config: BarConfiguration,
-        action: ((Item) -> Void)? = nil
+        configuration: BarConfiguration,
+        id: String? = nil,
+        action: ((Item) -> Void)? = nil,
     ) {
         self.items = items
         _selected = selected
-        self.config = config
+        self.configuration = configuration
+        self.id = id
         self.action = action
     }
 
@@ -94,12 +101,12 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     public var body: some View {
         let indicatorFrame = indicatorFrame()
-        ZStack(alignment: config.axis == .horizontal ? .leading : .top) {
+        ZStack(alignment: configuration.axis == .horizontal ? .leading : .top) {
             itemsStack
-                .indicatorLens(config.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
+                .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
             
             overlayItemsStack(indicatorFrame: indicatorFrame)
-                .indicatorLens(config.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
+                .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
         }
         .frame(
             height: barHeight(),
@@ -109,14 +116,14 @@ public struct BarView<Item: BarItemProtocol>: View {
             backgroundCapsule
                 .applyDebugVisuals(color: .green)
         }
-        .overlay(alignment: config.axis == .horizontal ? .leading : .top) {
+        .overlay(alignment: configuration.axis == .horizontal ? .leading : .top) {
             selectionIndicator(frame: indicatorFrame)
         }
-        .hapticFeedback(config.hapticFeedback, trigger: selected)
+        .hapticFeedback(configuration.hapticFeedback, trigger: selected)
         .modifier(
             BarContainerAccessibilityModifier(
-                label: config.barAccessibilityLabel,
-                sortPriority: config.accessibilitySortPriority
+                label: configuration.barAccessibilityLabel,
+                sortPriority: configuration.accessibilitySortPriority
             )
         )
     }
@@ -133,13 +140,13 @@ private extension BarView {
                 item: item,
                 isSelected: item.id == selected.id,
                 isVerticalCompact: isVerticalCompact,
-                config: config
+                configuration: configuration
             ) {
                 handleSelection(item)
             }
         }
         .adaptiveCoordinateSpace(name: coordinateSpaceName)
-        .environment(\.barSpaceName, coordinateSpaceName)
+        .environment(\.bkBarSpaceName, coordinateSpaceName)
         .onPreferenceChange(BarItemFrameKey.self) { frames in
             itemFrames = frames
         }
@@ -149,21 +156,21 @@ private extension BarView {
     /// The bar background rendered behind the items stack.
     @ViewBuilder
     var backgroundCapsule: some View {
-        switch config.background {
+        switch configuration.background {
         case let .color(color):
-            RoundedRectangle(cornerRadius: config.cornerRadius)
+            RoundedRectangle(cornerRadius: configuration.cornerRadius)
                 .fill(color)
-                .barShadow(config.shadow)
+                .barShadow(configuration.shadow)
         case let .material(material, tint):
-            RoundedRectangle(cornerRadius: config.cornerRadius)
+            RoundedRectangle(cornerRadius: configuration.cornerRadius)
                 .fill(material.resolved)
-                .overlay { RoundedRectangle(cornerRadius: config.cornerRadius).fill(tint) }
-                .barShadow(config.shadow)
+                .overlay { RoundedRectangle(cornerRadius: configuration.cornerRadius).fill(tint) }
+                .barShadow(configuration.shadow)
         case let .customBlur(_, tint):
-            RoundedRectangle(cornerRadius: config.cornerRadius)
+            RoundedRectangle(cornerRadius: configuration.cornerRadius)
                 .fill(.clear)
-                .overlay { RoundedRectangle(cornerRadius: config.cornerRadius).fill(tint) }
-                .barShadow(config.shadow)
+                .overlay { RoundedRectangle(cornerRadius: configuration.cornerRadius).fill(tint) }
+                .barShadow(configuration.shadow)
         }
     }
     
@@ -172,26 +179,26 @@ private extension BarView {
     /// Rendered only when `indicatorConfig` is provided.
     @ViewBuilder
     func overlayItemsStack(indicatorFrame: CGRect) -> some View {
-        if let indicatorConfiguration = config.indicator {
+        if let indicatorConfiguration = configuration.indicator {
             itemStack { item in
                 BarItemOverlayView(
                     item: item,
                     isSelected: item.id == selected.id,
                     isVerticalCompact: isVerticalCompact,
-                    config: config
+                    configuration: configuration
                 )
             }
             .adaptiveCoordinateSpace(name: coordinateSpaceName)
             .accessibilityHidden(true)
-            .mask(alignment: config.axis == .horizontal ? .leading : .top) {
+            .mask(alignment: configuration.axis == .horizontal ? .leading : .top) {
                 RoundedRectangle(cornerRadius: indicatorConfiguration.cornerRadius)
                     .frame(
                         width: max(0, indicatorFrame.width),
                         height: max(0, indicatorFrame.height)
                     )
                     .offset(
-                        x: config.axis == .horizontal ? indicatorFrame.minX : 0,
-                        y: config.axis == .vertical ? indicatorFrame.minY : 0
+                        x: configuration.axis == .horizontal ? indicatorFrame.minX : 0,
+                        y: configuration.axis == .vertical ? indicatorFrame.minY : 0
                     )
             }
         }
@@ -201,7 +208,7 @@ private extension BarView {
     /// Rendered only when `indicatorConfig` is provided.
     @ViewBuilder
     func selectionIndicator(frame: CGRect) -> some View {
-        if let indicatorConfiguration = config.indicator {
+        if let indicatorConfiguration = configuration.indicator {
             RoundedRectangle(cornerRadius: indicatorConfiguration.cornerRadius)
                 .fill(indicatorConfiguration.color)
                 .overlay {
@@ -220,8 +227,8 @@ private extension BarView {
                     anchor: .center
                 )
                 .offset(
-                    x: config.axis == .horizontal ? frame.minX : 0,
-                    y: config.axis == .vertical ? frame.minY : 0
+                    x: configuration.axis == .horizontal ? frame.minX : 0,
+                    y: configuration.axis == .vertical ? frame.minY : 0
                 )
                 .gesture(indicatorConfiguration.isDragGestureEnabled ? dragGesture : nil)
         }
@@ -232,13 +239,13 @@ private extension BarView {
     func itemStack<Content: View>(
         @ViewBuilder content: @escaping (Item) -> Content
     ) -> some View {
-        switch config.axis {
+        switch configuration.axis {
         case .horizontal:
-            HStack(alignment: config.itemAlignment.vertical, spacing: config.itemSpacing) {
+            HStack(alignment: configuration.itemAlignment.vertical, spacing: configuration.itemSpacing) {
                 ForEach(items) { content($0) }
             }
         case .vertical:
-            VStack(alignment: config.itemAlignment.horizontal, spacing: config.itemSpacing) {
+            VStack(alignment: configuration.itemAlignment.horizontal, spacing: configuration.itemSpacing) {
                 ForEach(items) { content($0) }
             }
         }
@@ -272,7 +279,7 @@ private extension BarView {
 
     /// Updates the selected item and triggers indicator transition and scale animations.
     func handleSelection(_ item: Item) {
-        guard let indicatorConfiguration = config.indicator else {
+        guard let indicatorConfiguration = configuration.indicator else {
             selected = item
             action?(item)
             return
@@ -332,17 +339,17 @@ private extension BarView {
     
     /// Computes the current offset of the selection indicator, accounting for drag position and layout axis.
     func indicatorOffset() -> CGPoint {
-        guard let indicatorConfiguration = config.indicator else { return .zero }
+        guard let indicatorConfiguration = configuration.indicator else { return .zero }
 
         let inset = indicatorConfiguration.inset
 
-        switch config.axis {
+        switch configuration.axis {
         case .horizontal:
             let minX: CGFloat
             if isDragging, let gestureLocation {
                 let raw = gestureLocation.x - selectedItemFrame.width / 2 + inset.leading
                 let minAllowed = inset.leading
-                let maxAllowed = (selectedItemFrame.width + config.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.leading
+                let maxAllowed = (selectedItemFrame.width + configuration.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.leading
                 minX = max(minAllowed, min(maxAllowed, raw))
             } else {
                 minX = selectedItemFrame.minX + inset.leading
@@ -354,7 +361,7 @@ private extension BarView {
             if isDragging, let gestureLocation {
                 let raw = gestureLocation.y - selectedItemFrame.height / 2 + inset.top
                 let minAllowed = inset.top
-                let maxAllowed = (selectedItemFrame.height + config.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.top
+                let maxAllowed = (selectedItemFrame.height + configuration.itemSpacing) * CGFloat(itemFrames.count - 1) + inset.top
                 minY = max(minAllowed, min(maxAllowed, raw))
             } else {
                 minY = selectedItemFrame.minY + inset.top
@@ -365,7 +372,7 @@ private extension BarView {
 
     /// Computes the current frame of the selection indicator.
     func indicatorFrame() -> CGRect {
-        guard let indicatorConfiguration = config.indicator else { return .zero }
+        guard let indicatorConfiguration = configuration.indicator else { return .zero }
 
         let inset = indicatorConfiguration.inset
         let offset = indicatorOffset()
@@ -373,7 +380,7 @@ private extension BarView {
         let width: CGFloat
         let height: CGFloat
 
-        switch config.axis {
+        switch configuration.axis {
         case .horizontal:
             width = selectedItemFrame.width - inset.leading - inset.trailing
             height = selectedItemFrame.height - inset.top - inset.bottom
@@ -389,7 +396,7 @@ private extension BarView {
     /// Falls back to the current selection if `items` is empty.
     func nearestItem(to frame: CGRect) -> Item {
         items.min(by: {
-            switch config.axis {
+            switch configuration.axis {
             case .horizontal:
                 abs((itemFrames[$0.id]?.midX ?? 0) - frame.midX) <
                 abs((itemFrames[$1.id]?.midX ?? 0) - frame.midX)
@@ -410,10 +417,10 @@ private extension BarView {
     /// - Note: Currently only meaningful for horizontal bars with a prominent center item.
     ///   For vertical bars, width is determined by item content — no equivalent is needed.
     func barHeight() -> CGFloat? {
-        guard let baselineStyle = config.baselineStyle,
-              let itemConfig = config.itemStyles[baselineStyle] else { return nil }
-        let insets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
-        return itemConfig.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.top + insets.bottom
+        guard let baselineStyle = configuration.baselineStyle,
+              let itemconfiguration = configuration.itemStyles[baselineStyle] else { return nil }
+        let insets = isVerticalCompact ? itemconfiguration.edgeInsetsCompact : itemconfiguration.edgeInsets
+        return itemconfiguration.itemContentHeight(isVerticalCompact: isVerticalCompact) + insets.top + insets.bottom
     }
     
     /// Schedules a reset of indicator animation states after a given duration.
@@ -447,7 +454,7 @@ private extension BarView {
 
     ZStack(alignment: .bottom) {
         Color.indigo.ignoresSafeArea()
-        BarView(items: items, selected: $selected, config: .init(
+        BarView(items: items, selected: $selected, configuration: .init(
             axis: .horizontal,
             cornerRadius: 28,
             shadow: .init(),

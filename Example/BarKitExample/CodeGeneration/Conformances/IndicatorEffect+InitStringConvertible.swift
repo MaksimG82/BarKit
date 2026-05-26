@@ -13,10 +13,10 @@ extension IndicatorEffect: InitStringConvertible {
     /// A Swift source string representing this effect as an initializer.
     var initString: String {
         switch self {
-        case .lensDistortion(let config):
-            return ".lensDistortion(\(config.initString))"
-        case .chromaticAberration(let config):
-            return ".chromaticAberration(\(config.initString))"
+        case .lensDistortion(let configuration):
+            return ".lensDistortion(\(configuration.initString))"
+        case .chromaticAberration(let configuration):
+            return ".chromaticAberration(\(configuration.initString))"
         }
     }
 }

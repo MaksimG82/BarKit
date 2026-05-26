@@ -197,14 +197,14 @@ final class IndicatorBindings: BindingProvider {
     }
 
     /// Binding for the lens distortion configuration.
-    func lensDistortionConfig() -> Binding<LensDistortionConfiguration> {
+    func lensDistortionConfiguration() -> Binding<LensDistortionConfiguration> {
         Binding(
             get: {
-                guard case .lensDistortion(let config) = self.configuration.effects.first(where: { if case .lensDistortion = $0 { return true }; return false })
+                guard case .lensDistortion(let configuration) = self.configuration.effects.first(where: { if case .lensDistortion = $0 { return true }; return false })
                 else { return .init() }
-                return config
+                return configuration
             },
-            set: { self.send(.updateLensDistortionConfig($0)) }
+            set: { self.send(.updateLensDistortionConfiguration($0)) }
         )
     }
 
@@ -217,14 +217,14 @@ final class IndicatorBindings: BindingProvider {
     }
 
     /// Binding for the chromatic aberration configuration.
-    func chromaticAberrationConfig() -> Binding<ChromaticAberrationConfiguration> {
+    func chromaticAberrationConfiguration() -> Binding<ChromaticAberrationConfiguration> {
         Binding(
             get: {
-                guard case .chromaticAberration(let config) = self.configuration.effects.first(where: { if case .chromaticAberration = $0 { return true }; return false })
+                guard case .chromaticAberration(let configuration) = self.configuration.effects.first(where: { if case .chromaticAberration = $0 { return true }; return false })
                 else { return .init() }
-                return config
+                return configuration
             },
-            set: { self.send(.updateChromaticAberrationConfig($0)) }
+            set: { self.send(.updateChromaticAberrationConfiguration($0)) }
         )
     }
 }

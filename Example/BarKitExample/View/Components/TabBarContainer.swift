@@ -18,7 +18,7 @@ struct TabBarContainer: View {
             FloatingTabBarView(
                 items: viewModel.state.tabBarItems,
                 selected: selectedItem,
-                config: viewModel.floatingTabBarConfig,
+                configuration: viewModel.floatingTabBarConfiguration,
                 floatingInsets: viewModel.state.tabBar.floatingTabBarState.insets,
                 floatingInsetsCompact: viewModel.state.tabBar.floatingTabBarState.insetsCompact
             )
@@ -27,7 +27,7 @@ struct TabBarContainer: View {
             PinnedTabBarView(
                 items: viewModel.state.tabBarItems,
                 selected: selectedItem,
-                config: viewModel.pinnedTabBarConfig
+                configuration: viewModel.pinnedTabBarConfiguration
             )
         }
     }

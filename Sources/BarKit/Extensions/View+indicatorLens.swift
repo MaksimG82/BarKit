@@ -10,15 +10,15 @@ import SwiftUI
 extension View {
     /// Applies lens effect if indicator configuration is provided and the indicator is in motion.
     @ViewBuilder
-    func indicatorLens(_ config: SelectionIndicatorConfiguration?, frame: CGRect, isActive: Bool) -> some View {
-        if let config, isActive, !config.effects.isEmpty {
+    func indicatorLens(_ configuration: SelectionIndicatorConfiguration?, frame: CGRect, isActive: Bool) -> some View {
+        if let configuration, isActive, !configuration.effects.isEmpty {
             indicatorLensEffect(
                 frame: frame,
-                cornerRadius: config.cornerRadius,
-                aberrationZoneWidth: config.effects.aberrationZoneWidth,
-                refractionZoneWidth: config.effects.refractionZoneWidth,
-                aberrationStrength: config.effects.aberrationStrength,
-                refractionStrength: config.effects.refractionStrength
+                cornerRadius: configuration.cornerRadius,
+                aberrationZoneWidth: configuration.effects.aberrationZoneWidth,
+                refractionZoneWidth: configuration.effects.refractionZoneWidth,
+                aberrationStrength: configuration.effects.aberrationStrength,
+                refractionStrength: configuration.effects.refractionStrength
             )
         } else {
             self
@@ -54,14 +54,14 @@ private extension [IndicatorEffect] {
 
     private var lensDistortion: LensDistortionConfiguration? {
         for effect in self {
-            if case .lensDistortion(let config) = effect { return config }
+            if case .lensDistortion(let configuration) = effect { return configuration }
         }
         return nil
     }
 
     private var chromaticAberration: ChromaticAberrationConfiguration? {
         for effect in self {
-            if case .chromaticAberration(let config) = effect { return config }
+            if case .chromaticAberration(let configuration) = effect { return configuration }
         }
         return nil
     }

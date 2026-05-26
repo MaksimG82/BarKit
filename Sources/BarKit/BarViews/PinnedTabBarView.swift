@@ -19,7 +19,7 @@ import SwiftUI
 /// ```swift
 /// VStack(spacing: 0) {
 ///     ContentView()
-///     PinnedTabBarView(items: items, selected: $selected, config: config)
+///     PinnedTabBarView(items: items, selected: $selected, configuration: configuration)
 /// }
 /// ```
 public struct PinnedTabBarView<Item: BarItemProtocol>: View {
@@ -36,7 +36,10 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
 
     /// Visual style and behavior configuration for the bar.
     /// - Note: `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
-    private let config: BarConfiguration
+    private let configuration: BarConfiguration
+    
+    /// An optional identifier used as a key in the bar visibility dictionary.
+    private let id: String?
 
     /// An optional closure executed when an item is tapped, even if already selected.
     private let action: ((Item) -> Void)?
@@ -44,13 +47,13 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     // MARK: - Computed Properties
 
     /// A derived configuration with pinned-specific overrides applied.
-    private var pinnedConfig: BarConfiguration {
+    private var pinnedconfiguration: BarConfiguration {
         BarConfiguration(
             axis: .horizontal,
             cornerRadius: 0,
             shadow: nil,
             background: .color(.clear),
-            itemStyles: config.itemStyles,
+            itemStyles: configuration.itemStyles,
             itemAlignment: .end,
             baselineStyle: .regular,
             indicator: nil
@@ -64,17 +67,20 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     /// - Parameters:
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
-    ///   - config: Visual and behavior configuration. `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
+    ///   - configuration: Visual and behavior configuration. `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
+    ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],
         selected: Binding<Item>,
-        config: BarConfiguration,
+        configuration: BarConfiguration,
+        id: String? = "tabBar",
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items
         _selected = selected
-        self.config = config
+        self.configuration = configuration
+        self.id = id
         self.action = action
     }
 
@@ -84,7 +90,8 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
         BarView(
             items: items,
             selected: $selected,
-            config: pinnedConfig,
+            configuration: pinnedconfiguration,
+            id: id,
             action: action
         )
         .frame(maxWidth: .infinity)
@@ -103,7 +110,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     /// The background view derived from the bar's `BarBackground` configuration.
     @ViewBuilder
     private var backgroundView: some View {
-        switch config.background {
+        switch configuration.background {
         case let .color(color):
             color
         case let .material(material, tint):
@@ -139,10 +146,10 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
         PinnedTabBarView(
             items: items,
             selected: $selected,
-            config: .init(itemStyles: [.regular: .init()],
+            configuration: .init(itemStyles: [.regular: .init()],
             )
         )
-        .environment(\.debugLayoutEnabled, false)
+        .environment(\.bkDebugLayoutEnabled, false)
     }
 }
 
@@ -165,7 +172,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
         PinnedTabBarView(
             items: items,
             selected: $selected,
-            config: .init(
+            configuration: .init(
                 background: .material(.ultraThin, tint: .blue.opacity(0.3)),
                 itemStyles: [
                     .regular: .init(iconSideLength: 24),
@@ -177,7 +184,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
                 barAccessibilityLabel: "Tab Bar"
             )
         )
-        .environment(\.debugLayoutEnabled, false)
+        .environment(\.bkDebugLayoutEnabled, false)
     }
 }
 
