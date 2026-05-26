@@ -139,8 +139,8 @@ final class StandaloneBindings: BindingProvider {
                     self.background().wrappedValue = .color(newColor)
                 case let .material(material, _):
                     self.background().wrappedValue = .material(material, tint: newColor)
-                case let .customBlur(config, _):
-                    self.background().wrappedValue = .customBlur(config, tint: newColor)
+                case let .customBlur(configuration, _):
+                    self.background().wrappedValue = .customBlur(configuration, tint: newColor)
                 }
             }
         )
@@ -150,7 +150,7 @@ final class StandaloneBindings: BindingProvider {
     func materialSelection() -> Binding<BarMaterial> {
         Binding(
             get: {
-                if case let .material(barMaterial, _) = self.viewModel.standaloneBarConfig.background {
+                if case let .material(barMaterial, _) = self.viewModel.standaloneBarConfiguration.background {
                     return barMaterial
                 }
                 return .ultraThin
@@ -183,19 +183,19 @@ final class StandaloneBindings: BindingProvider {
     // MARK: - Item Configuration
 
     /// Binding for the full regular `ItemConfiguration`.
-    func regularItemConfig() -> Binding<ItemConfiguration> {
+    func regularItemConfiguration() -> Binding<ItemConfiguration> {
         Binding(
             get: { self.viewModel.state.standalone.barConfiguration.itemStyles[.regular] ?? .init() },
-            set: { self.viewModel.send(.standalone(.updateRegularItemConfig($0))) }
+            set: { self.viewModel.send(.standalone(.updateRegularItemConfiguration($0))) }
         )
     }
 
     /// Binding for a single property of the regular `ItemConfiguration`.
-    func regularItemConfig<T>(_ keyPath: WritableKeyPath<ItemConfiguration, T>) -> Binding<T> {
+    func regularItemConfiguration<T>(_ keyPath: WritableKeyPath<ItemConfiguration, T>) -> Binding<T> {
         binding(
             get: { self.viewModel.state.standalone.barConfiguration.itemStyles[.regular] ?? .init() },
             keyPath: keyPath,
-            send: { .standalone(.updateRegularItemConfig($0)) }
+            send: { .standalone(.updateRegularItemConfiguration($0)) }
         )
     }
     

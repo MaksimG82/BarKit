@@ -68,7 +68,7 @@ struct BarItemView<Item: BarItemProtocol>: View {
     
     // MARK: - Computed Properties
     
-    /// Resolves the effective icon-title arrangement, using the explicit config value
+    /// Resolves the effective icon-title arrangement, using the explicit configuration value
     /// or inferring from bar axis and size class when `itemContentAxis` is `nil`.
     private var resolvedContentAxis: ItemContentAxis {
         itemContentAxis ?? (isVerticalCompact ? .horizontal :
@@ -83,34 +83,34 @@ struct BarItemView<Item: BarItemProtocol>: View {
     ///   - item: A data model conforming to ``BarItemProtocol``.
     ///   - isSelected: Current selection state.
     ///   - isVerticalCompact: Whether the layout is in compact height mode.
-    ///   - config: A configuration object defining the visual style.
+    ///   - configuration: A configuration object defining the visual style.
     ///   - action: A closure executed when the element is tapped.
     init(
         item: Item,
         isSelected: Bool,
         isVerticalCompact: Bool,
-        config: BarConfiguration,
+        configuration: BarConfiguration,
         action: @escaping () -> Void
     ) {
         self.item = item
         self.isSelected = isSelected
         self.isVerticalCompact = isVerticalCompact
-        axis = config.axis
-        itemContentAxis = config.itemContentAxis
-        itemContentAlignment = config.itemContentAlignment
+        axis = configuration.axis
+        itemContentAxis = configuration.itemContentAxis
+        itemContentAlignment = configuration.itemContentAlignment
         self.action = action
 
-        let itemConfig = config.itemStyles[item.style] ?? config.itemStyles[.regular] ?? ItemConfiguration()
-        itemColor = isSelected ? itemConfig.selectedColor : itemConfig.unselectedColor
-        selectedIconScale = itemConfig.selectedIconScale
-        iconTitleSpacing = itemConfig.iconTitleSpacing
-        textStyle = itemConfig.textStyle
-        animation = config.resolvedItemStateAnimation
+        let itemConfiguration = configuration.itemStyles[item.style] ?? configuration.itemStyles[.regular] ?? ItemConfiguration()
+        itemColor = isSelected ? itemConfiguration.selectedColor : itemConfiguration.unselectedColor
+        selectedIconScale = itemConfiguration.selectedIconScale
+        iconTitleSpacing = itemConfiguration.iconTitleSpacing
+        textStyle = itemConfiguration.textStyle
+        animation = configuration.resolvedItemStateAnimation
 
-        let side = itemConfig.iconSideLength * (isVerticalCompact ? itemConfig.compactIconScale : 1.0)
+        let side = itemConfiguration.iconSideLength * (isVerticalCompact ? itemConfiguration.compactIconScale : 1.0)
         iconSize = CGSize(width: side, height: side)
 
-        edgeInsets = isVerticalCompact ? itemConfig.edgeInsetsCompact : itemConfig.edgeInsets
+        edgeInsets = isVerticalCompact ? itemConfiguration.edgeInsetsCompact : itemConfiguration.edgeInsets
     }
 
     // MARK: - Body

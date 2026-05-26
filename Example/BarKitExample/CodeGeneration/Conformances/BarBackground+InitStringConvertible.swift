@@ -32,11 +32,11 @@ extension BarBackground: InitStringConvertible, DefaultRepresentable {
             }
             return ".material(.\(material), tint: \(tint.initString))"
             
-        case .customBlur(let config, let tint):
+        case .customBlur(let configuration, let tint):
             if tint == .clear {
-                return ".customBlur(\(config.initString))"
+                return ".customBlur(\(configuration.initString))"
             }
-            return ".customBlur(\(config.initString), tint: \(tint.initString))"
+            return ".customBlur(\(configuration.initString), tint: \(tint.initString))"
         }
     }
 }

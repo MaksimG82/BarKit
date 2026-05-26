@@ -57,7 +57,7 @@ struct TabBarState {
 /// State for the Floating tab bar.
 struct FloatingTabBarState {
     
-    var barConfig: BarConfiguration = .init(accessibilitySortPriority: -1)
+    var barConfiguration: BarConfiguration = .init(accessibilitySortPriority: -1)
     
     var insets: EdgeInsets = .init(
         top: 0, leading: 16, bottom: 20, trailing: 16
@@ -70,7 +70,7 @@ struct FloatingTabBarState {
  
 /// State for the Pinned tab bar.
 struct PinnedTabBarState {
-    var barConfig: BarConfiguration = .init(accessibilitySortPriority: -1)
+    var barConfiguration: BarConfiguration = .init(accessibilitySortPriority: -1)
 }
  
 /// State for the Standalone BarView screen.

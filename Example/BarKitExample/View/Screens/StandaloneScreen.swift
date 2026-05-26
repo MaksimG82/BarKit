@@ -112,7 +112,7 @@ extension StandaloneScreen {
         BarView(
             items: viewModel.state.standalone.items,
             selected: bindings.selectedItem(),
-            config: viewModel.state.standalone.barConfiguration
+            configuration: viewModel.state.standalone.barConfiguration
         )
     }
 
@@ -215,18 +215,18 @@ extension StandaloneScreen {
     var itemEdgeInsetsSection: some View {
         ItemEdgeInsetsSection(
             title: "Item padding",
-            top: bindings.regularItemConfig(\.edgeInsets.top),
-            bottom: bindings.regularItemConfig(\.edgeInsets.bottom),
-            leading: bindings.regularItemConfig(\.edgeInsets.leading),
-            trailing: bindings.regularItemConfig(\.edgeInsets.trailing),
+            top: bindings.regularItemConfiguration(\.edgeInsets.top),
+            bottom: bindings.regularItemConfiguration(\.edgeInsets.bottom),
+            leading: bindings.regularItemConfiguration(\.edgeInsets.leading),
+            trailing: bindings.regularItemConfiguration(\.edgeInsets.trailing),
             
         )
     }
     
     var itemColorsSection: some View {
         ItemColorsSection(
-            selectedColor: bindings.regularItemConfig(\.selectedColor),
-            unselectedColor: bindings.regularItemConfig(\.unselectedColor)
+            selectedColor: bindings.regularItemConfiguration(\.selectedColor),
+            unselectedColor: bindings.regularItemConfiguration(\.unselectedColor)
         )
     }
     
@@ -234,12 +234,12 @@ extension StandaloneScreen {
         Section {
             SettingSlider(
                 title: "Icon Size",
-                value: bindings.regularItemConfig(\.iconSideLength),
+                value: bindings.regularItemConfiguration(\.iconSideLength),
                 range: 16...48
             )
             SettingSlider(
                 title: "Selected Scale",
-                value: bindings.regularItemConfig(\.selectedIconScale),
+                value: bindings.regularItemConfiguration(\.selectedIconScale),
                 range: 1.0...1.5,
                 step: 0.01,
                 format: .fractionalTwo
@@ -250,7 +250,7 @@ extension StandaloneScreen {
     }
     
     var itemTextStyleSection: some View {
-        ItemTextStyleSection(textStyle: bindings.regularItemConfig(\.textStyle))
+        ItemTextStyleSection(textStyle: bindings.regularItemConfiguration(\.textStyle))
     }
     
     var itemContentAxisSection: some View {
