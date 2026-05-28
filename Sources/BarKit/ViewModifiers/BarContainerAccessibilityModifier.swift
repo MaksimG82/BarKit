@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 /// Applies accessibility configuration to the bar container.
 /// On iOS 17+, adds the `.isTabBar` trait so VoiceOver announces
 /// items as tabs and automatically provides "X of Y" position hints.
