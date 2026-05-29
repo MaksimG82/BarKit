@@ -49,6 +49,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// The configuration object defining the visual style, layout, and behavior of the bar.
     private let configuration: BarConfiguration
+    
+    /// A dictionary mapping item identifiers to their badge values.
+    private let badges: [AnyHashable: BadgeValue]
 
     /// An optional identifier used as a key in the bar visibility dictionary.
     private let id: String?
@@ -80,6 +83,7 @@ public struct BarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - configuration: A configuration object defining the visual style of the bar.
+    ///   - badges: A dictionary mapping item identifiers to their badge values.
     ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
 
@@ -87,12 +91,14 @@ public struct BarView<Item: BarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         configuration: BarConfiguration = .init(),
+        badges: [AnyHashable: BadgeValue] = [:],
         id: String? = nil,
         action: ((Item) -> Void)? = nil,
     ) {
         self.items = items
         _selected = selected
         self.configuration = configuration
+        self.badges = badges
         self.id = id
         self.action = action
     }
@@ -126,6 +132,8 @@ public struct BarView<Item: BarItemProtocol>: View {
                 sortPriority: configuration.accessibilitySortPriority
             )
         )
+        .environment(\.bkBadges, badges)
+        .environment(\.bkBadgeConfiguration, configuration.badge)
     }
 }
 
@@ -443,8 +451,15 @@ private extension BarView {
 #if DEBUG
 
 @available(iOS 17.0, *)
-#Preview("Horizontal") {
+@available(iOS 17.0, *)
+#Preview("BarView - Horizontal") {
     @Previewable @State var selected: PreviewBarItem = .init(title: "Home", icon: .system("house.fill"))
+    @Previewable @State var selectedTab: Int = 0
+    @Previewable @State var badges: [AnyHashable: BadgeValue] = [
+        "Home": .count(333),
+        "Search": .dot,
+        "Profile": .label("New")
+    ]
 
     let items: [PreviewBarItem] = [
         .init(title: "Home",    icon: .system("house.fill")),
@@ -452,20 +467,37 @@ private extension BarView {
         .init(title: "Profile", icon: .system("person.fill")),
     ]
 
-    ZStack(alignment: .bottom) {
-        Color.indigo.ignoresSafeArea()
-        BarView(items: items, selected: $selected, configuration: .init(
-            axis: .horizontal,
-            cornerRadius: 28,
-            shadow: .init(),
-            background: .material(.ultraThin),
-            itemStyles: [.regular: .init()],
-            itemSpacing: 0,
-            itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
-            barAccessibilityLabel: "Bar"
-        ))
-        .padding(.horizontal, 16)
-        .padding(.bottom, 32)
+    VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
+            Color.indigo.ignoresSafeArea()
+            BarView(
+                items: items,
+                selected: $selected,
+                configuration: .init(
+                    axis: .horizontal,
+                    cornerRadius: 28,
+                    shadow: .init(),
+                    background: .material(.ultraThin),
+                    itemStyles: [.regular: .init()],
+                    itemSpacing: 0,
+                    itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
+                    barAccessibilityLabel: "Bar"
+                ),
+                badges: badges
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 32)
+        }
+
+        TabView(selection: $selectedTab) {
+            Color.clear.tabItem { Label("Home",    systemImage: "house.fill") }.tag(0)
+                .badge(333)
+            Color.clear.tabItem { Label("Search",  systemImage: "magnifyingglass") }.tag(1)
+                .badge("·")
+            Color.clear.tabItem { Label("Profile", systemImage: "person.fill") }.tag(2)
+                .badge("New")
+        }
+        .frame(height: 80)
     }
 }
 
