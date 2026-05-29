@@ -19,4 +19,10 @@ public extension EnvironmentValues {
     /// A binding to a dictionary that controls bar visibility by string identifier.
     /// Write `.hidden` for a given key to signal the associated bar should not be rendered.
     @Entry var bkBarVisibility: Binding<[String: Visibility]> = .constant([:])
+    
+    /// A dictionary mapping item identifiers to their badge values.
+    @Entry var bkBadges: [AnyHashable: BadgeValue] = [:]
+
+    /// The visual configuration applied to all badges in the bar.
+    @Entry var bkBadgeConfiguration: BadgeConfiguration = .init()
 }
