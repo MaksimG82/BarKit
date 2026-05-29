@@ -58,6 +58,9 @@ public struct BarConfiguration {
     /// allowing prominent items to overflow upward. Set to `nil` if no prominent items are used.
     public var baselineStyle: BarItemStyle?
     
+    /// The visual configuration applied to all badges rendered on bar items.
+    public var badge: BadgeConfiguration
+    
     // MARK: - Selection indicator
     
     /// Appearance and behavior configuration for the selection indicator.
@@ -93,6 +96,7 @@ public struct BarConfiguration {
     ///   - itemSpacing: Spacing between items in the stack.
     ///   - itemStateAnimation: Animation applied to icon and title during selection changes.
     ///   - baselineStyle: Item style used as the baseline for bar height calculation. Set when prominent items are present.
+    ///   - badge: The visual configuration applied to all badges rendered on bar items.
     ///   - indicator: Appearance and behavior configuration for the selection indicator.
     ///   - barAccessibilityLabel: Accessibility label for the entire bar.
     ///   - hapticFeedback: The haptic feedback style triggered on selection change. Pass `nil` to disable.
@@ -109,6 +113,7 @@ public struct BarConfiguration {
         itemSpacing: CGFloat = 0,
         itemStateAnimation: BarAnimation? = .parameters(.init(type: .easeInOut, duration: 0.2)),
         baselineStyle: BarItemStyle? = nil,
+        badge: BadgeConfiguration = .init(),
         indicator: SelectionIndicatorConfiguration? = .init(),
         barAccessibilityLabel: String = "Tab Bar",
         hapticFeedback: HapticFeedbackConfiguration? = .selection,
@@ -126,6 +131,7 @@ public struct BarConfiguration {
         self.itemStateAnimation = itemStateAnimation
         self.baselineStyle = baselineStyle
         self.indicator = indicator
+        self.badge = badge
         self.barAccessibilityLabel = barAccessibilityLabel
         self.hapticFeedback = hapticFeedback
         self.accessibilitySortPriority = accessibilitySortPriority
