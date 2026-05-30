@@ -32,6 +32,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// A dictionary mapping each item's unique identifier to its frame in the local coordinate space.
     @State private var itemFrames: [AnyHashable: CGRect] = [:]
+    
+    /// A dictionary mapping each item's unique identifier to its icon frame.
+    @State private var itemIconFrames: [AnyHashable: CGRect] = [:]
 
     /// The current position of the user's finger during a drag gesture.
     @State private var gestureLocation: CGPoint? = nil
@@ -74,6 +77,16 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// The stable name for the local coordinate space, unique per `BarView` instance.
     private var coordinateSpaceName: String { coordinateSpaceID.uuidString }
+    
+    /// The maximum item width across all items, used for vertical bar calculations.
+    private var maxItemWidth: CGFloat {
+        itemFrames.values.map(\.width).max() ?? selectedItemFrame.width
+    }
+
+    /// The maximum item height across all items, used for horizontal bar calculations.
+    private var maxItemHeight: CGFloat {
+        itemFrames.values.map(\.height).max() ?? selectedItemFrame.height
+    }
 
     // MARK: - Init
 
@@ -113,6 +126,9 @@ public struct BarView<Item: BarItemProtocol>: View {
             
             overlayItemsStack(indicatorFrame: indicatorFrame)
                 .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
+            
+            badgesStack
+                .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
         }
         .frame(
             height: barHeight(),
@@ -132,14 +148,33 @@ public struct BarView<Item: BarItemProtocol>: View {
                 sortPriority: configuration.accessibilitySortPriority
             )
         )
-        .environment(\.bkBadges, badges)
-        .environment(\.bkBadgeConfiguration, configuration.badge)
     }
 }
 
 // MARK: - Subviews
 
 private extension BarView {
+    
+    
+    /// A layer rendering badge overlays positioned over item icons.
+    @ViewBuilder
+    var badgesStack: some View {
+        ForEach(items) { item in
+            if
+                let badge = badges[item.id],
+                let frame = itemIconFrames[item.id] {
+                BadgeView(value: badge, configuration: configuration.badge)
+                    .position(
+                        x: frame.maxX + configuration.badge.offsetX,
+                        y: frame.minY + configuration.badge.offsetY
+                    )
+            }
+        }
+        .frame(
+            maxWidth: configuration.axis == .horizontal ? .infinity : maxItemWidth,
+            maxHeight: configuration.axis == .vertical ? .infinity : maxItemHeight
+        )
+    }
 
     /// A stack of interactive bar items.
     var itemsStack: some View {
@@ -155,9 +190,8 @@ private extension BarView {
         }
         .adaptiveCoordinateSpace(name: coordinateSpaceName)
         .environment(\.bkBarSpaceName, coordinateSpaceName)
-        .onPreferenceChange(BarItemFrameKey.self) { frames in
-            itemFrames = frames
-        }
+        .onPreferenceChange(BarItemFrameKey.self) { itemFrames = $0 }
+        .onPreferenceChange(BarIconFrameKey.self) { itemIconFrames = $0 }
         .defersSystemGestures(on: .all)
     }
 
@@ -393,7 +427,7 @@ private extension BarView {
             width = selectedItemFrame.width - inset.leading - inset.trailing
             height = selectedItemFrame.height - inset.top - inset.bottom
         case .vertical:
-            width = (itemFrames.values.map(\.width).max() ?? selectedItemFrame.width) - inset.leading - inset.trailing
+            width = maxItemWidth - inset.leading - inset.trailing
             height = selectedItemFrame.height - inset.top - inset.bottom
         }
 

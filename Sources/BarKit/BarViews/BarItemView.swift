@@ -132,7 +132,8 @@ struct BarItemView<Item: BarItemProtocol>: View {
         .capturePreference(
             key: BarItemFrameKey.self,
             in: .named(coordinateSpaceName)
-        ) { [item.id: $0.frame(in: .named(coordinateSpaceName))]
+        ) {
+            [item.id: $0.frame(in: .named(coordinateSpaceName))]
         }
         .modifier(BarItemAccessibilityModifier(item: item, isSelected: isSelected))
     }
@@ -141,7 +142,7 @@ struct BarItemView<Item: BarItemProtocol>: View {
 
     private var content: some View {
         Group {
-            BarIconView(icon: item.icon)
+            BarIconView(icon: item.icon, itemID: item.id)
                 .frame(width: iconSize.width, height: iconSize.height)
                 .foregroundStyle(itemColor)
                 .scaleEffect(isSelected ? selectedIconScale : 1.0)
