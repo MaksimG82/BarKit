@@ -10,9 +10,6 @@ import SwiftUI
 /// Defines the visual appearance of a badge overlay on a bar item.
 public struct BadgeConfiguration: Equatable, Sendable {
     
-    /// The alignment of the badge relative to the icon.
-    public var alignment: Alignment
-
     /// Horizontal offset applied to the badge after alignment.
     public var offsetX: CGFloat
 
@@ -40,7 +37,6 @@ public struct BadgeConfiguration: Equatable, Sendable {
     /// Creates a new `BadgeConfiguration`.
     ///
     /// - Parameters:
-    ///   - alignment: The alignment of the badge relative to the icon.
     ///   - offsetX: Horizontal offset applied to the badge after alignment.
     ///   - offsetY: Vertical offset applied to the badge after alignment.
     ///   - backgroundColor: The background color of the badge.
@@ -51,8 +47,8 @@ public struct BadgeConfiguration: Equatable, Sendable {
     ///   - dotDiameter: The diameter of the `.dot` badge.
     public init(
         alignment: Alignment = .topTrailing,
-        offsetX: CGFloat = 4,
-        offsetY: CGFloat = -2,
+        offsetX: CGFloat = 0,
+        offsetY: CGFloat = 0,
         backgroundColor: Color = .red,
         foregroundColor: Color = .white,
         textStyle: Font.TextStyle = .caption2,
@@ -60,7 +56,6 @@ public struct BadgeConfiguration: Equatable, Sendable {
         verticalPadding: CGFloat = 2,
         dotDiameter: CGFloat = 8
     ) {
-        self.alignment = alignment
         self.offsetX = offsetX
         self.offsetY = offsetY
         self.backgroundColor = backgroundColor
