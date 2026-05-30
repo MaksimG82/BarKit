@@ -7,7 +7,7 @@
 
 
 /// Represents the content displayed in a badge overlay on a bar item.
-public enum BadgeValue: Sendable, Equatable {
+public enum BadgeValue: Sendable, Hashable {
  
     /// A small dot with no text content.
     case dot
