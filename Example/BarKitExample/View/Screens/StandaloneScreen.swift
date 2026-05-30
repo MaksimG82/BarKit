@@ -27,6 +27,7 @@ struct StandaloneScreen: View {
                 indicatorLink
                 itemSettingsLink
                 hapticFeedbackLink
+                badgeLink
             }
         }
         .floatingTabBarOffset(
@@ -76,6 +77,12 @@ private extension StandaloneScreen {
             itemConfigurationSection
         }
     }
+    
+    var badgeLink: some View {
+        settingsLink("Badges", viewModel: viewModel, hideTabBar: true, header: { barPreview }) {
+            badgeSection
+        }
+    }
 }
 
 
@@ -112,7 +119,8 @@ extension StandaloneScreen {
         BarView(
             items: viewModel.state.standalone.items,
             selected: bindings.selectedItem(),
-            configuration: viewModel.state.standalone.barConfiguration
+            configuration: viewModel.state.standalone.barConfiguration,
+            badges: viewModel.state.standalone.badges
         )
     }
 
@@ -283,11 +291,45 @@ extension StandaloneScreen {
         }
     }
     
+    // MARK: - Badge section
+
+    var badgeSection: some View {
+        BadgeSection(
+            items: viewModel.state.standalone.items,
+            badge: { bindings.badge(for: $0) },
+            configuration: bindings.badgeConfiguration()
+        )
+    }
+    
     // MARK: - Toolbar
 
     var resetButton: some View {
         Button("Reset bar settings") {
             viewModel.send(.standalone(.reset))
         }
+    }
+}
+
+#Preview {
+    @Previewable @State var viewModel = ExampleViewModel()
+    @Previewable @Environment(\.verticalSizeClass) var sizeClass
+
+    ZStack(alignment: .bottom) {
+        NavigationStack {
+            StandaloneScreen(
+                viewModel: viewModel,
+                bindings: .init(viewModel: viewModel)
+            )
+        }
+        .floatingTabBarOffset(viewModel.contentOffset(sizeClass == .compact))
+
+        TabBarContainer(viewModel: viewModel)
+    }
+    .ignoresSafeArea(
+        .all,
+        edges: viewModel.state.tabBar.mode == .floating ? .bottom : []
+    )
+    .onAppear {
+        viewModel.send(.tabBar(.selectTab(ExampleTabItem.allItems[2])))
     }
 }

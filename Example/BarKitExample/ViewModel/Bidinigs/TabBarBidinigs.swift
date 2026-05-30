@@ -273,4 +273,32 @@ final class TabBarBindings: BindingProvider {
             set: { self.viewModel.send(.tabBar(.updateHapticFeedback($0))) }
         )
     }
+    
+    // MARK: - Badges
+
+    /// Binding for the badge value of a specific item. Pass `nil` to remove the badge.
+    func badge(for id: AnyHashable) -> Binding<BadgeValue?> {
+        Binding(
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.state.tabBar.floatingTabBarState.badges[id]
+                case .pinned:   self.viewModel.state.tabBar.pinnedTabBarState.badges[id]
+                }
+            },
+            set: { self.viewModel.send(.tabBar(.updateBadge(id, $0))) }
+        )
+    }
+
+    /// Binding for the badge configuration of the active tab bar.
+    func badgeConfiguration() -> Binding<BadgeConfiguration> {
+        Binding(
+            get: {
+                switch self.viewModel.state.tabBar.mode {
+                case .floating: self.viewModel.floatingTabBarConfiguration.badge
+                case .pinned:   self.viewModel.pinnedTabBarConfiguration.badge
+                }
+            },
+            set: { self.viewModel.send(.tabBar(.updateBadgeConfiguration($0))) }
+        )
+    }
 }

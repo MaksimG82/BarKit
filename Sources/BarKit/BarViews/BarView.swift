@@ -32,6 +32,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// A dictionary mapping each item's unique identifier to its frame in the local coordinate space.
     @State private var itemFrames: [AnyHashable: CGRect] = [:]
+    
+    /// A dictionary mapping each item's unique identifier to its icon frame.
+    @State private var itemIconFrames: [AnyHashable: CGRect] = [:]
 
     /// The current position of the user's finger during a drag gesture.
     @State private var gestureLocation: CGPoint? = nil
@@ -49,6 +52,9 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// The configuration object defining the visual style, layout, and behavior of the bar.
     private let configuration: BarConfiguration
+    
+    /// A dictionary mapping item identifiers to their badge values.
+    private let badges: [AnyHashable: BadgeValue]
 
     /// An optional identifier used as a key in the bar visibility dictionary.
     private let id: String?
@@ -71,6 +77,16 @@ public struct BarView<Item: BarItemProtocol>: View {
 
     /// The stable name for the local coordinate space, unique per `BarView` instance.
     private var coordinateSpaceName: String { coordinateSpaceID.uuidString }
+    
+    /// The maximum item width across all items, used for vertical bar calculations.
+    private var maxItemWidth: CGFloat {
+        itemFrames.values.map(\.width).max() ?? selectedItemFrame.width
+    }
+
+    /// The maximum item height across all items, used for horizontal bar calculations.
+    private var maxItemHeight: CGFloat {
+        itemFrames.values.map(\.height).max() ?? selectedItemFrame.height
+    }
 
     // MARK: - Init
 
@@ -80,6 +96,7 @@ public struct BarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - configuration: A configuration object defining the visual style of the bar.
+    ///   - badges: A dictionary mapping item identifiers to their badge values.
     ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
 
@@ -87,12 +104,14 @@ public struct BarView<Item: BarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         configuration: BarConfiguration = .init(),
+        badges: [AnyHashable: BadgeValue] = [:],
         id: String? = nil,
         action: ((Item) -> Void)? = nil,
     ) {
         self.items = items
         _selected = selected
         self.configuration = configuration
+        self.badges = badges
         self.id = id
         self.action = action
     }
@@ -106,6 +125,9 @@ public struct BarView<Item: BarItemProtocol>: View {
                 .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
             
             overlayItemsStack(indicatorFrame: indicatorFrame)
+                .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
+            
+            badgesStack
                 .indicatorLens(configuration.indicator, frame: indicatorFrame, isActive: isIndicatorMoving)
         }
         .frame(
@@ -132,6 +154,27 @@ public struct BarView<Item: BarItemProtocol>: View {
 // MARK: - Subviews
 
 private extension BarView {
+    
+    
+    /// A layer rendering badge overlays positioned over item icons.
+    @ViewBuilder
+    var badgesStack: some View {
+        ForEach(items) { item in
+            if
+                let badge = badges[item.id],
+                let frame = itemIconFrames[item.id] {
+                BadgeView(value: badge, configuration: configuration.badge)
+                    .position(
+                        x: frame.maxX + configuration.badge.offsetX,
+                        y: frame.minY + configuration.badge.offsetY
+                    )
+            }
+        }
+        .frame(
+            maxWidth: configuration.axis == .horizontal ? .infinity : maxItemWidth,
+            maxHeight: configuration.axis == .vertical ? .infinity : maxItemHeight
+        )
+    }
 
     /// A stack of interactive bar items.
     var itemsStack: some View {
@@ -147,9 +190,8 @@ private extension BarView {
         }
         .adaptiveCoordinateSpace(name: coordinateSpaceName)
         .environment(\.bkBarSpaceName, coordinateSpaceName)
-        .onPreferenceChange(BarItemFrameKey.self) { frames in
-            itemFrames = frames
-        }
+        .onPreferenceChange(BarItemFrameKey.self) { itemFrames = $0 }
+        .onPreferenceChange(BarIconFrameKey.self) { itemIconFrames = $0 }
         .defersSystemGestures(on: .all)
     }
 
@@ -385,7 +427,7 @@ private extension BarView {
             width = selectedItemFrame.width - inset.leading - inset.trailing
             height = selectedItemFrame.height - inset.top - inset.bottom
         case .vertical:
-            width = (itemFrames.values.map(\.width).max() ?? selectedItemFrame.width) - inset.leading - inset.trailing
+            width = maxItemWidth - inset.leading - inset.trailing
             height = selectedItemFrame.height - inset.top - inset.bottom
         }
 
@@ -443,8 +485,14 @@ private extension BarView {
 #if DEBUG
 
 @available(iOS 17.0, *)
-#Preview("Horizontal") {
+#Preview("BarView - Horizontal") {
     @Previewable @State var selected: PreviewBarItem = .init(title: "Home", icon: .system("house.fill"))
+    @Previewable @State var selectedTab: Int = 0
+    @Previewable @State var badges: [AnyHashable: BadgeValue] = [
+        "Home": .count(333),
+        "Search": .dot,
+        "Profile": .label("New")
+    ]
 
     let items: [PreviewBarItem] = [
         .init(title: "Home",    icon: .system("house.fill")),
@@ -452,20 +500,65 @@ private extension BarView {
         .init(title: "Profile", icon: .system("person.fill")),
     ]
 
-    ZStack(alignment: .bottom) {
+    VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
+            Color.indigo.ignoresSafeArea()
+            BarView(
+                items: items,
+                selected: $selected,
+                configuration: .init(
+                    axis: .horizontal,
+                    cornerRadius: 28,
+                    shadow: .init(),
+                    background: .material(.ultraThin),
+                    itemStyles: [.regular: .init()],
+                    itemSpacing: 0,
+                    itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
+                    barAccessibilityLabel: "Bar"
+                ),
+                badges: badges
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 32)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+#Preview("BarView - Vertical") {
+    @Previewable @State var selected: PreviewBarItem = .init(title: "Home", icon: .system("house.fill"))
+    @Previewable @State var badges: [AnyHashable: BadgeValue] = [
+        "Home": .count(333),
+        "Search": .dot,
+        "Profile": .label("New")
+    ]
+
+    let items: [PreviewBarItem] = [
+        .init(title: "Home",    icon: .system("house.fill")),
+        .init(title: "Search",  icon: .system("magnifyingglass")),
+        .init(title: "Profile", icon: .system("person.fill")),
+    ]
+
+    ZStack(alignment: .topLeading) {
         Color.indigo.ignoresSafeArea()
-        BarView(items: items, selected: $selected, configuration: .init(
-            axis: .horizontal,
-            cornerRadius: 28,
-            shadow: .init(),
-            background: .material(.ultraThin),
-            itemStyles: [.regular: .init()],
-            itemSpacing: 0,
-            itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
-            barAccessibilityLabel: "Bar"
-        ))
-        .padding(.horizontal, 16)
-        .padding(.bottom, 32)
+        BarView(
+            items: items,
+            selected: $selected,
+            configuration: .init(
+                axis: .vertical,
+                cornerRadius: 28,
+                shadow: .init(),
+                background: .material(.ultraThin),
+                itemStyles: [.regular: .init()],
+                itemSpacing: 0,
+                itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
+                barAccessibilityLabel: "Bar"
+            ),
+            badges: badges
+        )
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.leading, 16)
+        
     }
 }
 

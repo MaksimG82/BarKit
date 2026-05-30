@@ -38,6 +38,9 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     /// Visual style, layout, and behavior configuration for the bar.
     private let configuration: BarConfiguration
     
+    /// A dictionary mapping item identifiers to their badge values.
+    private let badges: [AnyHashable: BadgeValue]
+    
     /// An optional identifier used as a key in the bar visibility dictionary.
     private let id: String?
 
@@ -69,6 +72,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - configuration: Visual and layout configuration for the bar.
+    ///   - badges: A dictionary mapping item identifiers to their badge values.
     ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - floatingInsets: Insets that position the capsule relative to screen edges.
     ///   - floatingInsetsCompact:Insets for compact height size class (e.g. landscape).
@@ -77,6 +81,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         items: [Item],
         selected: Binding<Item>,
         configuration: BarConfiguration = .init(),
+        badges: [AnyHashable: BadgeValue] = [:],
         id: String? = "tabBar",
         floatingInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16),
         floatingInsetsCompact: EdgeInsets? = nil,
@@ -85,6 +90,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         self.items = items
         _selected = selected
         self.configuration = configuration
+        self.badges = badges
         self.id = id
         self.floatingInsets = floatingInsets
         self.floatingInsetsCompact = floatingInsetsCompact
@@ -98,6 +104,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             configuration: configuration,
+            badges: badges,
             id: id,
             action: action
         )
@@ -117,6 +124,11 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
         title: "Home",
         icon: .system("house.fill")
     )
+    @Previewable @State var badges: [AnyHashable: BadgeValue] = [
+        "Home": .count(3),
+        "Search": .dot,
+        "Profile": .label("New")
+    ]
 
     let items: [PreviewBarItem] = [
         .init(title: "Home",    icon: .system("house.fill")),
@@ -130,7 +142,7 @@ public struct FloatingTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             configuration: .init(itemStyles: [.regular: .init()]),
-            floatingInsets: .init(top: 0, leading: 16, bottom: 20, trailing: 16)
+            badges: badges, floatingInsets: .init(top: 0, leading: 16, bottom: 20, trailing: 16)
         )
     }
     .ignoresSafeArea(.all, edges: .bottom)
