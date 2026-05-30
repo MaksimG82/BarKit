@@ -485,7 +485,6 @@ private extension BarView {
 #if DEBUG
 
 @available(iOS 17.0, *)
-@available(iOS 17.0, *)
 #Preview("BarView - Horizontal") {
     @Previewable @State var selected: PreviewBarItem = .init(title: "Home", icon: .system("house.fill"))
     @Previewable @State var selectedTab: Int = 0
@@ -522,16 +521,44 @@ private extension BarView {
             .padding(.horizontal, 16)
             .padding(.bottom, 32)
         }
+    }
+}
 
-        TabView(selection: $selectedTab) {
-            Color.clear.tabItem { Label("Home",    systemImage: "house.fill") }.tag(0)
-                .badge(333)
-            Color.clear.tabItem { Label("Search",  systemImage: "magnifyingglass") }.tag(1)
-                .badge("·")
-            Color.clear.tabItem { Label("Profile", systemImage: "person.fill") }.tag(2)
-                .badge("New")
-        }
-        .frame(height: 80)
+@available(iOS 17.0, *)
+#Preview("BarView - Vertical") {
+    @Previewable @State var selected: PreviewBarItem = .init(title: "Home", icon: .system("house.fill"))
+    @Previewable @State var badges: [AnyHashable: BadgeValue] = [
+        "Home": .count(333),
+        "Search": .dot,
+        "Profile": .label("New")
+    ]
+
+    let items: [PreviewBarItem] = [
+        .init(title: "Home",    icon: .system("house.fill")),
+        .init(title: "Search",  icon: .system("magnifyingglass")),
+        .init(title: "Profile", icon: .system("person.fill")),
+    ]
+
+    ZStack(alignment: .topLeading) {
+        Color.indigo.ignoresSafeArea()
+        BarView(
+            items: items,
+            selected: $selected,
+            configuration: .init(
+                axis: .vertical,
+                cornerRadius: 28,
+                shadow: .init(),
+                background: .material(.ultraThin),
+                itemStyles: [.regular: .init()],
+                itemSpacing: 0,
+                itemStateAnimation: .custom(.easeInOut(duration: 0.2)),
+                barAccessibilityLabel: "Bar"
+            ),
+            badges: badges
+        )
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.leading, 16)
+        
     }
 }
 
