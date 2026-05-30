@@ -55,6 +55,12 @@ enum TabBarIntent {
     /// Updates the haptic feedback style for the tab bar.
     case updateHapticFeedback(HapticFeedbackConfiguration)
     
+    /// Updates the badge value for a given item identifier. Pass `nil` to remove the badge.
+    case updateBadge(AnyHashable, BadgeValue?)
+    
+    /// Updates the badge configuration for the tab bar.
+    case updateBadgeConfiguration(BadgeConfiguration)
+    
     /// Resets all Tab Bar settings to their default values.
     case reset
 }
@@ -125,6 +131,12 @@ enum StandaloneIntent {
 
     /// Updates the alignment of icon and title within each item.
     case updateItemContentAlignment(BarItemAlignment)
+    
+    /// Updates the badge value for a given item identifier. Pass `nil` to remove the badge.
+    case updateBadge(AnyHashable, BadgeValue?)
+    
+    /// Updates the badge configuration for the bar.
+    case updateBadgeConfiguration(BadgeConfiguration)
     
     /// Resets all settings to their default values.
     case reset

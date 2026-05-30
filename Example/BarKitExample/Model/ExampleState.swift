@@ -47,32 +47,42 @@ struct ExampleState {
 /// State for the Tab Bar screen.
 struct TabBarState {
     
+    /// The current tab bar display mode (floating or pinned).
     var mode: TabBarMode = .floating
     
+    /// State specific to the floating tab bar variant.
     var floatingTabBarState: FloatingTabBarState = .init()
     
+    /// State specific to the pinned tab bar variant.
     var pinnedTabBarState: PinnedTabBarState = .init()
 }
  
 /// State for the Floating tab bar.
 struct FloatingTabBarState {
     
+    /// Visual and layout configuration for the floating tab bar.
     var barConfiguration: BarConfiguration = .init(accessibilitySortPriority: -1)
     
-    var insets: EdgeInsets = .init(
-        top: 0, leading: 16, bottom: 20, trailing: 16
-    )
+    /// Insets positioning the floating bar in regular height mode.
+    var insets: EdgeInsets = .init(top: 0, leading: 16, bottom: 20, trailing: 16)
     
-    var insetsCompact: EdgeInsets = .init(
-        top: 0, leading: 16, bottom: 8, trailing: 16
-    )
+    /// Insets positioning the floating bar in compact height mode (e.g. landscape).
+    var insetsCompact: EdgeInsets = .init(top: 0, leading: 16, bottom: 8, trailing: 16)
+    
+    /// A dictionary mapping item identifiers to their badge values.
+    var badges: [AnyHashable: BadgeValue] = [:]
 }
- 
+
 /// State for the Pinned tab bar.
 struct PinnedTabBarState {
+    
+    /// Visual and layout configuration for the pinned tab bar.
     var barConfiguration: BarConfiguration = .init(accessibilitySortPriority: -1)
+    
+    /// A dictionary mapping item identifiers to their badge values.
+    var badges: [AnyHashable: BadgeValue] = [:]
 }
- 
+
 /// State for the Standalone BarView screen.
 struct StandaloneState {
     
@@ -85,12 +95,13 @@ struct StandaloneState {
     /// The bar configuration for the standalone bar.
     var barConfiguration: BarConfiguration = .init()
     
+    /// Insets applied around the standalone bar preview.
     var insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     
-    // MARK: - Initialization
- 
+    /// A dictionary mapping item identifiers to their badge values.
+    var badges: [AnyHashable: BadgeValue] = [:]
+    
     init() {
         selectedItem = ExampleBarItem.allItems[0]
     }
 }
-

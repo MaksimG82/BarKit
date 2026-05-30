@@ -3,6 +3,7 @@
 
 Customizable SwiftUI bar with selectable items.
 
+![Version](https://img.shields.io/github/v/tag/MaksimG82/BarKit?label=version)
 ![Swift](https://img.shields.io/badge/Swift-6.0-orange)
 ![iOS](https://img.shields.io/badge/iOS-16%2B-blue)
 ![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen)
@@ -22,6 +23,7 @@ Customizable SwiftUI bar with selectable items.
 - **Per-item styling** — colors, icon size, text style, and padding per item style
 - **Animations** — named presets or any custom SwiftUI animation
 - **Haptic feedback** — selection, impact, success, warning, and error styles (iOS 17+)
+- **Badges** — dot, count, and label overlays per item, with full appearance and position control
 - **Accessibility** — VoiceOver labels and sort priority built in
 - **Interactive Example App** — explore every setting live and generate ready-to-use initializer code
 

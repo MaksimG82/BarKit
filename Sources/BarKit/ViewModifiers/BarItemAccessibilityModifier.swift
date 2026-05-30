@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 /// Applies accessibility configuration to a single bar item.
 /// The item is presented as an atomic element — its icon and title
 /// are hidden from VoiceOver and replaced by a single label.

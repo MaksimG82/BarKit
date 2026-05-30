@@ -101,6 +101,22 @@ private extension ExampleViewModel {
                 pinnedTabBarConfiguration.hapticFeedback = feedback
             }
             
+        case let .updateBadge(id, value):
+            switch state.tabBar.mode {
+            case .floating:
+                state.tabBar.floatingTabBarState.badges[id] = value
+            case .pinned:
+                state.tabBar.pinnedTabBarState.badges[id] = value
+            }
+
+        case let .updateBadgeConfiguration(configuration):
+            switch state.tabBar.mode {
+            case .floating:
+                floatingTabBarConfiguration.badge = configuration
+            case .pinned:
+                pinnedTabBarConfiguration.badge = configuration
+            }
+            
         case .reset:
             state.tabBar = .init()
             state.instanceID = UUID()
@@ -185,6 +201,12 @@ private extension ExampleViewModel {
             
         case let .updateItemContentAlignment(alignment):
             standaloneBarConfiguration.itemContentAlignment = alignment
+            
+        case let .updateBadge(id, value):
+            state.standalone.badges[id] = value
+
+        case let .updateBadgeConfiguration(configuration):
+            standaloneBarConfiguration.badge = configuration
             
         case .reset:
             state.standalone = .init()

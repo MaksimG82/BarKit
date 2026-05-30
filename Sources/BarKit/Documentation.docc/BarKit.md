@@ -16,6 +16,7 @@ Use it as a standalone selection control, a floating tab bar, or a pinned system
 - <doc:ConfiguringAnimations>
 - <doc:TabBarIntegration>
 - <doc:AdditionalConfiguration>
+- <doc:ConfiguringBadges>
 ### Essentials
 
 
@@ -31,6 +32,8 @@ Use it as a standalone selection control, a floating tab bar, or a pinned system
 
 ### Configuration
 
+- ``BadgeConfiguration``
+- ``BadgeValue``
 - ``BarConfiguration``
 - ``ItemConfiguration``
 - ``BarLayoutAxis``

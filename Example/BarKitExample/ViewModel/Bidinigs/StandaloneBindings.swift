@@ -228,4 +228,22 @@ final class StandaloneBindings: BindingProvider {
             set: { self.viewModel.send(.standalone(.updateItemContentAlignment($0))) }
         )
     }
+    
+    // MARK: - Badges
+
+    /// Binding for the badge value of a specific item. Pass `nil` to remove the badge.
+    func badge(for id: AnyHashable) -> Binding<BadgeValue?> {
+        Binding(
+            get: { self.viewModel.state.standalone.badges[id] },
+            set: { self.viewModel.send(.standalone(.updateBadge(id, $0))) }
+        )
+    }
+
+    /// Binding for the badge configuration of the standalone bar.
+    func badgeConfiguration() -> Binding<BadgeConfiguration> {
+        Binding(
+            get: { self.viewModel.standaloneBarConfiguration.badge },
+            set: { self.viewModel.send(.standalone(.updateBadgeConfiguration($0))) }
+        )
+    }
 }

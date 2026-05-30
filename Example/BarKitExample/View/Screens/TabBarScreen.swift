@@ -30,6 +30,7 @@ struct TabBarScreen: View {
                 indicatorLink
             }
             hapticFeedbackLink
+            badgeLink
         }
         .floatingTabBarOffset(
             viewModel.contentOffset(sizeClass == .compact),
@@ -86,6 +87,11 @@ private extension TabBarScreen {
         }
     }
     
+    var badgeLink: some View {
+        settingsLink("Badges", viewModel: viewModel) {
+            badgeSection
+        }
+    }
 }
 
 
@@ -295,6 +301,16 @@ private extension TabBarScreen {
         HapticFeedbackSection(
             isEnabled: bindings.hapticFeedbackEnabled(),
             hapticFeedback: bindings.hapticFeedback()
+        )
+    }
+    
+    // MARK: - Badge section
+
+    var badgeSection: some View {
+        BadgeSection(
+            items: viewModel.state.tabBarItems,
+            badge: { bindings.badge(for: $0) },
+            configuration: bindings.badgeConfiguration()
         )
     }
     

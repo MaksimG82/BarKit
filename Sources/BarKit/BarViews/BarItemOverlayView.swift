@@ -123,7 +123,7 @@ struct BarItemOverlayView<Item: BarItemProtocol>: View {
 
     private var content: some View {
         Group {
-            BarIconView(icon: item.icon)
+            BarIconView(icon: item.icon, itemID: item.id)
                 .frame(width: iconSize.width, height: iconSize.height)
                 .foregroundStyle(itemColor)
                 .scaleEffect(isSelected ? selectedIconScale : 1.0)

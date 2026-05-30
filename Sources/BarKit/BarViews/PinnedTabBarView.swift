@@ -5,7 +5,6 @@
 //  Created by Maksim Gaisin on 03.05.26.
 //
 
-
 import SwiftUI
 
 /// A pinned tab bar that wraps `BarView`, spanning the full screen width and integrating
@@ -38,6 +37,9 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     /// - Note: `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
     private let configuration: BarConfiguration
     
+    /// A dictionary mapping item identifiers to their badge values.
+    private let badges: [AnyHashable: BadgeValue]
+    
     /// An optional identifier used as a key in the bar visibility dictionary.
     private let id: String?
 
@@ -68,18 +70,21 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
     ///   - items: An array of data models conforming to ``BarItemProtocol``.
     ///   - selected: A binding to the currently selected item.
     ///   - configuration: Visual and behavior configuration. `axis`, `cornerRadius`, `shadow`,`background`,`itemAlignement`and `baselineStyle`  are ignored.
+    ///   - badges: A dictionary mapping item identifiers to their badge values.
     ///   - id: An optional identifier used as a key in the bar visibility dictionary.
     ///   - action: An optional closure executed when an item is tapped.
     public init(
         items: [Item],
         selected: Binding<Item>,
         configuration: BarConfiguration = .init(),
+        badges: [AnyHashable: BadgeValue] = [:],
         id: String? = "tabBar",
         action: ((Item) -> Void)? = nil
     ) {
         self.items = items
         _selected = selected
         self.configuration = configuration
+        self.badges = badges
         self.id = id
         self.action = action
     }
@@ -91,6 +96,7 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
             items: items,
             selected: $selected,
             configuration: pinnedconfiguration,
+            badges: badges,
             id: id,
             action: action
         )
@@ -134,6 +140,11 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
         title: "Home",
         icon: .system("house.fill")
     )
+    @Previewable @State var badges: [AnyHashable: BadgeValue] = [
+        "Home": .count(3),
+        "Search": .dot,
+        "Profile": .label("New")
+    ]
 
     let items: [PreviewBarItem] = [
         .init(title: "Home",    icon: .system("house.fill")),
@@ -146,8 +157,8 @@ public struct PinnedTabBarView<Item: BarItemProtocol>: View {
         PinnedTabBarView(
             items: items,
             selected: $selected,
-            configuration: .init(itemStyles: [.regular: .init()],
-            )
+            configuration: .init(itemStyles: [.regular: .init()]),
+            badges: badges
         )
         .environment(\.bkDebugLayoutEnabled, false)
     }
