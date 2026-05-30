@@ -3,6 +3,7 @@
 
 Customizable SwiftUI bar with selectable items.
 
+![Version](https://img.shields.io/github/v/tag/MaksimG82/BarKit?label=version)
 ![Swift](https://img.shields.io/badge/Swift-6.0-orange)
 ![iOS](https://img.shields.io/badge/iOS-16%2B-blue)
 ![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen)
