@@ -64,9 +64,9 @@ public struct SelectionIndicatorConfiguration {
         inset: EdgeInsets = .init(top: 2, leading: 2, bottom: 2, trailing: 2),
         cornerRadius: CGFloat = 24,
         transitionAnimation: BarAnimation? = .parameters(.init()),
-        scaleEffect: SelectionScaleEffect? = nil,
+        scaleEffect: SelectionScaleEffect? = .init(),
         isDragGestureEnabled: Bool = true,
-        effects: [IndicatorEffect] = []
+        effects: [IndicatorEffect] = [.chromaticAberration(), .lensDistortion()]
     ) {
         self.color = color
         self.border = border

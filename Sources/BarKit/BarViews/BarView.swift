@@ -263,11 +263,6 @@ private extension BarView {
                     width: max(0, frame.width),
                     height: max(0, frame.height)
                 )
-                .scaleEffect(
-                    x: isSelectionIndicatorScaling ? indicatorConfiguration.scaleEffect?.xScale ?? 1.0 : 1.0,
-                    y: isSelectionIndicatorScaling ? indicatorConfiguration.scaleEffect?.yScale ?? 1.0 : 1.0,
-                    anchor: .center
-                )
                 .offset(
                     x: configuration.axis == .horizontal ? frame.minX : 0,
                     y: configuration.axis == .vertical ? frame.minY : 0
@@ -430,8 +425,15 @@ private extension BarView {
             width = maxItemWidth - inset.leading - inset.trailing
             height = selectedItemFrame.height - inset.top - inset.bottom
         }
-
-        return CGRect(x: offset.x, y: offset.y, width: width, height: height)
+        let frame = CGRect(x: offset.x, y: offset.y, width: width, height: height)
+        
+        if
+            let scaleEffect = indicatorConfiguration.scaleEffect,
+            isSelectionIndicatorScaling {
+            return frame.scaled(x: scaleEffect.xScale, y: scaleEffect.yScale)
+        } else {
+            return frame
+        }
     }
     
     /// Returns the item whose center is closest to the indicator's current center.
